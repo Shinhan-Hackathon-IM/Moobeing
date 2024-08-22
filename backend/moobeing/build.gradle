@@ -41,6 +41,10 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+	// spring security
+	implementation 'org.springframework.security:spring-security-web:6.2.4'
+	implementation 'org.springframework.security:spring-security-config:6.2.4'
+
 	// mysql and jdbc
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
