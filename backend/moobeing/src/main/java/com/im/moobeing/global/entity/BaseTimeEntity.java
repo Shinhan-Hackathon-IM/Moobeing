@@ -1,4 +1,4 @@
-package com.im.moobeing.global.auditing;
+package com.im.moobeing.global.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
