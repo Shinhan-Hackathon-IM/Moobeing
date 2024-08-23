@@ -7,11 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class MemberCreateRequest {
-    private String handle;
-    private String password;
+public class MemberChangeRequest {
     private String name;
-    private String phoneNumber;
-    private String gender;
-    private String birthday;
 }

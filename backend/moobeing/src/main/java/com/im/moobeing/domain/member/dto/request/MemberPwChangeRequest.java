@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class MemberLoginRequest {
-    private String handle;
-    private String password;
+public class MemberPwChangeRequest {
+    String oldPassword;
+    String newPassword;
 }

@@ -1,11 +1,16 @@
 package com.im.moobeing.domain.member.entity;
 
-import com.im.moobeing.global.auditing.BaseTimeEntity;
+import com.im.moobeing.domain.member.dto.request.MemberChangeRequest;
+import com.im.moobeing.domain.member.dto.request.MemberPwChangeRequest;
+import com.im.moobeing.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name="member")
 @Getter
@@ -37,14 +42,14 @@ public class Member extends BaseTimeEntity {
     @Column(name = "gender", nullable = true, length = 10)
     private String gender;
 
-    @Column(name = "email", nullable = true, length = 100)
-    private String email;
-
     @Column(name = "birthday", nullable = true, length = 60)
     private String birthday;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<MemberRadish> memberRadishes = new ArrayList<>();
+
     @Builder
-    public Member(Long id, String handle, String password, Long totalPoints, Long totalLoan, String name, String phoneNumber, String gender, String email, String birthday) {
+    public Member(Long id, String handle, String password, Long totalPoints, Long totalLoan, String name, String phoneNumber, String gender, String birthday) {
         this.id = id;
         this.handle = handle;
         this.password = password;
@@ -53,7 +58,18 @@ public class Member extends BaseTimeEntity {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.gender = gender;
-        this.email = email;
         this.birthday = birthday;
+    }
+
+    public void changeMember(MemberChangeRequest memberChangeRequest){
+        this.name = memberChangeRequest.getName();
+    }
+
+    public void changeMemberPw(MemberPwChangeRequest memberPwChangeRequest){
+        this.password = memberPwChangeRequest.getNewPassword();
+    }
+
+    public void addMemberRadish(MemberRadish memberRadish) {
+        this.memberRadishes.add(memberRadish);
     }
 }
