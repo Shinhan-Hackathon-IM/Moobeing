@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.List;
 
 public class SessionAuthenticationFilter extends OncePerRequestFilter {
 
@@ -25,14 +25,14 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
             throw new ServletException("No JSESSIONID cookie found, unauthorized access."); // 예외 발생
         }
 
-        String username = (String) session.getAttribute("username"); // 세션에서 사용자 이름 가져오기
-        if (username != null) {
-            // 사용자의 권한 설정, 실제 상황에 맞게 조정 필요
-            SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
-            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null, Collections.singletonList(authority));
+        Long memberId = (Long) session.getAttribute("memberId"); // 세션에서 사용자 이름 가져오기
 
-            auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(auth); // SecurityContext에 인증 정보 등록
+        if (memberId != null) {
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    memberId, null, List.of(new SimpleGrantedAuthority("DEFAULT_ROLE")));
+
+            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
 
         filterChain.doFilter(request, response); // 다음 필터로 요청 전달
