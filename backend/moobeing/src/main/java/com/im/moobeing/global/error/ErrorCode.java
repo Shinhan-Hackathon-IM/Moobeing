@@ -20,6 +20,9 @@ public enum ErrorCode {
 	// 인증 && 인가
 	AU_SESSION_EXPIRED(HttpStatus.UNAUTHORIZED, "AU001", "유효한 세션이 아닙니다."),
 	AU_INVALID_LOGIN(HttpStatus.UNAUTHORIZED, "AU002", "로그인 정보가 잘못되었습니다. 비밀번호를 확인해주세요."),
+	AU_NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "AU003", "해당하는 유저가 없습니다."),
+	AU_ALREADY_HANDLE(HttpStatus.BAD_REQUEST, "AU004", "이미 해당 아이디는 존재합니다."),
+	AU_INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "AU005", "비밀번호가 틀렸습니다."),
 
 	// localDate format
 	LF_FORMAT_NOT_MATCH(HttpStatus.BAD_REQUEST,"LD001","날짜 형식이 올바르지 않습니다. 형식은 yyyy-MM-dd'T'HH:mm:ss 입니다.");
