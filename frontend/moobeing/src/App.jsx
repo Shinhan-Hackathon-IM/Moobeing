@@ -1,26 +1,17 @@
-import { useState } from 'react'
-import Logo from './assets/logo.png'
-import './App.css'
+import './App.css';
+import Router from './Router';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-          <img src={Logo} className="logo" alt="logo" />
-      </div>
+    <div className="app-container">
       <h1>수현 & 예원의 프론트 앱</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          개발 진행 중에 있습니다.
-        </p>
+        <p>앱 내용이 여기에 들어갑니다.</p>
+        <p>이 내용은 모든 화면 크기에서 동일하게 표시됩니다.</p>
+        <Router/>
       </div>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
