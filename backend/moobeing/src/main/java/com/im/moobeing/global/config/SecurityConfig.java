@@ -1,5 +1,6 @@
 package com.im.moobeing.global.config;
 
+import com.im.moobeing.domain.member.repository.MemberRepository;
 import com.im.moobeing.global.filter.SessionAuthenticationFilter;
 import com.im.moobeing.global.filter.SessionExceptionFilter;
 import com.im.moobeing.global.path.WebSecurityPath;
@@ -9,17 +10,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig implements WebMvcConfigurer {
+    private final MemberRepository memberRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -33,7 +34,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
-                .addFilterBefore(new SessionAuthenticationFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new SessionAuthenticationFilter(memberRepository), BasicAuthenticationFilter.class)
                 .addFilterBefore(new SessionExceptionFilter(), SessionAuthenticationFilter.class);
 
         return http.build();

@@ -39,34 +39,34 @@ public class MemberController {
 
     @Operation(summary = "맴버 정보 가져오기", description = "맴버 정보 가져오기.")
     @GetMapping
-    public ResponseEntity<?> getMember(@AuthenticationPrincipal Long memberId) {
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.getMember(memberId));
+    public ResponseEntity<?> getMember(@AuthenticationPrincipal Member member) {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.getMember(member));
     }
 
     @Operation(summary = "맴버 정보 수정하기", description = "맴버에 대한 정보 수정하기")
     @PatchMapping
-    public ResponseEntity<?> changeMember(@AuthenticationPrincipal Long memberId, @RequestBody MemberChangeRequest memberChangeRequest) {
-        memberService.changeMember(memberId, memberChangeRequest);
+    public ResponseEntity<?> changeMember(@AuthenticationPrincipal Member member, @RequestBody MemberChangeRequest memberChangeRequest) {
+        memberService.changeMember(member, memberChangeRequest);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @Operation(summary = "맴버 비밀번호 수정하기", description = "맴버에 대한 비밀번호 수정하기")
     @PostMapping("pw")
-    public ResponseEntity<?> changeMemberPw(@AuthenticationPrincipal Long memberId, @RequestBody MemberPwChangeRequest memberPwChangeRequest) {
-        memberService.changeMemberPw(memberId, memberPwChangeRequest);
+    public ResponseEntity<?> changeMemberPw(@AuthenticationPrincipal Member member, @RequestBody MemberPwChangeRequest memberPwChangeRequest) {
+        memberService.changeMemberPw(member, memberPwChangeRequest);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @Operation(summary = "맴버 무 가져오기", description = "맴버가 가지고 있는 무 모두 가져오기.")
     @GetMapping("/radish")
-    public ResponseEntity<?> getMemberRadish(@AuthenticationPrincipal Long memberId) {
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.getMemberRadish(memberId));
+    public ResponseEntity<?> getMemberRadish(@AuthenticationPrincipal Member member) {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.getMemberRadish(member));
     }
 
     @Operation(summary = "맴버 랜덤 무 뽑기", description = "맴버가 랜덤으로 무 뽑기")
     @PostMapping("/radish")
-    public ResponseEntity<?> addMemberRadish(@AuthenticationPrincipal Long memberId) {
-        memberService.addMemberRadish(memberId);
+    public ResponseEntity<?> addMemberRadish(@AuthenticationPrincipal Member member) {
+        memberService.addMemberRadish(member);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }

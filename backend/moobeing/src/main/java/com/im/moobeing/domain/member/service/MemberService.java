@@ -58,33 +58,21 @@ public class MemberService {
         return member;
     }
 
-    public MemberGetResponse getMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new AuthenticationException(ErrorCode.AU_NOT_FOUND_MEMBER));
-
+    public MemberGetResponse getMember(Member member) {
         return MemberGetResponse.of(member);
     }
 
     @Transactional
-    public void changeMember(Long memberId, MemberChangeRequest memberChangeRequest) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new AuthenticationException(ErrorCode.AU_NOT_FOUND_MEMBER));
-
+    public void changeMember(Member member, MemberChangeRequest memberChangeRequest) {
         member.changeMember(memberChangeRequest);
     }
 
-    public MemberRadishResponse getMemberRadish(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new AuthenticationException(ErrorCode.AU_NOT_FOUND_MEMBER));
-
+    public MemberRadishResponse getMemberRadish(Member member) {
         return MemberRadishResponse.of(member);
     }
 
     @Transactional
-    public void addMemberRadish(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new AuthenticationException(ErrorCode.AU_NOT_FOUND_MEMBER));
-
+    public void addMemberRadish(Member member) {
         // 랜덤 Radish ID 선택
         Long randomRadishId = 1 + new Random().nextLong(radishRepository.count());
 
@@ -111,10 +99,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void changeMemberPw(Long memberId, MemberPwChangeRequest memberPwChangeRequest) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new AuthenticationException(ErrorCode.AU_NOT_FOUND_MEMBER));
-
+    public void changeMemberPw(Member member, MemberPwChangeRequest memberPwChangeRequest) {
         if (!member.getPassword().equals(memberPwChangeRequest.getOldPassword())) {
             throw new AuthenticationException(ErrorCode.AU_INVALID_LOGIN);
         }

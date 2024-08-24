@@ -1,5 +1,7 @@
 package com.im.moobeing.global.filter;
 
+import com.im.moobeing.domain.member.entity.Member;
+import com.im.moobeing.domain.member.repository.MemberRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +17,11 @@ import java.io.IOException;
 import java.util.List;
 
 public class SessionAuthenticationFilter extends OncePerRequestFilter {
+    private final MemberRepository memberRepository;
+
+    public SessionAuthenticationFilter(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -26,10 +33,11 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
         }
 
         Long memberId = (Long) session.getAttribute("memberId"); // 세션에서 사용자 이름 가져오기
+        Member member = memberRepository.findById(memberId).orElse(null);
 
-        if (memberId != null) {
+        if (member != null) {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    memberId, null, List.of(new SimpleGrantedAuthority("DEFAULT_ROLE")));
+                    member, null, List.of(new SimpleGrantedAuthority("DEFAULT_ROLE")));
 
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
