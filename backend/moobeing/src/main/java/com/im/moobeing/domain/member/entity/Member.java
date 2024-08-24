@@ -21,8 +21,8 @@ public class Member extends BaseTimeEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "handle", nullable = false, length = 20)
-    private String handle;
+    @Column(name = "email", nullable = false, length = 20)
+    private String email;
 
     @Column(name = "password", nullable = false, length = 20)
     private String password;
@@ -36,9 +36,6 @@ public class Member extends BaseTimeEntity {
     @Column(name = "name", nullable = true, length = 50)
     private String name;
 
-    @Column(name = "phone_number", nullable = true, length = 50)
-    private String phoneNumber;
-
     @Column(name = "gender", nullable = true, length = 10)
     private String gender;
 
@@ -49,14 +46,13 @@ public class Member extends BaseTimeEntity {
     private List<MemberRadish> memberRadishes = new ArrayList<>();
 
     @Builder
-    public Member(Long id, String handle, String password, Long totalPoints, Long totalLoan, String name, String phoneNumber, String gender, String birthday) {
+    public Member(Long id, String email, String password, Long totalPoints, Long totalLoan, String name, String gender, String birthday) {
         this.id = id;
-        this.handle = handle;
+        this.email = email;
         this.password = password;
         this.totalPoints = totalPoints;
         this.totalLoan = totalLoan;
         this.name = name;
-        this.phoneNumber = phoneNumber;
         this.gender = gender;
         this.birthday = birthday;
     }

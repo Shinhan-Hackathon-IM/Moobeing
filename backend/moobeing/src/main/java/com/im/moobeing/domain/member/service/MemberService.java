@@ -30,12 +30,12 @@ public class MemberService {
 
     @Transactional
     public MemberCreateResponse createMember(MemberCreateRequest memberCreateRequest) {
-        memberRepository.findByHandle(memberCreateRequest.getHandle()).ifPresent(member -> {
+        memberRepository.findByEmail(memberCreateRequest.getEmail()).ifPresent(member -> {
             throw new AuthenticationException(ErrorCode.AU_ALREADY_HANDLE);
         });
 
         Member member = Member.builder()
-                .handle(memberCreateRequest.getHandle())
+                .email(memberCreateRequest.getEmail())
                 .password(memberCreateRequest.getPassword())
                 .build();
 
@@ -46,7 +46,7 @@ public class MemberService {
 
     public Member loginMember(MemberLoginRequest memberLoginRequest) {
         // 사용자 정보 조회
-        Member member = memberRepository.findByHandle(memberLoginRequest.getHandle())
+        Member member = memberRepository.findByEmail(memberLoginRequest.getEmail())
                 .orElseThrow(() -> new AuthenticationException(ErrorCode.AU_NOT_FOUND_MEMBER));
 
         // 비밀번호 검증

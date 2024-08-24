@@ -1,9 +1,3 @@
--- 데이터베이스 생성
-CREATE DATABASE IF NOT EXISTS moobeing;
-
--- 데이터베이스 사용
-USE moobeing;
-
 -- radish 테이블에 데이터 삽입
 INSERT IGNORE INTO radish (radish_id, created_date, modified_date, radish_image, radish_name, radish_rank) VALUES
 (1, '2024-08-23 12:00:00', '2024-08-23 12:00:00', 'radish_image1.jpg', 'Radish A', 'A1'),

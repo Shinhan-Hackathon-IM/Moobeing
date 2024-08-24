@@ -7,21 +7,19 @@ import lombok.Getter;
 @Getter
 @Builder
 public class MemberGetResponse {
-    private String handle;
+    private String email;
     private Long totalPoints;
     private Long totalLoan;
     private String name;
-    private String phoneNumber;
     private String gender;
     private String birthday;
 
     public static MemberGetResponse of(final Member member) {
         return MemberGetResponse.builder()
-                .handle(member.getHandle())
+                .email(member.getEmail())
                 .totalPoints(member.getTotalPoints())
                 .totalLoan(member.getTotalLoan())
                 .name(member.getName())
-                .phoneNumber(member.getPhoneNumber())
                 .gender(member.getGender())
                 .birthday(member.getBirthday())
                 .build();
