@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import radish from "../assets/기본무.png";
+import radish from "../assets/RadishSample.png";
 
-const StyledScreen = styled.div`
+const StyledLoading = styled.div`
   background-color: #e0eed2;
   border-radius: 20px;
   height: 800px;
@@ -32,14 +32,16 @@ const StyledScreen = styled.div`
   }
 `;
 
-export const Screen = () => {
+const Loading = () => {
   return (
-    <StyledScreen>
+    <StyledLoading>
       <p className="text-wrapper">
         당신의 대출이 <br />
         ‘무’ 가 되는 그날까지
       </p>
       <img className="element" alt="Element" src={radish} />
-    </StyledScreen>
+    </StyledLoading>
   );
 };
+
+export default Loading;
