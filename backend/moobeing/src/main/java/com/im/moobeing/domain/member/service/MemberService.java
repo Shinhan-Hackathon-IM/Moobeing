@@ -37,6 +37,9 @@ public class MemberService {
         Member member = Member.builder()
                 .email(memberCreateRequest.getEmail())
                 .password(memberCreateRequest.getPassword())
+                .name(memberCreateRequest.getName())
+                .birthday(memberCreateRequest.getBirthday())
+                .gender(memberCreateRequest.getGender())
                 .build();
 
         member = memberRepository.save(member); // 데이터베이스에 멤버 저장
