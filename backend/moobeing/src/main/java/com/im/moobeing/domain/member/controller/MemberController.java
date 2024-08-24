@@ -1,9 +1,6 @@
 package com.im.moobeing.domain.member.controller;
 
-import com.im.moobeing.domain.member.dto.request.MemberChangeRequest;
-import com.im.moobeing.domain.member.dto.request.MemberCreateRequest;
-import com.im.moobeing.domain.member.dto.request.MemberLoginRequest;
-import com.im.moobeing.domain.member.dto.request.MemberPwChangeRequest;
+import com.im.moobeing.domain.member.dto.request.*;
 import com.im.moobeing.domain.member.dto.response.MemberLoginResponse;
 import com.im.moobeing.domain.member.entity.Member;
 import com.im.moobeing.domain.member.service.MemberService;
@@ -35,6 +32,12 @@ public class MemberController {
         Member member = memberService.loginMember(memberLoginRequest);
         session.setAttribute("memberId", member.getId());
         return ResponseEntity.status(HttpStatus.OK).body(MemberLoginResponse.of(member));
+    }
+
+    @Operation(summary = "중복 이메일 확인", description = "이메일 중복되었는지 확인하기")
+    @PostMapping("/email")
+    public ResponseEntity<?> checkEmailMember(@RequestBody MemberCheckEmailRequest memberCheckEmailRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.checkEmailMember(memberCheckEmailRequest));
     }
 
     @Operation(summary = "맴버 정보 가져오기", description = "맴버 정보 가져오기.")

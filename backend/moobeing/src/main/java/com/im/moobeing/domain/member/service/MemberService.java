@@ -1,9 +1,7 @@
 package com.im.moobeing.domain.member.service;
 
-import com.im.moobeing.domain.member.dto.request.MemberChangeRequest;
-import com.im.moobeing.domain.member.dto.request.MemberCreateRequest;
-import com.im.moobeing.domain.member.dto.request.MemberLoginRequest;
-import com.im.moobeing.domain.member.dto.request.MemberPwChangeRequest;
+import com.im.moobeing.domain.member.dto.request.*;
+import com.im.moobeing.domain.member.dto.response.MemberCheckEmailResponse;
 import com.im.moobeing.domain.member.dto.response.MemberCreateResponse;
 import com.im.moobeing.domain.member.dto.response.MemberGetResponse;
 import com.im.moobeing.domain.member.dto.response.MemberRadishResponse;
@@ -109,5 +107,12 @@ public class MemberService {
         }
 
         member.changeMemberPw(memberPwChangeRequest);
+    }
+
+    public MemberCheckEmailResponse checkEmailMember(MemberCheckEmailRequest memberCheckEmailRequest) {
+        if (memberRepository.findByEmail(memberCheckEmailRequest.getEmail()).isPresent()){
+            return MemberCheckEmailResponse.of(false);
+        }
+        return MemberCheckEmailResponse.of(true);
     }
 }
