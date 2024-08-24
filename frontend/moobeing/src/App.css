@@ -16,9 +16,6 @@ body {
   border: 1px solid #ddd;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   transition: all 0.3s ease; /* 모든 속성에 부드러운 전환 효과 */
 }
 

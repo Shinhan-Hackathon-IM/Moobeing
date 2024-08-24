@@ -5,8 +5,15 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'S-CoreDream';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
-  font-family: GmarketSansMedium, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: GmarketSansMedium, S-CoreDream, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
