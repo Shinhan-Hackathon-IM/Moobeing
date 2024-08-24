@@ -6,12 +6,11 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class MemberResponse {
+public class MemberCreateResponse {
     private String name;
 
-    //todo 필요 있는지 체크하기.
-    public static MemberResponse of(final Member member) {
-        return MemberResponse.builder()
+    public static MemberCreateResponse of(final Member member) {
+        return MemberCreateResponse.builder()
                 .name(member.getName())
                 .build();
     }

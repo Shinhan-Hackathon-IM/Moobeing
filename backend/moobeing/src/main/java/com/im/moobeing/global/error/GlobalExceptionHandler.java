@@ -77,12 +77,12 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(ErrorCode.HIBERNATE_EXCEPTION.getStatus()).body(response);
 	}
 
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<?> handleException(Exception e) {
-		e.printStackTrace();
-		ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
-		return ResponseEntity.status(ErrorCode.INTERNAL_SERVER_ERROR.getStatus()).body(response);
-	}
+//	@ExceptionHandler(Exception.class)
+//	public ResponseEntity<?> handleException(Exception e) {
+//		e.printStackTrace();
+//		ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
+//		return ResponseEntity.status(ErrorCode.INTERNAL_SERVER_ERROR.getStatus()).body(response);
+//	}
 
 }
 
