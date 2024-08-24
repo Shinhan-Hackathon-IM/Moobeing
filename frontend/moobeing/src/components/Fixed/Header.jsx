@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import logo from "../../assets/logo.png";
-import auth from "../../assets/개인정보.svg";
+import auth from "../../assets/AuthButton.svg";
 
 const StyledHeader = styled.div`
   height: 39px;
@@ -24,7 +24,7 @@ const StyledHeader = styled.div`
   }
 `;
 
-export const Header = () => {
+const Header = () => {
   return (
     <StyledHeader>
       <img className="logo" alt="logo" src={logo} />
@@ -32,3 +32,5 @@ export const Header = () => {
     </StyledHeader>
   );
 };
+
+export default Header;
