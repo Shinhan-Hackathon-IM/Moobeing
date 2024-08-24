@@ -66,6 +66,7 @@ public class MemberService {
     @Transactional
     public void changeMember(Member member, MemberChangeRequest memberChangeRequest) {
         member.changeMember(memberChangeRequest);
+        memberRepository.save(member);
     }
 
     public MemberRadishResponse getMemberRadish(Member member) {
@@ -103,10 +104,11 @@ public class MemberService {
     @Transactional
     public void changeMemberPw(Member member, MemberPwChangeRequest memberPwChangeRequest) {
         if (!member.getPassword().equals(memberPwChangeRequest.getOldPassword())) {
-            throw new AuthenticationException(ErrorCode.AU_INVALID_LOGIN);
+            throw new AuthenticationException(ErrorCode.AU_INVALID_PASSWORD);
         }
 
         member.changeMemberPw(memberPwChangeRequest);
+        memberRepository.save(member);
     }
 
     public MemberCheckEmailResponse checkEmailMember(MemberCheckEmailRequest memberCheckEmailRequest) {
