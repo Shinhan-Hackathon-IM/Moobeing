@@ -25,8 +25,11 @@ public enum ErrorCode {
 	AU_INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "AU005", "비밀번호가 틀렸습니다."),
 
 	// localDate format
-	LF_FORMAT_NOT_MATCH(HttpStatus.BAD_REQUEST,"LD001","날짜 형식이 올바르지 않습니다. 형식은 yyyy-MM-dd'T'HH:mm:ss 입니다.");
+	LF_FORMAT_NOT_MATCH(HttpStatus.BAD_REQUEST,"LD001","날짜 형식이 올바르지 않습니다. 형식은 yyyy-MM-dd'T'HH:mm:ss 입니다."),
 
+	// Quiz
+	INVALID_QUIZ_TYPE(HttpStatus.BAD_REQUEST, "QZ001", "올바르지 않은 퀴즈 타입입니다."),
+	INVALID_STATUS_TYPE(HttpStatus.BAD_REQUEST, "QZ002", "올바르지 않은 퀴즈 상태입니다.");
 
 	private final HttpStatus status;
 	private final String code;

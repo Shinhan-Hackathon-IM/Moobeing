@@ -1,14 +1,11 @@
-package com.im.moobeing.domain.quiz.entity;
+package com.im.moobeing.domain.expense.entity;
 
 import java.time.LocalDateTime;
 
 import com.im.moobeing.domain.member.entity.Member;
-import com.im.moobeing.global.entity.BaseTimeEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,43 +18,38 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table(name = "quiz")
+@Table(name = "expense")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Quiz extends BaseTimeEntity {
+public class Expense {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long quizId;
+	private Long expenseId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id", nullable = false)
 	private Member member;
 
-	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
-	private QuizStatus status;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "expense_category_id", nullable = false)
+	private ExpenseCategory expenseCategory;
 
 	@Column
-	private Boolean isCorrect;
+	private String title;
 
 	@Column
-	private int answer;
+	private int price;
 
 	@Column
-	private LocalDateTime endedAt;
+	private LocalDateTime expenseDate;
 
 	@Builder
-	private Quiz(Long quizId, Member member, QuizStatus status, int answer) {
-		this.quizId = quizId;
+	private Expense(Member member, ExpenseCategory expenseCategory, String title, int price,
+		LocalDateTime expenseDate) {
 		this.member = member;
-		this.status = status;
-		this.answer = answer;
-		this.endedAt = LocalDateTime.now().plusWeeks(1);
-	}
-
-	public void updateCorrect(Boolean isCorrect) {
-		this.endedAt = LocalDateTime.now();
-		this.isCorrect = isCorrect;
+		this.expenseCategory = expenseCategory;
+		this.price = price;
+		this.expenseDate = expenseDate;
 	}
 }
