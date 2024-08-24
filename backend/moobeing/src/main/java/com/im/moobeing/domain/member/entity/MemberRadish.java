@@ -21,7 +21,7 @@ public class MemberRadish extends BaseTimeEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "radish_id", nullable = false)
     private Radish radish;
 

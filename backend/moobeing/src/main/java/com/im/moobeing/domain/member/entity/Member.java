@@ -42,7 +42,7 @@ public class Member extends BaseTimeEntity {
     @Column(name = "birthday", nullable = true, length = 60)
     private String birthday;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<MemberRadish> memberRadishes = new ArrayList<>();
 
     @Builder

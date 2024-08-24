@@ -98,6 +98,7 @@ public class MemberService {
                     .radishNumber(1L)
                     .build();
             member.addMemberRadish(newMemberRadish);
+            memberRepository.save(member);
         }
     }
 
