@@ -1,10 +1,11 @@
 package com.im.moobeing.global.error;
 
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.im.moobeing.global.error.exception.BusinessException;
+import com.im.moobeing.global.error.exception.ShinhanApiException;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -12,9 +13,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.im.moobeing.global.error.exception.BusinessException;
-import lombok.extern.slf4j.Slf4j;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 @Slf4j
@@ -75,6 +76,20 @@ public class GlobalExceptionHandler {
 		e.printStackTrace();
 		ErrorResponse response = ErrorResponse.of(ErrorCode.HIBERNATE_EXCEPTION);
 		return ResponseEntity.status(ErrorCode.HIBERNATE_EXCEPTION.getStatus()).body(response);
+	}
+
+	@ExceptionHandler(ShinhanApiException.class)
+	public ResponseEntity<ErrorResponse> handleShinhanApiException(ShinhanApiException e) {
+		log.error("Shinhan API error: {} - {}", e.getResponseCode(), e.getResponseMessage());
+
+		// ErrorResponse 객체 생성
+		ErrorResponse response = ErrorResponse.builder()
+				.code(e.getResponseCode())
+				.message(e.getResponseMessage())
+				.build();
+
+		// HTTP 상태 코드로 반환
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 	}
 
 //	@ExceptionHandler(Exception.class)
