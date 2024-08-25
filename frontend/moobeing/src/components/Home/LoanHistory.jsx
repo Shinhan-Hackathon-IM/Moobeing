@@ -41,39 +41,39 @@ const TotalLoan = styled.h1`
   margin-top: 0;
 `;
 
-const list = [
+const memberLoans = [
   {
     bank_name: "신한은행",
-    loan_money: "12345원",
-    loan_name: "참대출",
-    interest_rate: "3.1%",
+    loanBalance: "12345원",
+    loanTypeName: "참대출",
+    interestRate: "3.1%",
   },
   {
     bank_name: "신한은행",
-    loan_money: "123453원",
-    loan_name: "참대출",
-    interest_rate: "2.1%",
+    loanBalance: "123453원",
+    loanTypeName: "참대출",
+    interestRate: "2.1%",
   },
   {
     bank_name: "신한은행",
-    loan_money: "123451234원",
-    loan_name: "참대출",
-    interest_rate: "1.1%",
+    loanBalance: "123451234원",
+    loanTypeName: "참대출",
+    interestRate: "1.1%",
   },
   {
     bank_name: "신한은행",
-    loan_money: "22345원",
-    loan_name: "참대출",
-    interest_rate: "6.1%",
+    loanBalance: "22345원",
+    loanTypeName: "참대출",
+    interestRate: "6.1%",
   },
 ];
 
 function LoanHistory() {
-  const [loans, setLoans] = useState(list);
+  const [loans, setLoans] = useState(memberLoans);
 
   const sortByInterestRate = () => {
     const sortedLoans = [...loans].sort(
-      (a, b) => parseFloat(b.interest_rate) - parseFloat(a.interest_rate)
+      (a, b) => parseFloat(b.interestRate) - parseFloat(a.interestRate)
     );
     setLoans(sortedLoans);
   };
@@ -81,8 +81,8 @@ function LoanHistory() {
   const sortByLoanMoney = () => {
     const sortedLoans = [...loans].sort(
       (a, b) =>
-        parseInt(b.loan_money.replace(/[^\d]/g, "")) -
-        parseInt(a.loan_money.replace(/[^\d]/g, ""))
+        parseInt(b.loanBalance.replace(/[^\d]/g, "")) -
+        parseInt(a.loanBalance.replace(/[^\d]/g, ""))
     );
     setLoans(sortedLoans);
   };
