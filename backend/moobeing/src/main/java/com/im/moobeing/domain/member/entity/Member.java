@@ -28,10 +28,10 @@ public class Member extends BaseTimeEntity {
     private String password;
 
     @Column(name = "total_points", nullable = true)
-    private Long totalPoints;
+    private Long totalPoints = 0L;
 
     @Column(name = "total_loan", nullable = true)
-    private Long totalLoan;
+    private Long totalLoan = 0L;
 
     @Column(name = "name", nullable = true, length = 50)
     private String name;
@@ -42,11 +42,14 @@ public class Member extends BaseTimeEntity {
     @Column(name = "birthday", nullable = true, length = 60)
     private String birthday;
 
+    @Column(name = "user_key", nullable = true, length = 255)
+    private String userKey;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<MemberRadish> memberRadishes = new ArrayList<>();
 
     @Builder
-    public Member(Long id, String email, String password, Long totalPoints, Long totalLoan, String name, String gender, String birthday) {
+    public Member(Long id, String email, String password, Long totalPoints, Long totalLoan, String name, String gender, String birthday, String userKey) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -55,6 +58,7 @@ public class Member extends BaseTimeEntity {
         this.name = name;
         this.gender = gender;
         this.birthday = birthday;
+        this.userKey = userKey;
     }
 
     public void changeMember(MemberChangeRequest memberChangeRequest){
@@ -67,5 +71,9 @@ public class Member extends BaseTimeEntity {
 
     public void addMemberRadish(MemberRadish memberRadish) {
         this.memberRadishes.add(memberRadish);
+    }
+
+    public void setMemberUserKey(String userKey) {
+        this.userKey = userKey;
     }
 }
