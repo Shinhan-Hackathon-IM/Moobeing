@@ -1,7 +1,6 @@
 package com.im.moobeing.domain.member.controller;
 
 import com.im.moobeing.domain.member.dto.request.*;
-import com.im.moobeing.domain.member.dto.response.MemberLoginResponse;
 import com.im.moobeing.domain.member.entity.Member;
 import com.im.moobeing.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +30,7 @@ public class MemberController {
     public ResponseEntity<?> loginMember(@RequestBody MemberLoginRequest memberLoginRequest) {
         Member member = memberService.loginMember(memberLoginRequest);
         session.setAttribute("memberId", member.getId());
-        return ResponseEntity.status(HttpStatus.OK).body(MemberLoginResponse.of(member));
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.selectedRadishMember(member));
     }
 
     @Operation(summary = "중복 이메일 확인", description = "이메일 중복되었는지 확인하기")
