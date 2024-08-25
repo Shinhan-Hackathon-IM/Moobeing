@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import LoanList from "./LoanList";
 
 const Container = styled.div`
   background-color: #f5fded;
   height: 900px;
-  width: 100%;
+  width: 90%;
   margin-bottom: 5%;
   display: flex;
   flex-direction: column;
