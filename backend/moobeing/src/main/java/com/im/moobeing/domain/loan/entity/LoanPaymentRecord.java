@@ -2,9 +2,6 @@ package com.im.moobeing.domain.loan.entity;
 
 import java.time.LocalDateTime;
 
-
-import com.im.moobeing.domain.member.entity.Member;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,35 +15,23 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table(name = "quiz")
+@Table(name = "loan_payment_record")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Loan {
+public class LoanPaymentRecord {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "product_id")
-	private Long loanId;
+	@Column(name = "loan_paymnet_record_id")
+	private Long loanPaymnetRecordId;
 
-	@Column(name = "initial_balance")
-	private Long initialBalance;
+	@Column(name = "repayment_balance")
+	private Long repaymentBalance;
 
-	@Column(name = "remaining_balance")
-	private Long remainingBalance;
-
-	@Column(name = "withdrawal_account_no")
-	private String withdrawalAccountNo;
-
-	@Column(name = "repayment_deadline")
-	private LocalDateTime repaymentDeadline;
-
-	private LoanStatus status;
+	@Column(name = "repayment_date")
+	private LocalDateTime repaymentDate;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
-	private Member member;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "loan_product_id")
-	private LoanProduct loanProduct;
+	@JoinColumn(name = "loan_id")
+	private Loan loan;
 }

@@ -32,6 +32,11 @@ public class SwaggerConfig {
 		// Server configurations
 		Server localServer = new Server();
 		localServer.setDescription("local");
+		localServer.setUrl("http://localhost:8080");
+
+		Server testServer = new Server();
+		testServer.setDescription("server");
+		testServer.setUrl("https://naem11.shop");
 		localServer.setUrl("http://localhost:8080/api");
 
 		Server testServer = new Server();

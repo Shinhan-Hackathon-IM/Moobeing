@@ -12,9 +12,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name="member")
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+
 public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
