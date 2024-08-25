@@ -4,13 +4,14 @@ import LoanPayment from "../components/Home/LoanPayment";
 import QuizPopup from "../components/Home/QuizPopup";
 import CreditScore from "../components/Home/CreditScore";
 import Footer from "../components/Fixed/Footer";
+import Header from "../components/Fixed/Header";
 
 const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  min-height: 200vh; /* 고정된 페이지 크기 설정 */
+  min-height: 200vh;
   width: 100%;
   box-sizing: border-box;
 `;
@@ -18,11 +19,12 @@ const Container = styled.div`
 const Home = () => {
   return (
     <Container>
+      <Header />
       <QuizPopup />
       <LoanHistory />
       <LoanPayment />
       <CreditScore />
-      <Footer/>
+      <Footer />
     </Container>
   );
 };
