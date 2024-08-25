@@ -53,9 +53,14 @@ dependencies {
 	// swagger (http://localhost:8080/api/swagger-ui/index.html)
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
-	// feignClient
-	implementation 'com.googlecode.json-simple:json-simple:1.1'
+	// Feign 클라이언트
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+	// OkHttp3 라이브러리
+	implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+
+	// Feign OkHttp 통합
+	implementation 'io.github.openfeign:feign-okhttp:11.10'
 
 	// healthCheck
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
