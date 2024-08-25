@@ -22,8 +22,8 @@ const StyledLoading = styled.div`
   }
 
   & .element {
-    height: 138px;
-    width: 100px;
+    height: 20%;
+    width: 30%;
   }
 `;
 
