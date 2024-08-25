@@ -24,12 +24,8 @@ public class CreditService {
 
         // ShinhanClient를 사용하여 신한 API 호출
         GetInquireMyCreditRatingResponse getInquireMyCreditRatingResponse = null;
-        try {
-            getInquireMyCreditRatingResponse = shinhanClient.getInquireMyCreditRating(request);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        System.out.println(request.toString());
+
+        getInquireMyCreditRatingResponse = shinhanClient.getInquireMyCreditRating(request);
 
         // 총 자산 값 가져오기
         long totalAssetValue = Long.parseLong(getInquireMyCreditRatingResponse.getRec().getTotalAssetValue());
