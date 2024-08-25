@@ -6,7 +6,6 @@ body {
   align-items: center;
   min-height: 100vh;
   background-color: #ffffff;
-  /* overflow: hidden; 스크롤 없애기 */
 }
 
 .app-container {

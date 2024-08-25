@@ -3,6 +3,7 @@ import Home from "./routes/HomePage";
 import Loading from "./routes/LoadingPage";
 import LoanJourney from "./routes/LoanJourneyPage";
 import Login from "./routes/LoginPage";
+import SignUp from "./routes/SignUpPage";
 import MyPage from "./routes/MyPage";
 import RadishCollection from "./routes/RadishCollectionPage";
 import Repayment from "./routes/RepaymentPage";
@@ -18,6 +19,7 @@ function Router () {
         <Route path="/loading" element={<Loading />}/>
         <Route path="/loan-journey/:loanId" element={<LoanJourney />}/>
         <Route path="/login" element={<Login />}/>
+        <Route path="/signup" element={<SignUp />}/>
         <Route path="/mypage" element={<MyPage />}/>
         <Route path="/radish-collection" element={<RadishCollection />}/>
         <Route path="/repayment" element={<Repayment />}/>
