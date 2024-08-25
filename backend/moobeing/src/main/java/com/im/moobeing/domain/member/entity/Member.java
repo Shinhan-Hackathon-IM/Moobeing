@@ -45,6 +45,9 @@ public class Member extends BaseTimeEntity {
     @Column(name = "user_key", nullable = true, length = 255)
     private String userKey;
 
+    @Column(name = "selected_radish_id", nullable = true)
+    private Long selectedRadishId = 1L;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<MemberRadish> memberRadishes = new ArrayList<>();
 

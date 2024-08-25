@@ -1,10 +1,7 @@
 package com.im.moobeing.domain.member.service;
 
 import com.im.moobeing.domain.member.dto.request.*;
-import com.im.moobeing.domain.member.dto.response.MemberCheckEmailResponse;
-import com.im.moobeing.domain.member.dto.response.MemberCreateResponse;
-import com.im.moobeing.domain.member.dto.response.MemberGetResponse;
-import com.im.moobeing.domain.member.dto.response.MemberRadishResponse;
+import com.im.moobeing.domain.member.dto.response.*;
 import com.im.moobeing.domain.member.entity.Member;
 import com.im.moobeing.domain.member.entity.MemberRadish;
 import com.im.moobeing.domain.member.repository.MemberRepository;
@@ -38,18 +35,44 @@ public class MemberService {
             throw new AuthenticationException(ErrorCode.AU_ALREADY_HANDLE);
         });
 
+        String birthDay = String.valueOf(memberCreateRequest.getHumanNumber() / 10);
+
+        String gender;
+
+        int checkGender = memberCreateRequest.getHumanNumber() % 10;
+
+        if (checkGender == 1 || checkGender == 3) {
+            gender = "남자";
+        } else if (checkGender == 2 || checkGender == 4){
+            gender = "여자";
+        } else{
+            throw new RuntimeException("둘다 아니다. 넌 누구냐");
+        }
+
         Member member = Member.builder()
                 .email(memberCreateRequest.getEmail())
                 .password(memberCreateRequest.getPassword())
                 .name(memberCreateRequest.getName())
-                .birthday(memberCreateRequest.getBirthday())
-                .gender(memberCreateRequest.getGender())
+                .birthday(birthDay)
+                .gender(gender)
                 .build();
 
         //todo exception 설정 필요
         GetUserKeyResponse getUserKeyResponse = shinhanClient.getUserKey(new GetUserKeyRequest(apiKeyConfig.getApiKey(), member.getEmail()));
 
         member.setMemberUserKey(getUserKeyResponse.getUserKey());
+
+        // method 화 필요함.
+        Radish radish = radishRepository.findById(1L)
+                .orElseThrow(() -> new IllegalArgumentException("Radish not found with id: " + 1L));
+
+        MemberRadish newMemberRadish = MemberRadish.builder()
+                .member(member)
+                .radish(radish)
+                .radishNumber(1L)
+                .build();
+
+        member.addMemberRadish(newMemberRadish);
 
         member = memberRepository.save(member); // 데이터베이스에 멤버 저장
 
@@ -68,6 +91,13 @@ public class MemberService {
 
         // 로그인 성공 응답 반환
         return member;
+    }
+
+    public MemberLoginResponse selectedRadishMember(Member member) {
+        Radish radish = radishRepository.findById(member.getSelectedRadishId())
+                .orElseThrow(() -> new IllegalArgumentException("Radish not found with id: " + member.getSelectedRadishId()));
+
+        return MemberLoginResponse.of(member, radish.getRadishName(), radish.getRadishRank(), radish.getRadishImageUrl());
     }
 
     public MemberGetResponse getMember(Member member) {
