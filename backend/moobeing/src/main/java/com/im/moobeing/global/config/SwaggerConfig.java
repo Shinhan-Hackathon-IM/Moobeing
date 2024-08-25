@@ -37,6 +37,11 @@ public class SwaggerConfig {
 		Server testServer = new Server();
 		testServer.setDescription("server");
 		testServer.setUrl("https://naem11.shop");
+		localServer.setUrl("http://localhost:8080/api");
+
+		Server testServer = new Server();
+		testServer.setDescription("server");
+		testServer.setUrl("https://naem11.shop/api");
 
 		return new OpenAPI()
 			.info(info)

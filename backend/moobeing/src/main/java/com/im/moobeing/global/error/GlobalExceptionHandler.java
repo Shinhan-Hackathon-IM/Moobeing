@@ -83,7 +83,6 @@ public class GlobalExceptionHandler {
 		ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
 		return ResponseEntity.status(ErrorCode.INTERNAL_SERVER_ERROR.getStatus()).body(response);
 	}
-
 }
 
 
