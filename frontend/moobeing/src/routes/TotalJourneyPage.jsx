@@ -2,8 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import TotalGraph from "../components/TotalGraph/TotalGraph";
 import PercentBar from "../components/TotalGraph/PercentBar";
-import LeftMoney from "../components/TotalGraph/LeftMoney";
+import PlannedLoanBalance from "../components/TotalGraph/PlannedLoanBalance";
 import HiddenRadish from "../components/TotalGraph/HiddenRadish";
+import LeftMoney from "../components/TotalGraph/LeftMoney";
 
 const Container = styled.div`
   display: flex;
@@ -68,6 +69,7 @@ const TotalJourney = () => {
     <Container>
       <TotalGraph data={data} peerData={peerData} />
       <PercentBar />
+      <PlannedLoanBalance />
       <LeftMoney />
       <HiddenRadish />
     </Container>
