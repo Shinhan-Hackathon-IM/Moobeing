@@ -10,6 +10,10 @@ import com.im.moobeing.domain.member.entity.MemberRadish;
 import com.im.moobeing.domain.member.repository.MemberRepository;
 import com.im.moobeing.domain.radish.entity.Radish;
 import com.im.moobeing.domain.radish.repository.RadishRepository;
+import com.im.moobeing.global.client.ShinhanClient;
+import com.im.moobeing.global.client.dto.request.GetUserKeyRequest;
+import com.im.moobeing.global.client.dto.response.GetUserKeyResponse;
+import com.im.moobeing.global.config.ApiKeyConfig;
 import com.im.moobeing.global.error.ErrorCode;
 import com.im.moobeing.global.error.exception.AuthenticationException;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,8 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final RadishRepository radishRepository;
+    private final ShinhanClient shinhanClient;
+    private final ApiKeyConfig apiKeyConfig;
 
     @Transactional
     public MemberCreateResponse createMember(MemberCreateRequest memberCreateRequest) {
@@ -39,6 +45,11 @@ public class MemberService {
                 .birthday(memberCreateRequest.getBirthday())
                 .gender(memberCreateRequest.getGender())
                 .build();
+
+        //todo exception 설정 필요
+        GetUserKeyResponse getUserKeyResponse = shinhanClient.getUserKey(new GetUserKeyRequest(apiKeyConfig.getApiKey(), member.getEmail()));
+
+        member.setMemberUserKey(getUserKeyResponse.getUserKey());
 
         member = memberRepository.save(member); // 데이터베이스에 멤버 저장
 
