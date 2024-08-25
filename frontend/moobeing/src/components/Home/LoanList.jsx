@@ -69,10 +69,10 @@ function LoanList({ loans }) {
                 alt={loan.bank_name}
               />
               <LoanInfo>
-                <div>{loan.loan_name}</div>
-                <div>{loan.loan_money}</div>
+                <div>{loan.loanTypeName}</div>
+                <div>{loan.loanBalance}</div>
               </LoanInfo>
-              <InterestRate>{loan.interest_rate}</InterestRate>
+              <InterestRate>{loan.interestRate}</InterestRate>
             </LoanItem>
           ))}
         </LoanListWrapper>

@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import babyRad from "../../assets/radishes/babyRad.svg";
 
 const Container = styled.div`
   background-color: #f5fded;
   height: 500px;
   width: 100%;
   margin-bottom: 5%;
-  position: relative; /* 엑스 버튼의 위치를 상대적으로 설정 */
+  position: relative;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
 `;
 
 const CloseButton = styled.button`
@@ -21,6 +25,30 @@ const CloseButton = styled.button`
   font-size: 1.5rem;
   cursor: pointer;
   color: black;
+`;
+
+const SubTitle = styled.div`
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  font-size: 1.25rem;
+  font-weight: bold;
+  text-align: left;
+`;
+
+const Radish = styled.img`
+  height: 150px; /* 적절한 크기로 설정 */
+  margin-bottom: 20px;
+`;
+
+const QuizButton = styled.button`
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
 `;
 
 function QuizPopup() {
@@ -35,7 +63,13 @@ function QuizPopup() {
   return (
     <Container>
       <CloseButton onClick={handleClose}>×</CloseButton>
-      퀴즈 팝업입니다
+      <SubTitle>
+        김싸피님, "내 소비내역 맞추기"
+        <br />
+        퀴즈가 도착했어요
+      </SubTitle>
+      <Radish src={babyRad} alt="Radish" />
+      <QuizButton>퀴즈 풀고 무 뽑으러 가기</QuizButton>
     </Container>
   );
 }
