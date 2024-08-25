@@ -79,4 +79,8 @@ public class Member extends BaseTimeEntity {
     public void setMemberUserKey(String userKey) {
         this.userKey = userKey;
     }
+
+    public void setMemberRadishId(Long selectedRadishId) {
+        this.selectedRadishId = selectedRadishId;
+    }
 }

@@ -158,4 +158,14 @@ public class MemberService {
         }
         return MemberCheckEmailResponse.of(true);
     }
+
+    public MemberRadishSelectResponse selectMemberRadish(Member member, MemberRadishSelectRequest memberRadishSelectRequest) {
+        Radish radish = radishRepository.findByRadishName(memberRadishSelectRequest.getRadishName())
+                .orElseThrow(() -> new IllegalArgumentException("Radish not found with name: " + memberRadishSelectRequest.getRadishName()));
+
+        member.setMemberRadishId(radish.getId());
+        memberRepository.save(member);
+
+        return MemberRadishSelectResponse.of(radish.getRadishName(), radish.getRadishRank(), radish.getRadishImageUrl());
+    }
 }

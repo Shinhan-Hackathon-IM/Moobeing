@@ -71,4 +71,10 @@ public class MemberController {
         memberService.addMemberRadish(member);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
+
+    @Operation(summary = "사용자의 보여지는 무 변경", description = "사용자의 무 변경하기")
+    @PostMapping("/select")
+    public ResponseEntity<?> selectMemberRadish(@AuthenticationPrincipal Member member, @RequestBody MemberRadishSelectRequest memberRadishSelectRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.selectMemberRadish(member, memberRadishSelectRequest));
+    }
 }
