@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import radish from "../assets/raddishes/basicRad.svg";
+import radish from "../assets/radishes/basicRad.svg";
 
 const StyledLoading = styled.div`
   background-color: #e0eed2;

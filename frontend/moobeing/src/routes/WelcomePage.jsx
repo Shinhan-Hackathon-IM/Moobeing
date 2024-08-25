@@ -1,4 +1,4 @@
-import SmileRadish from "../assets/raddishes/smileRad.svg";
+import SmileRadish from "../assets/radishes/smileRad.svg";
 import styled from "styled-components";
 
 const WelcomeDiv = styled.div`

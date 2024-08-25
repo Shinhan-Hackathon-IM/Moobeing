@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import babyRad from "../../assets/radishes/babyRad.svg";
 
 const Container = styled.div`
   background-color: #f5fded;
   height: 500px;
-  width: 100%;
+  width: 90%;
   margin-bottom: 5%;
+  margin-top: 5%;
   position: relative;
   display: flex;
   flex-direction: column;
