@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Logo from "../assets/HorizontalLogo.png";
+import Logo from "../assets/logo/HorizontalLogo.png";
 import { useNavigate } from "react-router-dom";
 
 const ScreenWrapper = styled.div`
@@ -92,9 +92,9 @@ const ScreenWrapper = styled.div`
 const Login = () => {
   const navigate = useNavigate();
 
-  const handleSignupClick = () => {
-    navigate("/signup");
-  };
+const handleSignupClick = () => {
+  navigate("/signup");
+};
 
   return (
     <ScreenWrapper>

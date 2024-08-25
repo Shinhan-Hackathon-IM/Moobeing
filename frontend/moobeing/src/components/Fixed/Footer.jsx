@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import HomeIcon from "../../assets/button/HomeButton.svg";
 import JourneyIcon from "../../assets/button/JourneyButton.svg";
 import ConsumeIcon from "../../assets/button/ConsumeButton.svg";
@@ -13,7 +14,7 @@ const StyledFooter = styled.div`
   position: sticky;
   bottom: -1px;
   background-color: #ffffff;
-  box-shadow: 0px -2px 4px #00000040;
+  box-shadow: 0px -1px 4px #D9D9D9;
   z-index: 1000;
 
   .footer-item {
@@ -22,6 +23,7 @@ const StyledFooter = styled.div`
     align-items: center;
     width: 100%;
     padding: 10px 0;
+    cursor: pointer;
   }
 
   .footer-icon {
@@ -58,21 +60,37 @@ const StyledFooter = styled.div`
 `;
 
 const Footer = () => {
+
+  const navigate = useNavigate()
+
+  const handleHomeClick = () => {
+    navigate("/")
+  };
+  const handleJourneyClick = () => {
+    navigate("/total-journey")
+  };
+  const handleSpendClick = () => {
+    navigate("/spend")
+  };
+  const handleRadishClick = () => {
+    navigate("/radish-collection")
+  };
+
   return (
     <StyledFooter>
-      <div className="footer-item">
+      <div className="footer-item" onClick={handleHomeClick}>
         <img className="footer-icon" alt="home" src={HomeIcon} />
         <div className="text-wrapper">홈</div>
       </div>
-      <div className="footer-item">
+      <div className="footer-item" onClick={handleJourneyClick}>
         <img className="footer-icon" alt="journey" src={JourneyIcon} />
         <div className="text-wrapper">여정</div>
       </div>
-      <div className="footer-item">
+      <div className="footer-item" onClick={handleSpendClick}>
         <img className="footer-icon" alt="consume" src={ConsumeIcon} />
         <div className="text-wrapper">소비</div>
       </div>
-      <div className="footer-item">
+      <div className="footer-item" onClick={handleRadishClick}>
         <img className="footer-icon" alt="radish" src={RadishIcon} />
         <div className="text-wrapper">무들</div>
       </div>
