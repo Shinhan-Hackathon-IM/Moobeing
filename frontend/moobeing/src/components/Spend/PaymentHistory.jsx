@@ -15,7 +15,7 @@ const Container = styled.div`
   padding: 20px;
 `;
 
-const Header = styled.div`
+const SubHeader = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -67,10 +67,10 @@ const PaymentHistory = ({ date }) => {
 
   return (
     <Container>
-      <Header>
+      <SubHeader>
         <DateTitle>{date}</DateTitle>
         <SubTitle>대출 상환 내역</SubTitle>
-      </Header>
+      </SubHeader>
       <TotalLoan>총 상환액: 124,556,663 원</TotalLoan>
       <PaymentList payments={payments} />
     </Container>

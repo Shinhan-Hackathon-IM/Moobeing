@@ -22,6 +22,7 @@ const GraphContainer = styled.div`
   align-items: center;
   padding: 10px;
   box-sizing: border-box;
+  border-radius: 5%;
 `;
 
 const ChartContainer = styled.div`

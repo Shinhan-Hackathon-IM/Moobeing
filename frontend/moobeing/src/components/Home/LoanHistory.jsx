@@ -15,7 +15,7 @@ const Container = styled.div`
   box-sizing: border-box;
 `;
 
-const Header = styled.div`
+const SubHeader = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -89,13 +89,13 @@ function LoanHistory() {
 
   return (
     <Container>
-      <Header>
+      <SubHeader>
         <SubTitle>나의 대출현황</SubTitle>
         <SortButtonContainer>
           <SortButton onClick={sortByInterestRate}>금리순</SortButton>
           <SortButton onClick={sortByLoanMoney}>금액순</SortButton>
         </SortButtonContainer>
-      </Header>
+      </SubHeader>
       <TotalLoan> 124,556,663 원</TotalLoan>
       <LoanList loans={loans} />
     </Container>
