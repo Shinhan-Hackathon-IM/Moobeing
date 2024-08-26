@@ -5,20 +5,41 @@ import PercentBar from "../components/TotalGraph/PercentBar";
 import PlannedLoanBalance from "../components/TotalGraph/PlannedLoanBalance";
 import HiddenRadish from "../components/TotalGraph/HiddenRadish";
 import LeftMoney from "../components/TotalGraph/LeftMoney";
+import Footer from "../components/Fixed/Footer";
+import Header from "../components/Fixed/Header";
+
+const PageWrapper = styled.div`
+  width: 100%;
+  overflow-x: hidden;
+`;
 
 const Container = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-direction: column;
-  min-height: 200vh;
   width: 100%;
-  padding: 8%;
-  overflow-y: auto;
+  padding: 8% 8% 0 8%; // 하단 패딩 제거
   box-sizing: border-box;
 `;
 
+const Rectangle = styled.div`
+  width: 100%;
+  height: 70px;
+  background-color: #c0dda5;
+  position: relative;
+  z-index: 1;
+`;
+
+const RadishWrapper = styled.div`
+  width: 100%;
+  position: relative;
+  z-index: 2;
+  margin-bottom: -30px; // Rectangle과 겹치도록 음수 마진 적용
+`;
+
 const TotalJourney = () => {
+  const paidLoanNum = 3;
+  const totalLoanNum = 5;
   const data = {
     paging: {
       current_page: 1,
@@ -66,13 +87,20 @@ const TotalJourney = () => {
   };
 
   return (
-    <Container>
-      <TotalGraph data={data} peerData={peerData} />
-      <PercentBar />
-      <PlannedLoanBalance />
-      <LeftMoney />
-      <HiddenRadish />
-    </Container>
+    <PageWrapper>
+      <Header />
+      <Container>
+        <TotalGraph data={data} peerData={peerData} />
+        <PercentBar />
+        <PlannedLoanBalance />
+        <LeftMoney />
+        <RadishWrapper>
+          <HiddenRadish PaidLoanNum={paidLoanNum} TotalLoanNum={totalLoanNum} />
+        </RadishWrapper>
+      </Container>
+      <Rectangle />
+      <Footer />
+    </PageWrapper>
   );
 };
 

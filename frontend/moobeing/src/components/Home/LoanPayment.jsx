@@ -13,7 +13,7 @@ const Container = styled.div`
   box-sizing: border-box;
 `;
 
-const Header = styled.div`
+const SubHeader = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -49,9 +49,9 @@ const PayButton = styled.button`
 function LoanPayment() {
   return (
     <Container>
-      <Header>
+      <SubHeader>
         <SubTitle>이번달 상환 예정 금액</SubTitle>
-      </Header>
+      </SubHeader>
       <LoanBalanceContainer>
         <LoanBalance>1001101010 원</LoanBalance>
         <PayButton>결제하기</PayButton>

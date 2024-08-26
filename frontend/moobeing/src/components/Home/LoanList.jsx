@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const BankLogo = styled.img`
   width: 50px;
@@ -20,6 +21,7 @@ const LoanItem = styled.div`
   width: 100%;
   padding: 15px 0;
   border-bottom: 1px solid #ddd;
+  cursor: pointer;
 `;
 
 const InterestRate = styled.div`
@@ -48,12 +50,17 @@ const DownButton = styled.button`
 function LoanList({ loans }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const loansPerPage = 3;
+  const navigate = useNavigate();
 
   const handleScrollDown = () => {
     setCurrentIndex((prevIndex) => {
       const nextIndex = prevIndex + loansPerPage;
       return nextIndex >= loans.length ? 0 : nextIndex; // 무한 순환
     });
+  };
+
+  const handleLoanItemClick = (loanId) => {
+    navigate(`/loan-journey/${loanId}`);
   };
 
   const visibleLoans = loans.slice(currentIndex, currentIndex + loansPerPage);
@@ -63,16 +70,16 @@ function LoanList({ loans }) {
       <LoanListContainer>
         <LoanListWrapper>
           {visibleLoans.map((loan, index) => (
-            <LoanItem key={index}>
-              <BankLogo
-                src={`/images/${loan.bank_name}_logo.png`}
-                alt={loan.bank_name}
-              />
+            <LoanItem
+              key={index}
+              onClick={() => handleLoanItemClick(loan.user_deposit_id)}
+            >
+              <BankLogo src={loan.bank_logo_url} alt={loan.bank_name} />
               <LoanInfo>
-                <div>{loan.loanTypeName}</div>
-                <div>{loan.loanBalance}</div>
+                <div>{loan.loan_type}</div>
+                <div>{loan.loan_amount.toLocaleString()} 원</div>
               </LoanInfo>
-              <InterestRate>{loan.interestRate}</InterestRate>
+              <InterestRate>{loan.interest_rate.toFixed(2)}%</InterestRate>
             </LoanItem>
           ))}
         </LoanListWrapper>

@@ -11,9 +11,10 @@ const Container = styled.div`
   align-items: flex-start;
   padding: 20px; /* 내부 여백 추가 */
   box-sizing: border-box;
+  border-radius: 5%;
 `;
 
-const Header = styled.div`
+const SubHeader = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -40,9 +41,9 @@ const LoanBalance = styled.div`
 function PlannedLoanBalance() {
   return (
     <Container>
-      <Header>
+      <SubHeader>
         <SubTitle>이번달 상환 예정 금액</SubTitle>
-      </Header>
+      </SubHeader>
       <LoanBalanceContainer>
         <LoanBalance>1001101010 원</LoanBalance>
       </LoanBalanceContainer>

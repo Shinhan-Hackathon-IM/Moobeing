@@ -24,7 +24,7 @@ const Container = styled.div`
   box-sizing: border-box;
 `;
 
-const Header = styled.div`
+const SubHeader = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -84,10 +84,10 @@ function CreditScore() {
 
   return (
     <Container>
-      <Header>
+      <SubHeader>
         <SubTitle>나의 신용등급</SubTitle>
         <CreditLevel>{creditLevel}</CreditLevel>
-      </Header>
+      </SubHeader>
       <GraphContainer grade={creditLevel}>
         <GraphFill grade={creditLevel} fillPercent={fillPercent}>
           <Radish src={radish} alt="Radish" />
