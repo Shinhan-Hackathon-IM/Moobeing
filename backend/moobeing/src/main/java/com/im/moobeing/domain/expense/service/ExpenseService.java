@@ -6,21 +6,22 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
+
 import com.im.moobeing.domain.expense.dto.request.ExpenseCreateRequest;
+import com.im.moobeing.domain.expense.dto.response.ExpenseCategoryResponse;
+import com.im.moobeing.domain.expense.dto.response.ExpenseDateResponse;
 import com.im.moobeing.domain.expense.dto.response.ExpenseHistoryResponse;
 import com.im.moobeing.domain.expense.entity.Expense;
 import com.im.moobeing.domain.expense.entity.ExpenseCategory;
 import com.im.moobeing.domain.expense.repository.ExpenseCategoryRepository;
 import com.im.moobeing.domain.expense.repository.ExpenseRepository;
+import com.im.moobeing.domain.member.entity.Member;
 import com.im.moobeing.global.error.ErrorCode;
 import com.im.moobeing.global.error.exception.BadRequestException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import com.im.moobeing.domain.expense.dto.response.ExpenseCategoryResponse;
-import com.im.moobeing.domain.expense.dto.response.ExpenseDateResponse;
-import com.im.moobeing.domain.member.entity.Member;
 
 @Slf4j
 @Service
@@ -77,7 +78,6 @@ public class ExpenseService {
 					ExpenseCategory category = ExpenseCategory.builder().name(request.getCategory()).build();
 					return expenseCategoryRepository.save(category);
 				});
-		log.error(request.getTitle());
 		Expense expense = Expense.builder()
 				.member(member)
 				.title(request.getTitle())
@@ -85,7 +85,6 @@ public class ExpenseService {
 				.expenseCategory(expenseCategory)
 				.expenseDate(request.getLocalDate().atStartOfDay())
 				.build();
-		log.error(expense.getTitle());
 		expenseRepository.save(expense);
 	}
 }
