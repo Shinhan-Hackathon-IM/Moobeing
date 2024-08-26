@@ -11,7 +11,7 @@ const PageWrapper = styled.div`
 `;
 
 const FixedTitle = styled.div`
-  color: #24272D;
+  color: #24272d;
   font-size: 28px;
   font-weight: 400;
   text-align: center;
@@ -28,9 +28,9 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 93%; /* Adjust the height to account for the fixed title */
-  padding-top: 60px; /* This padding makes space for the fixed title */
-  overflow-y: auto; /* Enable vertical scrolling */
+  height: 93%;
+  padding-top: 60px;
+  overflow-y: auto;
   position: relative;
 `;
 
@@ -71,53 +71,47 @@ const InputLabel = styled.div`
   font-family: "Inter-Regular", Helvetica;
   font-size: 12px;
   font-weight: 400;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   margin-left: 2px;
 `;
 
 const InputField = styled.input`
   width: 100%;
-  padding: 15px;
+  padding: 15px 20px;
   border: 1px solid #348833;
   border-radius: 10px;
-  font-size: 12px;
+  font-size: 15px;
   font-family: "Inter-Regular", Helvetica;
-  outline-color: #E0EED2;
+  outline-color: #e0eed2;
   box-sizing: border-box;
+  letter-spacing: 1px;
 `;
 
-const HumanInput = styled.div`
-  width: 100%;
-  border-radius: 10px;
-  padding: 7px;
-  border: 1px solid #348833;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 const HumanInputField = styled.input`
-  width: 100%;
-  padding: 2.5px 5px 0px 5px;
+  width: 40px;
+  padding: 15px 0px;
+  border: 1px solid #348833;
+  outline-color: #e0eed2;
+  border-radius: 10px;
   text-align: center;
-  font-size: 12px;
+  font-size: 15px;
   font-family: "Inter-Regular", Helvetica;
-  border: none;
-  outline: none;
   box-sizing: border-box;
+  letter-spacing: 1px;
 `;
 
 const MaskedDisplay = styled.div`
-  width: 85%;
+  width: 80%;
   border: none;
   border-radius: 10px;
-  font-size: 20px;
+  font-size: 25px;
   font-family: "Inter-Regular", Helvetica;
   box-sizing: border-box;
   background-color: #ffffff;
   text-align: center;
   color: #000000;
-  letter-spacing: 0.5vh;
+  letter-spacing: 1px;
 `;
 
 const PasswordNote = styled.p`
@@ -157,7 +151,7 @@ const ConfirmButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  background-color: #E0EED2;
+  background-color: #e0eed2;
   border-radius: 10px;
   border: none;
 `;
@@ -175,7 +169,7 @@ const SignUpButton = styled.button`
   border-radius: 10px;
   margin-top: 5vh;
   padding: 10px 20px;
-  background-color: #E0EED2;
+  background-color: #e0eed2;
   color: #348833;
   font-size: 13px;
   font-weight: bold;
@@ -185,8 +179,8 @@ const SignUpButton = styled.button`
 
 const SignUp = () => {
   const [step, setStep] = useState(1);
-  const [username, setUsername] = useState("");
-  const [idNumber, setIdNumber] = useState({ part1: "", part2: "" });
+  const [name, setName] = useState("");
+  const [humanNumber, setHumanNumber] = useState({ part1: "", part2: "" });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -207,14 +201,36 @@ const SignUp = () => {
     setPasswordMismatch(password !== e.target.value);
   };
 
-  const handleIdPart1Change = (e) => {
-    const value = e.target.value.slice(0, 6); // Restrict input to 6 digits
-    setIdNumber({ ...idNumber, part1: value });
+  const handleHumanNumberPart1Change = (e) => {
+    const value = e.target.value.slice(0, 6); // 6글자로 제한
+    setHumanNumber({ ...humanNumber, part1: value });
   };
 
-  const handleIdPart2Change = (e) => {
-    const value = e.target.value.slice(0, 1); // Only accept the first digit
-    setIdNumber({ ...idNumber, part2: value });
+  const handleHumanNumberPart2Change = (e) => {
+    const value = e.target.value.slice(0, 1); // 1글자로 제한
+    setHumanNumber({ ...humanNumber, part2: value });
+  };
+
+  const handleSignUp = () => {
+    const formattedHumanNumber = `${humanNumber.part1}${humanNumber.part2}`;
+    const signUpData = {
+      email,
+      password,
+      name,
+      humanNumber: parseInt(formattedHumanNumber, 10),
+    };
+
+    console.log(signUpData); // For debugging purposes, to see the structure of data before sending the POST request.
+
+    // Here you would perform the POST request to your server API.
+    // For example:
+    // fetch('YOUR_API_ENDPOINT', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(signUpData),
+    // }).then(response => response.json()).then(data => console.log(data)).catch(error => console.error(error));
   };
 
   return (
@@ -228,8 +244,8 @@ const SignUp = () => {
               <InputField
                 type="text"
                 placeholder="사용자 이름"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 onKeyDown={(e) => handleEnterKeyPress(e, 2)}
               />
             </InputGroup>
@@ -242,21 +258,19 @@ const SignUp = () => {
                   type="text"
                   placeholder="앞자리"
                   maxLength={6}
-                  value={idNumber.part1}
-                  onChange={handleIdPart1Change}
+                  value={humanNumber.part1}
+                  onChange={handleHumanNumberPart1Change}
                   onKeyDown={(e) => handleEnterKeyPress(e, 3)}
                 />
                 -
-                <HumanInput>
-                  <HumanInputField
-                    type="text"
-                    maxLength={1}
-                    value={idNumber.part2}
-                    onChange={handleIdPart2Change}
-                    onKeyDown={(e) => handleEnterKeyPress(e, 3)}
-                  />
-                  <MaskedDisplay>●●●●●●</MaskedDisplay>
-                </HumanInput>
+                <HumanInputField
+                  type="text"
+                  maxLength={1}
+                  value={humanNumber.part2}
+                  onChange={handleHumanNumberPart2Change}
+                  onKeyDown={(e) => handleEnterKeyPress(e, 3)}
+                />
+                <MaskedDisplay>●●●●●●</MaskedDisplay>
               </InputGroupHumanNumber>
             </InputGroup>
           )}
@@ -309,7 +323,9 @@ const SignUp = () => {
               )}
             </PasswordConfirmGroup>
           )}
-          {step >= 5 && <SignUpButton>회원 가입하기</SignUpButton>}
+          {step >= 5 && (
+            <SignUpButton onClick={handleSignUp}>회원 가입하기</SignUpButton>
+          )}
         </Form>
       </Container>
     </PageWrapper>
