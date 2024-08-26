@@ -61,7 +61,8 @@ const LogoutButton = styled.div`
   height: 25px;
   width: 18%;
   border-radius: 10px;
-  margin-top: 25vh;
+  margin-top: 15vh;
+  margin-bottom: 5px;
   padding: 10px 20px;
   background-color: #E0EED2;
   color: #24272D;
