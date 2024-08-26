@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,13 +32,13 @@ public class LoanController {
 	}
 
 	@Operation(summary = "선택한 대출 여정지도 검색", description = "선택한 대출 여정 지도를 검색한다.")
-	@GetMapping("/map")
+	@PostMapping("/map")
 	public ResponseEntity<?> getLoanMap(@AuthenticationPrincipal Member member, @RequestBody GetLoanMapRequest getLoanMapRequest){
 		return ResponseEntity.status(HttpStatus.OK).body(loanService.getLoanMap(member, getLoanMapRequest));
 	}
 
 	@Operation(summary = "총합 대출 여정지도 검색", description = "총합 대출 여정 지도를 검색한다.")
-	@GetMapping("/all-map")
+	@PostMapping("/all-map")
 	public ResponseEntity<?> getAllLoanMap(@AuthenticationPrincipal Member member, @RequestBody GetAllLoanMapRequest getAllLoanMapRequest){
 		return ResponseEntity.status(HttpStatus.OK).body(loanService.getAllLoanMap(member, getAllLoanMapRequest));
 	}
@@ -49,7 +50,7 @@ public class LoanController {
 	}
 
 	@Operation(summary = "또래 상환능력 조회", description = "또래 상환능력 조회 하기")
-	@GetMapping("/buddy")
+	@PostMapping("/buddy")
 	public ResponseEntity<?> getBuddyLoanMap(@AuthenticationPrincipal Member member, @RequestBody GetBuddyLoanMapRequest getBuddyLoanMapRequest){
 		return ResponseEntity.status(HttpStatus.OK).body(loanService.getBuddyLoanMap(member, getBuddyLoanMapRequest));
 	}

@@ -31,6 +31,8 @@ public class LoanService {
 	private final AverageLoanRepaymentRecordRepository averageLoanRepaymentRecordRepository;
 	private final MemberLoanRepository memberLoanRepository;
 
+	private static final int CURRENT_YEAR = 2024;
+
 	public List<MemberLoan> getMemberLoan(Member member) {
 		// Member ID로 MemberLoan을 조회
 		return memberLoanRepository.findAllByMemberId(member.getId());
@@ -112,7 +114,7 @@ public class LoanService {
 		// age와 loanName, month 범위에 맞는 AverageLoanRepaymentRecord 리스트 가져오기
 		List<AverageLoanRepaymentRecord> averageLoanRepaymentRecordList =
 			averageLoanRepaymentRecordRepository.findByAgeAndLoanNameAndMonthRange(
-				Integer.parseInt(member.getBirthday().substring(0,2)),
+				CURRENT_YEAR - Integer.parseInt(member.getBirthday().substring(0,2)),
 				getBuddyLoanMapRequest.getLoanName(),
 				startMonth,
 				endMonth);
