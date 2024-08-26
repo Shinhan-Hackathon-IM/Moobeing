@@ -1,3 +1,4 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
@@ -25,11 +26,22 @@ const LoanSum = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 20px; /* 내부 여백 추가 */
+  align-items: center;
+  padding: 20px;
   box-sizing: border-box;
 `;
 
 const SubHeader = ({ month, onAnalyzeClick }) => {
+
+  const [buttonText, setButtonText] = useState("분석하기");
+
+
+  const handleButtonClick = () => {
+
+    setButtonText((prevText) => (prevText === "분석하기" ? "캘린더 보기" : "분석하기"));
+    onAnalyzeClick();
+  };
+
   return (
     <>
       <Title>
@@ -38,7 +50,7 @@ const SubHeader = ({ month, onAnalyzeClick }) => {
       </Title>
       <LoanSum>
         <span>총지출: 811,000</span>
-        <button onClick={onAnalyzeClick}>분석하기</button>
+        <button onClick={handleButtonClick}>{buttonText}</button>
       </LoanSum>
     </>
   );

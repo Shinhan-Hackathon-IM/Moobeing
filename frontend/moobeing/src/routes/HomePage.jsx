@@ -11,7 +11,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  min-height: 200vh;
+  min-height: 250vh;
   width: 100%;
   box-sizing: border-box;
 `;
