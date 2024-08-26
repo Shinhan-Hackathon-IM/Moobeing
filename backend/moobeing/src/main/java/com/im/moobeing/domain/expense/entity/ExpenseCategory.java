@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,4 +22,10 @@ public class ExpenseCategory {
 
 	@Column
 	private String name;
+
+	@Builder
+	public ExpenseCategory(Long expenseCategoryId, String name) {
+		this.expenseCategoryId = expenseCategoryId;
+		this.name = name;
+	}
 }

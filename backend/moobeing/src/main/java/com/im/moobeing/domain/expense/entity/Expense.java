@@ -51,5 +51,6 @@ public class Expense {
 		this.expenseCategory = expenseCategory;
 		this.price = price;
 		this.expenseDate = expenseDate;
+		this.title = title;
 	}
 }
