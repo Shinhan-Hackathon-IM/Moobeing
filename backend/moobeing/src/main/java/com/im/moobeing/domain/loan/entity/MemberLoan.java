@@ -26,7 +26,7 @@ public class MemberLoan {
 	private Long memberId;
 
 	@Column(name = "loan_product_name")
-	private Long loanProductName;
+	private String loanProductName;
 
 	@Column(name = "status")
 	private String status;
@@ -47,7 +47,7 @@ public class MemberLoan {
 	private String withdrawalAccountNo;
 
 	@Builder
-	public MemberLoan(Long id, Long memberId, Long loanProductName, String status, Long initialBalance,
+	public MemberLoan(Long id, Long memberId, String loanProductName, String status, Long initialBalance,
 		Long remainingBalance, String startLoan, String repaymentDeadline, String withdrawalAccountNo) {
 		this.id = id;
 		this.memberId = memberId;
