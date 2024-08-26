@@ -14,6 +14,7 @@ const StyledHeader = styled.div`
   & .logo {
     width: 80px;
     margin-left: 1vh;
+    cursor: pointer;
   }
 
   & .auth {
@@ -21,6 +22,7 @@ const StyledHeader = styled.div`
     padding: 20px;
     margin-right: 1vh;
     margin-bottom: 1vh;
+    cursor: pointer;
   }
 `;
 
