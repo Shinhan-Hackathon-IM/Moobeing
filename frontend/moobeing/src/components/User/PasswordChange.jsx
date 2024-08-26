@@ -54,7 +54,7 @@ const PasswordMismatchMessage = styled.div`
 `;
 
 const PasswordChange = () => {
-  const [currentPassword, setCurrentPassword] = useState("");
+  const [oldPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [passwordMismatch, setPasswordMismatch] = useState(false);
@@ -90,7 +90,7 @@ const PasswordChange = () => {
       <InputText
         type="password"
         placeholder="기존 비밀번호"
-        value={currentPassword}
+        value={oldPassword}
         onChange={(e) => setCurrentPassword(e.target.value)}
       />
       <InputText

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom"; // useNavigate 훅 사용
 
@@ -62,7 +62,7 @@ function LeftMoney() {
   const handlePayment = () => {
     if (selectedLoan) {
       // 선택된 대출 상품을 Params로 전달하여 이동
-      navigate(`/payment/${selectedLoan}`);
+      navigate(`/repayment/${selectedLoan}`);
     } else {
       alert("대출 상품을 선택해주세요.");
     }
