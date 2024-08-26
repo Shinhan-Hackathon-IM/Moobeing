@@ -38,8 +38,8 @@ const RadishWrapper = styled.div`
 `;
 
 const TotalJourney = () => {
-  const paidLoanNum = 2;
-  const totalLoanNum = 2;
+  const paidLoanNum = 3;
+  const totalLoanNum = 5;
   const data = {
     paging: {
       current_page: 1,
