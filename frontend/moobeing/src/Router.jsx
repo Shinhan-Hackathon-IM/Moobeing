@@ -25,7 +25,7 @@ function Router() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/radish-collection" element={<RadishCollection />} />
-        <Route path="/repayment" element={<Repayment />} />
+        <Route path="/repayment/:selectedLoanId" element={<Repayment />} />
         <Route path="/spend" element={<Spend />} />
         <Route path="/total-journey" element={<TotalJourney />} />
         <Route path="/welcome" element={<Welcome />} />
