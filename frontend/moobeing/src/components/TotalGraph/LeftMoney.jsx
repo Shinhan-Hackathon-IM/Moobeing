@@ -13,9 +13,10 @@ const Container = styled.div`
   align-items: flex-start;
   padding: 20px;
   box-sizing: border-box;
+  border-radius: 5%;
 `;
 
-const Header = styled.div`
+const SubHeader = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -69,9 +70,9 @@ function LeftMoney() {
 
   return (
     <Container>
-      <Header>
+      <SubHeader>
         <SubTitle>남은돈 관리하기 </SubTitle>
-      </Header>
+      </SubHeader>
 
       <p>
         남은 돈 230,000원을{" "}
