@@ -3,7 +3,7 @@ import styled from "styled-components";
 const Container = styled.div`
   background-color: #f5fded;
   height: 150px; /* 높이를 크게 설정 */
-  width: 100%;
+  width: 90%;
   margin-bottom: 5%;
   display: flex;
   flex-direction: column;

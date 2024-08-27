@@ -6,10 +6,10 @@ import babyRad from "../../assets/radishes/babyRad.svg";
 const Container = styled.div`
   background-color: #f5fded;
   border-radius: 20px;
-  height: 500px;
+  height: 300px;
   width: 90%;
   margin-bottom: 5%;
-  margin-top: 5%;
+  margin-top: 10%;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -18,6 +18,7 @@ const Container = styled.div`
   padding: 20px;
   box-sizing: border-box;
   color: #24272d;
+  box-shadow: 3px 3px 3px #d9d9d9;
 `;
 
 const CloseButton = styled.button`
@@ -32,8 +33,8 @@ const CloseButton = styled.button`
 
 const SubTitle = styled.div`
   position: absolute;
-  top: 15px;
-  left: 20px;
+  top: 35px;
+  left: 40px;
   font-size: 1.1rem;
   font-weight: 800;
   text-align: left;

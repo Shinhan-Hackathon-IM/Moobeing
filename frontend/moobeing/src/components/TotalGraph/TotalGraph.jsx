@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import {
   LineChart,
@@ -14,15 +14,16 @@ import {
 const GraphContainer = styled.div`
   background-color: #f5fded;
   height: 550px;
-  width: 100%;
+  width: 90%;
   margin-bottom: 5%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding: 10px;
+  padding: 25px 10px 10px 10px;
   box-sizing: border-box;
   border-radius: 5%;
+  position: relative;
 `;
 
 const ChartContainer = styled.div`
@@ -44,12 +45,47 @@ const ButtonContainer = styled.div`
 const Button = styled.button`
   padding: 5px 10px;
   cursor: pointer;
+  background-color: #e0eed2;
+  border: none;
+  border-radius: 10px;
 `;
 
-const ToggleButton = styled.button`
-  padding: 5px 10px;
+const ToggleWrapper = styled.div`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+`;
+
+const ToggleButton = styled.div`
+  position: relative;
+  width: 50px;
+  height: 30px;
+  background-color: ${(props) => (props.active ? "#c1e1c1" : "#E0EED2")};
+  border-radius: 15px;
   cursor: pointer;
-  margin-bottom: 10px;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ToggleCircle = styled.div`
+  position: absolute;
+  top: 3px;
+  left: ${(props) => (props.active ? "calc(100% - 27px)" : "3px")};
+  width: 24px;
+  height: 24px;
+  background-color: #348833;
+  border-radius: 50%;
+  transition: left 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
 `;
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -160,10 +196,14 @@ function TotalGraph({ data, peerData }) {
 
   return (
     <GraphContainer>
+      <ToggleWrapper onClick={() => setShowPeerData(!showPeerData)}>
+        <ToggleButton active={showPeerData}>
+          <ToggleCircle active={showPeerData}>
+            {showPeerData ? "끄기" : "또래"}
+          </ToggleCircle>
+        </ToggleButton>
+      </ToggleWrapper>
       <h1>전체여정</h1>
-      <ToggleButton onClick={() => setShowPeerData(!showPeerData)}>
-        {showPeerData ? "또래 데이터 숨기기" : "또래 데이터 보기"}
-      </ToggleButton>
       <ChartContainer>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
