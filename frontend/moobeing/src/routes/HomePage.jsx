@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 import LoanHistory from "../components/Home/LoanHistory";
 import LoanPayment from "../components/Home/LoanPayment";
@@ -16,11 +17,27 @@ const Container = styled.div`
   box-sizing: border-box;
 `;
 
+const QuizWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+`;
+
 const Home = () => {
+  const [isQuizPopupVisible, setQuizPopupVisible] = useState(true);
+
+  const handleCloseQuizPopup = () => {
+    setQuizPopupVisible(false);
+  };
+
   return (
     <Container>
       <Header />
-      <QuizPopup />
+      <QuizWrapper>
+        {" "}
+        {isQuizPopupVisible && <QuizPopup onClose={handleCloseQuizPopup} />}
+      </QuizWrapper>
       <LoanHistory />
       <LoanPayment />
       <CreditScore />

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"; // useNavigate 훅 사용
 const Container = styled.div`
   background-color: #f5fded;
   height: 300px;
-  width: 100%;
+  width: 90%;
   margin-bottom: 5%;
   display: flex;
   flex-direction: column;

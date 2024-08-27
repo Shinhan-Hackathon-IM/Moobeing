@@ -18,7 +18,7 @@ const Container = styled.div`
   align-items: center;
   flex-direction: column;
   width: 100%;
-  padding: 8% 8% 0 8%; // 하단 패딩 제거
+  padding: 5% 0 0 0; // 하단 패딩 제거
   box-sizing: border-box;
 `;
 
