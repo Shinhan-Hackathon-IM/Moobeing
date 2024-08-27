@@ -1,5 +1,7 @@
 package com.im.moobeing.domain.loan.entity;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -37,26 +39,36 @@ public class MemberLoan {
 	@Column(name = "remaining_balance")
 	private Long remainingBalance;
 
-	@Column(name = "start_loan")
-	private String startLoan;
+	@Column(name = "withdrawal_account_no")
+	private String withdrawalAccountNo;
+
+	@Column(name = "start_year")
+	private Integer startYear;
+
+	@Column(name = "start_month")
+	private Integer startMonth;
+
+	@Column(name = "start_day")
+	private Integer startDay;
 
 	@Column(name = "repayment_deadline")
-	private String repaymentDeadline;
-
-	@Column(name = "withdrawwal_account_no")
-	private String withdrawalAccountNo;
+	private LocalDate repaymentDeadline;
 
 	@Builder
 	public MemberLoan(Long id, Long memberId, String loanProductName, String status, Long initialBalance,
-		Long remainingBalance, String startLoan, String repaymentDeadline, String withdrawalAccountNo) {
+		Long remainingBalance, LocalDate repaymentDeadline, String withdrawalAccountNo, Integer startYear,
+		Integer startMonth,
+		Integer startDay) {
 		this.id = id;
 		this.memberId = memberId;
 		this.loanProductName = loanProductName;
 		this.status = status;
 		this.initialBalance = initialBalance;
 		this.remainingBalance = remainingBalance;
-		this.startLoan = startLoan;
 		this.repaymentDeadline = repaymentDeadline;
 		this.withdrawalAccountNo = withdrawalAccountNo;
+		this.startYear = startYear;
+		this.startMonth = startMonth;
+		this.startDay = startDay;
 	}
 }

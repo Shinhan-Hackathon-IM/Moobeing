@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.im.moobeing.domain.loan.dto.request.GetAllLoanMapRequest;
@@ -27,8 +28,8 @@ public class LoanController {
 
 	@Operation(summary = "맴버의 대출 리스트 조회", description = "맴버의 대출 리스트를 조회한다.")
 	@GetMapping
-	public ResponseEntity<?> getMemberLoan(@AuthenticationPrincipal Member member){
-		return ResponseEntity.status(HttpStatus.OK).body(loanService.getMemberLoan(member));
+	public ResponseEntity<?> getMemberLoan(@AuthenticationPrincipal Member member, @RequestParam String sort){
+		return ResponseEntity.status(HttpStatus.OK).body(loanService.getMemberLoan(member, sort));
 	}
 
 	@Operation(summary = "선택한 대출 여정지도 검색", description = "선택한 대출 여정 지도를 검색한다.")
@@ -53,5 +54,17 @@ public class LoanController {
 	@PostMapping("/buddy")
 	public ResponseEntity<?> getBuddyLoanMap(@AuthenticationPrincipal Member member, @RequestBody GetBuddyLoanMapRequest getBuddyLoanMapRequest){
 		return ResponseEntity.status(HttpStatus.OK).body(loanService.getBuddyLoanMap(member, getBuddyLoanMapRequest));
+	}
+
+	@Operation(summary = "이번달 상환 예정 금액 구하기", description = "이번달 상환 예정 금액 구하기")
+	@GetMapping("/monthly")
+	public ResponseEntity<?> getMonthlyLoan(@AuthenticationPrincipal Member member){
+		return ResponseEntity.status(HttpStatus.OK).body(loanService.getMonthlyLoan(member));
+	}
+
+	@Operation(summary = "몇 퍼센트 상환인지 체크", description = "몇 퍼센트 상환인지 체크하기")
+	@GetMapping("/percent")
+	public ResponseEntity<?> getPercentLoan(@AuthenticationPrincipal Member member){
+		return ResponseEntity.status(HttpStatus.OK).body(loanService.getPercentLoan(member));
 	}
 }

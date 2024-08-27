@@ -9,13 +9,13 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class GetLoanMapResponse {
+public class GetAllLoanMapResponse {
 	private Long maxLoanBalance;
 	private Long minLoanBalance;
 	private List<GetAllLoanMapDto> getAllLoanMapDtoList;
 
-	public static GetLoanMapResponse of(long maxLoanBalance, long minLoanBalance, List<GetAllLoanMapDto> allLoanMapDtoList) {
-		return GetLoanMapResponse.builder()
+	public static GetAllLoanMapResponse of(long maxLoanBalance, long minLoanBalance, List<GetAllLoanMapDto> allLoanMapDtoList) {
+		return GetAllLoanMapResponse.builder()
 			.maxLoanBalance(maxLoanBalance)
 			.minLoanBalance(minLoanBalance)
 			.getAllLoanMapDtoList(allLoanMapDtoList)

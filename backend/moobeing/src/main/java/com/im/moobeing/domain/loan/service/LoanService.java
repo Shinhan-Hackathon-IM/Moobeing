@@ -1,16 +1,25 @@
 package com.im.moobeing.domain.loan.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.im.moobeing.domain.loan.dto.GetAllLoanMapDto;
+import com.im.moobeing.domain.loan.dto.GetMemberLoanDto;
 import com.im.moobeing.domain.loan.dto.request.GetAllLoanMapRequest;
 import com.im.moobeing.domain.loan.dto.request.GetBuddyLoanMapRequest;
 import com.im.moobeing.domain.loan.dto.request.GetLoanMapRequest;
+import com.im.moobeing.domain.loan.dto.response.GetAllLoanMapResponse;
+import com.im.moobeing.domain.loan.dto.response.GetLoanMapResponse;
+import com.im.moobeing.domain.loan.dto.response.GetMemberLoanResponse;
+import com.im.moobeing.domain.loan.dto.response.GetMonthlyLoanResponse;
+import com.im.moobeing.domain.loan.dto.response.GetPercentLoanResponse;
 import com.im.moobeing.domain.loan.dto.response.GetSumLoanResponse;
 import com.im.moobeing.domain.loan.entity.AverageLoanRepaymentRecord;
+import com.im.moobeing.domain.loan.entity.LoanProduct;
 import com.im.moobeing.domain.loan.entity.LoanRepaymentRecord;
 import com.im.moobeing.domain.loan.entity.MemberLoan;
 import com.im.moobeing.domain.loan.repository.AverageLoanRepaymentRecordRepository;
@@ -33,12 +42,35 @@ public class LoanService {
 
 	private static final int CURRENT_YEAR = 2024;
 
-	public List<MemberLoan> getMemberLoan(Member member) {
+	public GetMemberLoanResponse getMemberLoan(Member member, String sort) {
 		// Member ID로 MemberLoan을 조회
-		return memberLoanRepository.findAllByMemberId(member.getId());
+		List<MemberLoan> memberLoan = memberLoanRepository.findAllByMemberId(member.getId());
+
+		List<GetMemberLoanDto> getMemberLoanDtoList = new ArrayList<>();
+
+		for (MemberLoan loan : memberLoan) {
+			if(loan.getRemainingBalance() == 0){
+				continue;
+			}
+
+			LoanProduct product = loanProductRepository.findByLoanName(loan.getLoanProductName())
+				.orElseThrow(() -> new RuntimeException("todo error"));
+
+			getMemberLoanDtoList.add(
+				GetMemberLoanDto.of(loan, product)
+			);
+		}
+
+		if (sort.equals("rate")) {
+			getMemberLoanDtoList.sort(Comparator.comparing(GetMemberLoanDto::getInterestRate).reversed());
+		} else if (sort.equals("amount")) {
+			getMemberLoanDtoList.sort(Comparator.comparing(GetMemberLoanDto::getRemainingBalance).reversed());
+		}
+
+		return GetMemberLoanResponse.of(getMemberLoanDtoList);
 	}
 
-	public List<LoanRepaymentRecord> getLoanMap(Member member, GetLoanMapRequest getLoanMapRequest) {
+	public GetLoanMapResponse getLoanMap(Member member, GetLoanMapRequest getLoanMapRequest) {
 		MemberLoan memberLoan = memberLoanRepository.findByMemberIdAndLoanProductName(member.getId(), getLoanMapRequest.getLoanProductName())
 			.orElseThrow(() -> new RuntimeException("todo memberLoan 없음"));
 
@@ -56,36 +88,149 @@ public class LoanService {
 			throw new RuntimeException("페이지 번호가 범위를 벗어났습니다.");
 		}
 
+		long maxLoanBalance = 0;
+		long minLoanBalance = 0;
+		long totalLoanBalance = 0;
+		int start = 0;
+
+		List<GetAllLoanMapDto> getAllLoanMapDtoList = new ArrayList<>();
+
+		for (LoanRepaymentRecord record : loanRepaymentRecordList) {
+			if(start == 0) {
+				maxLoanBalance = memberLoan.getInitialBalance() - record.getRepaymentBalance();
+				totalLoanBalance = maxLoanBalance;
+			}
+
+			getAllLoanMapDtoList.add(GetAllLoanMapDto.builder()
+				.year(record.getYear())
+				.month(record.getMonth())
+				.loanBalance(totalLoanBalance)
+				.build());
+
+			if(start++ == 4){
+				minLoanBalance = memberLoan.getInitialBalance() - record.getRepaymentBalance();
+				break;
+			}
+		}
+
 		// 필요에 따라 GetLoanMapResponse를 생성하고 반환
-		return loanRepaymentRecordList.subList(fromIndex, toIndex);
+		return GetLoanMapResponse.of(maxLoanBalance, minLoanBalance, getAllLoanMapDtoList);
 	}
 
-	public List<LoanRepaymentRecord> getAllLoanMap(Member member, GetAllLoanMapRequest getAllLoanMapRequest) {
+	public GetAllLoanMapResponse getAllLoanMap(Member member, GetAllLoanMapRequest getAllLoanMapRequest) {
 		// 1. 주어진 Member에 대한 모든 MemberLoan을 가져옴
 		List<MemberLoan> memberLoanList = memberLoanRepository.findAllByMemberId(member.getId());
 
-		// 최종적으로 반환할 LoanRepaymentRecord 리스트를 저장할 곳
-		List<LoanRepaymentRecord> combinedLoanRepaymentRecords = new ArrayList<>();
+		int minYear = 10000;
+		int minMonth = 40;
 
-		// 2. 각 MemberLoan에 대해 LoanRepaymentRecord를 가져와서 리스트에 추가
-		for (MemberLoan memberLoan : memberLoanList) {
-			List<LoanRepaymentRecord> loanRepaymentRecordList = loanRepaymentRecordRepository.findAllByMemberLoanId(memberLoan.getId());
-			combinedLoanRepaymentRecords.addAll(loanRepaymentRecordList);
-		}
-		// 페이지네이션 로직
-		int pageSize = 4;  // 페이지 당 항목 수 (4개씩 표시)
-		int step = 3;  // 3칸씩 이동
-		int pageNum = getAllLoanMapRequest.getPageNum();  // 요청에서 페이지 번호 가져오기
-
-		int fromIndex = (pageNum - 1) * step;
-		int toIndex = Math.min(fromIndex + pageSize, combinedLoanRepaymentRecords.size());
-
-		if (fromIndex >= combinedLoanRepaymentRecords.size()) {
-			throw new RuntimeException("페이지 번호가 범위를 벗어났습니다.");
+		// 2. memberLoanList 에서 가장 빠른 year, month 가 가장 작은 값을 찾는다.
+		for(MemberLoan loan : memberLoanList) {
+			if(minYear > loan.getStartYear()){
+				minYear = loan.getStartYear();
+				minMonth = loan.getStartMonth();
+			} else if(minYear == loan.getStartYear()){
+				minMonth = Math.min(loan.getStartMonth(), minMonth);
+			}
 		}
 
-		// 필요에 따라 GetLoanMapResponse를 생성하고 반환
-		return combinedLoanRepaymentRecords.subList(fromIndex, toIndex);
+		int startYear = minYear;
+		int startMonth = minMonth;
+
+		int page = (getAllLoanMapRequest.getPageNum() - 1) * 3;
+
+		startMonth += page;
+
+		if (startMonth > 12){
+			 startYear += startMonth / 12;
+			 startMonth = startMonth % 12;
+		}
+
+		long[] totalLoan = new long[4];
+
+		// 3. 전체 loan에 대한 대출받은 금액들 모두 합치기
+		for(MemberLoan loan : memberLoanList) {
+			if(startYear > loan.getStartYear()){
+				totalLoan[0] += loan.getInitialBalance();
+			} else if(startYear == loan.getStartYear()){
+				if(startMonth >= loan.getStartMonth()){
+					totalLoan[0] += loan.getInitialBalance();
+				}
+			}
+		}
+
+		List<LoanRepaymentRecord> loanRepaymentRecordList = new ArrayList<>();
+
+		for(MemberLoan loan : memberLoanList) {
+			loanRepaymentRecordList.addAll(loanRepaymentRecordRepository.findAllByMemberLoanId(loan.getId()));
+		}
+
+		for (LoanRepaymentRecord record : loanRepaymentRecordList) {
+			if(startYear > record.getYear()){
+				totalLoan[0] -= record.getRepaymentBalance();
+			} else if(startYear == record.getYear()){
+				if(startMonth >= record.getMonth()){
+					totalLoan[0] -= record.getRepaymentBalance();
+				}
+			}
+		}
+
+		for (int i = 1; i < 4; i++){
+			// 12 이상이면
+			if (++startMonth > 12){
+				startYear++;
+				startMonth = 1;
+			}
+
+			totalLoan[i] = totalLoan[i-1];
+
+			for(MemberLoan loan : memberLoanList) {
+				if(loan.getStartYear() == startYear && loan.getStartMonth() == startMonth){
+					totalLoan[i] += loan.getInitialBalance();
+				}
+			}
+
+			for (LoanRepaymentRecord record : loanRepaymentRecordList) {
+				if (startYear == record.getYear() && startMonth == record.getMonth()) {
+					totalLoan[i] -= record.getRepaymentBalance();
+				}
+			}
+		}
+
+		startMonth -= 3;
+
+		if (startMonth <= 0){
+			startYear--;
+			startMonth = startMonth + 12;
+		}
+
+		long maxLoanBalance = totalLoan[0];
+		long minLoanBalance = totalLoan[0];
+
+		for (int i = 1; i < totalLoan.length; i++) {
+			if (totalLoan[i] > maxLoanBalance) {
+				maxLoanBalance = totalLoan[i];
+			}
+			if (totalLoan[i] < minLoanBalance) {
+				minLoanBalance = totalLoan[i];
+			}
+		}
+
+		List<GetAllLoanMapDto> getAllLoanMapDtoList = new ArrayList<>();
+
+		for (int i = 0; i < 4; i++){
+			if (startMonth > 12){
+				startYear++;
+				startMonth = 1;
+			}
+			getAllLoanMapDtoList.add(GetAllLoanMapDto.builder()
+				.year(startYear)
+				.month(startMonth++)
+				.loanBalance(totalLoan[i])
+				.build());
+		}
+
+		return GetAllLoanMapResponse.of(maxLoanBalance, minLoanBalance, getAllLoanMapDtoList);
 	}
 
 	public GetSumLoanResponse getSumLoan(Member member) {
@@ -139,5 +284,48 @@ public class LoanService {
 
 		// 필터링된 LoanRepaymentRecord 리스트 반환
 		return loanRepaymentRecordList.subList(fromIndex, toIndex);
+	}
+
+	public GetMonthlyLoanResponse getMonthlyLoan(Member member) {
+		List<MemberLoan> memberLoanList = memberLoanRepository.findAllByMemberId(member.getId());
+
+		Long monthlyLoanAmount = 0L;
+
+		for (MemberLoan memberLoan : memberLoanList) {
+			if(memberLoan.getRemainingBalance() == 0){
+				continue;
+			}
+
+			LoanProduct product = loanProductRepository.findByLoanName(memberLoan.getLoanProductName())
+				.orElseThrow(()->new RuntimeException());
+
+			monthlyLoanAmount += memberLoan.getInitialBalance() / product.getLoanPeriod();
+		}
+
+		return GetMonthlyLoanResponse.of(monthlyLoanAmount);
+	}
+
+	public GetPercentLoanResponse getPercentLoan(Member member) {
+		List<MemberLoan> memberLoanList = memberLoanRepository.findAllByMemberId(member.getId());
+
+		long totalLoanAmount = 0L;
+		long remainingLoanAmount = 0L;
+
+		for (MemberLoan loan : memberLoanList) {
+			if (loan.getRemainingBalance() == 0) {
+				continue;
+			}
+			totalLoanAmount += loan.getInitialBalance();
+			remainingLoanAmount += loan.getRemainingBalance();
+		}
+
+		// remainingPercent를 구함 (상환한 비율을 퍼센트로)
+		double remainingPercent = 0.0;
+		if (totalLoanAmount > 0) {
+			remainingPercent = ((double) remainingLoanAmount / totalLoanAmount) * 100;
+		}
+
+		// remainingPercent를 반환
+		return GetPercentLoanResponse.of(remainingPercent);
 	}
 }
