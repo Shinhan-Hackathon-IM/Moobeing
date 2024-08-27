@@ -65,7 +65,7 @@ public class MemberController {
     }
 
     @Operation(summary = "맴버 비밀번호 수정하기", description = "맴버에 대한 비밀번호 수정하기")
-    @PostMapping("pw")
+    @PostMapping("/pw")
     public ResponseEntity<?> changeMemberPw(@AuthenticationPrincipal Member member, @RequestBody MemberPwChangeRequest memberPwChangeRequest) {
         memberService.changeMemberPw(member, memberPwChangeRequest);
         return ResponseEntity.status(HttpStatus.OK).body(null);
