@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import LoanList from "./LoanList";
 
 const Container = styled.div`
   background-color: #f5fded;
+  border-radius: 20px;
   height: 900px;
   width: 90%;
   margin-bottom: 5%;
@@ -35,17 +36,38 @@ const SortButtonContainer = styled.div`
 
 const SortButton = styled.p`
   margin: 0;
+  font-size: 12px;
+  padding: 5px;
   cursor: pointer;
+  background-color: #e0eed2;
+  border-radius: 5px;
 `;
 
-const TotalLoan = styled.h1`
+const TotalLoan = styled.h2`
   margin-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 0;
 `;
 
 const NavigateButton = styled.button`
   margin-left: 10px;
-  padding: 5px 10px;
+  margin-top: -2px;
   cursor: pointer;
+  background-color: transparent;
+  border: none;
+  font-weight: 800;
+  font-family: Nanum Gothic;
+`;
+
+const LoanListContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1; /* 남은 공간을 모두 사용하여 중앙에 위치하도록 설정 */
 `;
 
 function LoanHistory() {
@@ -79,6 +101,22 @@ function LoanHistory() {
           },
           {
             user_deposit_id: 3,
+            loan_type: "자고 싶다 대출",
+            loan_amount: 3141824,
+            interest_rate: 12.342,
+            bank_name: "Bank1",
+            bank_logo_url: "https://example.com/logos/bank1.png",
+          },
+          {
+            user_deposit_id: 4,
+            loan_type: "자고 싶다 대출",
+            loan_amount: 3141824,
+            interest_rate: 12.342,
+            bank_name: "Bank1",
+            bank_logo_url: "https://example.com/logos/bank1.png",
+          },
+          {
+            user_deposit_id: 5,
             loan_type: "자고 싶다 대출",
             loan_amount: 3141824,
             interest_rate: 12.342,
@@ -129,7 +167,9 @@ function LoanHistory() {
         {totalLoanAmount.toLocaleString()} 원
         <NavigateButton onClick={navigateToTotalJourney}>&gt;</NavigateButton>
       </TotalLoan>
-      <LoanList loans={loans} />
+      <LoanListContainer>
+        <LoanList loans={loans} />
+      </LoanListContainer>
     </Container>
   );
 }

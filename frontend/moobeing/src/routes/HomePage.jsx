@@ -8,11 +8,11 @@ import Header from "../components/Fixed/Header";
 
 const Container = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  min-height: 250vh;
+  align-items: center;
   width: 100%;
+  min-height: 100vh;
+  overflow-y: auto;
   box-sizing: border-box;
 `;
 
