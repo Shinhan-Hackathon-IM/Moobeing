@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { getQuizzes, submitAnswer } from "../apis/QuizApi";
 import upArrow from "../assets/quiz/upArrow.svg";
 import downArrow from "../assets/quiz/downArrow.svg";
+import { useNavigate } from "react-router-dom";
 
 const PageContainer = styled.div`
   background-color: #e0eed2;
@@ -61,13 +62,14 @@ const ArrowIcon = styled.img`
 `;
 
 function Quiz() {
-  const [quizData, setQuizData] = useState("dj");
+  const [quizData, setQuizData] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchQuiz() {
       try {
         const data = await getQuizzes();
-        setQuizData(data[0]); // 첫 번째 퀴즈를 사용
+        setQuizData(data[0]);
       } catch (error) {
         console.error("퀴즈 불러오기 실패:", error);
       }
@@ -79,7 +81,7 @@ function Quiz() {
     if (!quizData) return;
     try {
       await submitAnswer(quizData.quiz_id, answer);
-      // 여기에 답변 제출 후 처리 로직을 추가할 수 있습니다.
+      navigate(`/quiz/${quizData.quiz_id}/result`);
     } catch (error) {
       console.error("답변 제출 실패:", error);
     }

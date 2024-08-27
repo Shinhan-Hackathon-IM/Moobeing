@@ -30,7 +30,7 @@ function Router() {
         <Route path="/total-journey" element={<TotalJourney />} />
         <Route path="/welcome" element={<Welcome />} />
         <Route path="/quiz" element={<Quiz />} />
-        <Route path="/quiz/result" element={<QuizResult />} />
+        <Route path="/quiz/result/:quizId/" element={<QuizResult />} />
         <Route path="/get-radish" element={<GetRadish />} />
       </Routes>
     </BrowserRouter>
