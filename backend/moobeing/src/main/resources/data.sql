@@ -16,14 +16,14 @@ INSERT IGNORE INTO loan_product (loan_product_id, loan_name, bank_image_url, ban
 (10, 'Loan Product 10', 'https://example.com/bank10.png', 'Bank 10', 72, 5.2, 'Description for Loan Product 10');
 
 -- 3. test@gmail.com으로 대출 상품 5개 가입시키기
-INSERT IGNORE INTO member_loan (member_loan_id, member_id, loan_product_name, status, initial_balance, remaining_balance, start_loan, repayment_deadline) VALUES
-(1, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 'Loan Product 1', 'Active', 1000000, 900000, '2024-01-01', '2025-01-01'),
-(2, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 'Loan Product 2', 'Active', 2000000, 1800000, '2024-02-01', '2025-02-01'),
-(3, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 'Loan Product 3', 'Active', 3000000, 2700000, '2024-03-01', '2025-03-01'),
-(4, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 'Loan Product 4', 'Active', 4000000, 3600000, '2024-04-01', '2025-04-01'),
-(5, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 'Loan Product 5', 'Active', 5000000, 4500000, '2024-05-01', '2025-05-01');
+INSERT IGNORE INTO member_loan (member_loan_id, member_id, loan_product_name, status, initial_balance, remaining_balance, repayment_deadline, withdrawal_account_no, start_year, start_month, start_day) VALUES
+(1, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 'Loan Product 1', 'Active', 1000000, 861110, '2025-01-01', '123-456-789', 2024, 1, 1),
+(2, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 'Loan Product 2', 'Active', 2000000, 1722220, '2025-02-01', '123-456-789', 2024, 2, 1),
+(3, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 'Loan Product 3', 'Active', 3000000, 2583335, '2025-03-01', '123-456-789', 2024, 3, 1),
+(4, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 'Loan Product 4', 'Active', 4000000, 3444445, '2025-04-01', '123-456-789', 2024, 4, 1),
+(5, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 'Loan Product 5', 'Active', 5000000, 4305555, '2025-05-01', '123-456-789', 2024, 5, 1);
 
--- 4. 대출 상품의 또래들 2000년생에 대한 더미데이터 생성
+
 -- 4. 대출 상품의 또래들 2000년생에 대한 더미데이터 생성
 INSERT IGNORE INTO average_loan_repayment_record (average_loan_repayment_record_id, loan_name, age, month, repayment_balance) VALUES
 (1, 'Loan Product 1', 24, 1, 1000000),  -- 2000년생, 2024년 기준 24세, 1월 잔액
@@ -56,33 +56,68 @@ INSERT IGNORE INTO radish (radish_id, radish_name, radish_image_url, radish_rank
 (12, 'weightRad', 'https://github.com/user-attachments/assets/eb74b691-4b58-4532-bf7d-087bc944a844', 'B', '2024-08-23 12:55:00', '2024-08-23 12:55:00');
 
 -- 6. test@gmail.com 회원의 대출 상환 기록 더미 데이터 생성
-INSERT IGNORE INTO loan_repayment_record (loan_repayment_record_id, create_at, day, member_loan_id, month, repayment_balance, repayment_date, update_at, year) VALUES
-(1, '2024-01-01 12:00:00', 1, 1, 1, 900000, '2024-01-01 12:00:00', '2024-01-01 12:00:00', 2024),
-(2, '2024-02-01 12:00:00', 1, 1, 2, 800000, '2024-02-01 12:00:00', '2024-02-01 12:00:00', 2024),
-(3, '2024-03-01 12:00:00', 1, 1, 3, 700000, '2024-03-01 12:00:00', '2024-03-01 12:00:00', 2024),
-(4, '2024-04-01 12:00:00', 1, 1, 4, 600000, '2024-04-01 12:00:00', '2024-04-01 12:00:00', 2024),
-(5, '2024-05-01 12:00:00', 1, 1, 5, 500000, '2024-05-01 12:00:00', '2024-05-01 12:00:00', 2024),
+-- Loan Product 1 상환 기록 (월 상환 금액: 27,778원)
+INSERT IGNORE INTO loan_repayment_record (loan_repayment_record_id, create_at, member_loan_id, repayment_balance, repayment_date, update_at, day, month, year) VALUES
+(1, '2024-01-01 12:00:00', 1, 27778, '2024-01-01 12:00:00', '2024-01-01 12:00:00', 1, 1, 2024),
+(2, '2024-02-01 12:00:00', 1, 27778, '2024-02-01 12:00:00', '2024-02-01 12:00:00', 1, 2, 2024),
+(3, '2024-03-01 12:00:00', 1, 27778, '2024-03-01 12:00:00', '2024-03-01 12:00:00', 1, 3, 2024),
+(4, '2024-04-01 12:00:00', 1, 27778, '2024-04-01 12:00:00', '2024-04-01 12:00:00', 1, 4, 2024),
+(5, '2024-05-01 12:00:00', 1, 27778, '2024-05-01 12:00:00', '2024-05-01 12:00:00', 1, 5, 2024);
 
-(6, '2024-01-01 12:00:00', 1, 2, 1, 1800000, '2024-01-01 12:00:00', '2024-01-01 12:00:00', 2024),
-(7, '2024-02-01 12:00:00', 1, 2, 2, 1600000, '2024-02-01 12:00:00', '2024-02-01 12:00:00', 2024),
-(8, '2024-03-01 12:00:00', 1, 2, 3, 1400000, '2024-03-01 12:00:00', '2024-03-01 12:00:00', 2024),
-(9, '2024-04-01 12:00:00', 1, 2, 4, 1200000, '2024-04-01 12:00:00', '2024-04-01 12:00:00', 2024),
-(10, '2024-05-01 12:00:00', 1, 2, 5, 1000000, '2024-05-01 12:00:00', '2024-05-01 12:00:00', 2024),
+-- Loan Product 2 상환 기록 (월 상환 금액: 55,556원, 2월부터 시작)
+INSERT IGNORE INTO loan_repayment_record (loan_repayment_record_id, create_at, member_loan_id, repayment_balance, repayment_date, update_at, day, month, year) VALUES
+(6, '2024-02-01 12:00:00', 2, 55556, '2024-02-01 12:00:00', '2024-02-01 12:00:00', 1, 2, 2024),
+(7, '2024-03-01 12:00:00', 2, 55556, '2024-03-01 12:00:00', '2024-03-01 12:00:00', 1, 3, 2024),
+(8, '2024-04-01 12:00:00', 2, 55556, '2024-04-01 12:00:00', '2024-04-01 12:00:00', 1, 4, 2024),
+(9, '2024-05-01 12:00:00', 2, 55556, '2024-05-01 12:00:00', '2024-05-01 12:00:00', 1, 5, 2024),
+(10, '2024-06-01 12:00:00', 2, 55556, '2024-06-01 12:00:00', '2024-06-01 12:00:00', 1, 6, 2024);
 
-(11, '2024-01-01 12:00:00', 1, 3, 1, 2700000, '2024-01-01 12:00:00', '2024-01-01 12:00:00', 2024),
-(12, '2024-02-01 12:00:00', 1, 3, 2, 2400000, '2024-02-01 12:00:00', '2024-02-01 12:00:00', 2024),
-(13, '2024-03-01 12:00:00', 1, 3, 3, 2100000, '2024-03-01 12:00:00', '2024-03-01 12:00:00', 2024),
-(14, '2024-04-01 12:00:00', 1, 3, 4, 1800000, '2024-04-01 12:00:00', '2024-04-01 12:00:00', 2024),
-(15, '2024-05-01 12:00:00', 1, 3, 5, 1500000, '2024-05-01 12:00:00', '2024-05-01 12:00:00', 2024),
+-- Loan Product 3 상환 기록 (월 상환 금액: 83,333원, 3월부터 시작)
+INSERT IGNORE INTO loan_repayment_record (loan_repayment_record_id, create_at, member_loan_id, repayment_balance, repayment_date, update_at, day, month, year) VALUES
+(11, '2024-03-01 12:00:00', 3, 83333, '2024-03-01 12:00:00', '2024-03-01 12:00:00', 1, 3, 2024),
+(12, '2024-04-01 12:00:00', 3, 83333, '2024-04-01 12:00:00', '2024-04-01 12:00:00', 1, 4, 2024),
+(13, '2024-05-01 12:00:00', 3, 83333, '2024-05-01 12:00:00', '2024-05-01 12:00:00', 1, 5, 2024),
+(14, '2024-06-01 12:00:00', 3, 83333, '2024-06-01 12:00:00', '2024-06-01 12:00:00', 1, 6, 2024),
+(15, '2024-07-01 12:00:00', 3, 83333, '2024-07-01 12:00:00', '2024-07-01 12:00:00', 1, 7, 2024);
 
-(16, '2024-01-01 12:00:00', 1, 4, 1, 3600000, '2024-01-01 12:00:00', '2024-01-01 12:00:00', 2024),
-(17, '2024-02-01 12:00:00', 1, 4, 2, 3200000, '2024-02-01 12:00:00', '2024-02-01 12:00:00', 2024),
-(18, '2024-03-01 12:00:00', 1, 4, 3, 2800000, '2024-03-01 12:00:00', '2024-03-01 12:00:00', 2024),
-(19, '2024-04-01 12:00:00', 1, 4, 4, 2400000, '2024-04-01 12:00:00', '2024-04-01 12:00:00', 2024),
-(20, '2024-05-01 12:00:00', 1, 4, 5, 2000000, '2024-05-01 12:00:00', '2024-05-01 12:00:00', 2024),
+-- Loan Product 4 상환 기록 (월 상환 금액: 111,111원, 4월부터 시작)
+INSERT IGNORE INTO loan_repayment_record (loan_repayment_record_id, create_at, member_loan_id, repayment_balance, repayment_date, update_at, day, month, year) VALUES
+(16, '2024-04-01 12:00:00', 4, 111111, '2024-04-01 12:00:00', '2024-04-01 12:00:00', 1, 4, 2024),
+(17, '2024-05-01 12:00:00', 4, 111111, '2024-05-01 12:00:00', '2024-05-01 12:00:00', 1, 5, 2024),
+(18, '2024-06-01 12:00:00', 4, 111111, '2024-06-01 12:00:00', '2024-06-01 12:00:00', 1, 6, 2024),
+(19, '2024-07-01 12:00:00', 4, 111111, '2024-07-01 12:00:00', '2024-07-01 12:00:00', 1, 7, 2024),
+(20, '2024-08-01 12:00:00', 4, 111111, '2024-08-01 12:00:00', '2024-08-01 12:00:00', 1, 8, 2024);
 
-(21, '2024-01-01 12:00:00', 1, 5, 1, 4500000, '2024-01-01 12:00:00', '2024-01-01 12:00:00', 2024),
-(22, '2024-02-01 12:00:00', 1, 5, 2, 4000000, '2024-02-01 12:00:00', '2024-02-01 12:00:00', 2024),
-(23, '2024-03-01 12:00:00', 1, 5, 3, 3500000, '2024-03-01 12:00:00', '2024-03-01 12:00:00', 2024),
-(24, '2024-04-01 12:00:00', 1, 5, 4, 3000000, '2024-04-01 12:00:00', '2024-04-01 12:00:00', 2024),
-(25, '2024-05-01 12:00:00', 1, 5, 5, 2500000, '2024-05-01 12:00:00', '2024-05-01 12:00:00', 2024);
+-- Loan Product 5 상환 기록 (월 상환 금액: 138,889원, 5월부터 시작)
+INSERT IGNORE INTO loan_repayment_record (loan_repayment_record_id, create_at, member_loan_id, repayment_balance, repayment_date, update_at, day, month, year) VALUES
+(21, '2024-05-01 12:00:00', 5, 138889, '2024-05-01 12:00:00', '2024-05-01 12:00:00', 1, 5, 2024),
+(22, '2024-06-01 12:00:00', 5, 138889, '2024-06-01 12:00:00', '2024-06-01 12:00:00', 1, 6, 2024),
+(23, '2024-07-01 12:00:00', 5, 138889, '2024-07-01 12:00:00', '2024-07-01 12:00:00', 1, 7, 2024),
+(24, '2024-08-01 12:00:00', 5, 138889, '2024-08-01 12:00:00', '2024-08-01 12:00:00', 1, 8, 2024),
+(25, '2024-09-01 12:00:00', 5, 138889, '2024-09-01 12:00:00', '2024-09-01 12:00:00', 1, 9, 2024);
+
+-- 7. Account 테이블에 데이터 삽입 (이미 존재할 경우 삽입 무시)
+INSERT IGNORE INTO account (account_id, account_num, member_id, account_balance) VALUES
+(1, '123-456-789', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 1000000),
+(2, '123-456-790', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 2000000),
+(3, '123-456-791', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 3000000),
+(4, '123-456-792', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 4000000),
+(5, '123-456-793', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 5000000);
+
+-- 8. ExpenseCategory 테이블에 카테고리 데이터 삽입 (이미 존재할 경우 삽입 무시)
+INSERT IGNORE INTO expense_category (expense_category_id, name) VALUES
+(1, '식비'),
+(2, '대출'),
+(3, '문화'),
+(4, '유흥'),
+(5, '교통'),
+(6, '건강');
+
+-- 9. Expense 테이블에 더미 데이터 삽입 (이미 존재할 경우 삽입 무시)
+INSERT IGNORE INTO expense (expense_id, member_id, expense_category_id, title, price, expense_date) VALUES
+(1, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 1, '마트 장보기', 50000, '2024-08-01 10:00:00'),
+(2, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 2, '대출 상환금', 200000, '2024-08-02 12:00:00'),
+(3, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 3, '영화 관람', 15000, '2024-08-03 15:00:00'),
+(4, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 4, '술자리', 80000, '2024-08-04 20:00:00'),
+(5, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 5, '택시 이용', 25000, '2024-08-05 08:00:00'),
+(6, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 6, '병원 진료비', 70000, '2024-08-06 09:00:00');
