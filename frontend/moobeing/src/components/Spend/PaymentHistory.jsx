@@ -26,13 +26,19 @@ const SubHeader = styled.div`
 
 const DateTitle = styled.div`
   margin: 0;
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 5px;
 `;
 const SubTitle = styled.div`
   margin: 0;
+  font-size: 20px;
 `;
 
 const TotalLoan = styled.div`
   margin-top: 0;
+  font-weight: 700;
+  margin-left: 5px;
 `;
 
 const memberLoans = [

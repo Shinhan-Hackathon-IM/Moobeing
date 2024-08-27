@@ -21,7 +21,7 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center; /* 모든 요소를 수직 중앙 정렬 */
   align-items: center; /* 모든 요소를 수평 중앙 정렬 */
-  padding: 10%;
+  padding: 8%;
   box-sizing: border-box;
 `;
 

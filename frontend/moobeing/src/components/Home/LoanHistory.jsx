@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import LoanList from "./LoanList";
+import goToJourney from "../../assets/button/goToJourney.svg";
 
 const Container = styled.div`
   background-color: #f5fded;
@@ -13,7 +14,7 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  padding: 10%;
+  padding: 8% 8% 5% 8%;
   box-sizing: border-box;
   margin-top: 5%;
 `;
@@ -40,8 +41,9 @@ const SortButton = styled.p`
   font-size: 12px;
   padding: 5px;
   cursor: pointer;
-  background-color: #e0eed2;
-  border-radius: 5px;
+  background-color: ${(props) => (props.isActive ? "#348833" : "#e0eed2")};
+  color: ${(props) => (props.isActive ? "#ffffff" : "#000000")};
+  border-radius: 10px;
 `;
 
 const TotalLoan = styled.h2`
@@ -53,13 +55,18 @@ const TotalLoan = styled.h2`
 `;
 
 const NavigateButton = styled.button`
-  margin-left: 10px;
-  margin-top: -2px;
+  margin-left: 5px;
+  margin-top: 4px;
   cursor: pointer;
   background-color: transparent;
   border: none;
   font-weight: 800;
   font-family: Nanum Gothic;
+`;
+
+const NavigateImage = styled.img`
+  width: 20px;
+  height: 20px;
 `;
 
 const LoanListContainer = styled.div`
@@ -68,12 +75,13 @@ const LoanListContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-grow: 1; /* 남은 공간을 모두 사용하여 중앙에 위치하도록 설정 */
+  flex-grow: 1;
 `;
 
 function LoanHistory() {
   const [loans, setLoans] = useState([]);
   const [totalLoanAmount, setTotalLoanAmount] = useState(0);
+  const [activeSort, setActiveSort] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -142,6 +150,7 @@ function LoanHistory() {
       (a, b) => b.interest_rate - a.interest_rate
     );
     setLoans(sortedLoans);
+    setActiveSort("interest");
   };
 
   const sortByLoanMoney = () => {
@@ -149,6 +158,7 @@ function LoanHistory() {
       (a, b) => b.loan_amount - a.loan_amount
     );
     setLoans(sortedLoans);
+    setActiveSort("amount");
   };
 
   const navigateToTotalJourney = () => {
@@ -160,13 +170,25 @@ function LoanHistory() {
       <SubHeader>
         <SubTitle>나의 대출현황</SubTitle>
         <SortButtonContainer>
-          <SortButton onClick={sortByInterestRate}>금리순</SortButton>
-          <SortButton onClick={sortByLoanMoney}>금액순</SortButton>
+          <SortButton
+            onClick={sortByInterestRate}
+            isActive={activeSort === "interest"}
+          >
+            금리순
+          </SortButton>
+          <SortButton
+            onClick={sortByLoanMoney}
+            isActive={activeSort === "amount"}
+          >
+            금액순
+          </SortButton>
         </SortButtonContainer>
       </SubHeader>
       <TotalLoan>
         {totalLoanAmount.toLocaleString()} 원
-        <NavigateButton onClick={navigateToTotalJourney}>&gt;</NavigateButton>
+        <NavigateButton onClick={navigateToTotalJourney}>
+          <NavigateImage src={goToJourney} alt="여정지도" />
+        </NavigateButton>
       </TotalLoan>
       <LoanListContainer>
         <LoanList loans={loans} />
