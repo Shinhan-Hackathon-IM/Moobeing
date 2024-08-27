@@ -41,18 +41,25 @@ public class Quiz extends BaseTimeEntity {
 	@Column
 	private Boolean isCorrect;
 
+	//TODO  ENUM or upAndDown Boolean 로 수정
 	@Column
 	private int answer;
+
+	// 사용자에게 UP or DOWN 을 물어볼 값
+	@Column
+	private int example;
 
 	@Column
 	private LocalDateTime endedAt;
 
 	@Builder
-	private Quiz(Long quizId, Member member, QuizStatus status, int answer) {
+	private Quiz(Long quizId, Member member, QuizStatus status, int answer, int example) {
 		this.quizId = quizId;
 		this.member = member;
 		this.status = status;
 		this.answer = answer;
+		this.example = example;
+		this.isCorrect = false;
 		this.endedAt = LocalDateTime.now().plusWeeks(1);
 	}
 

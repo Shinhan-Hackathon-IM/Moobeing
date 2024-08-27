@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import com.im.moobeing.domain.quiz.entity.Quiz;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
 @AllArgsConstructor
 public class QuizResponse {
 	private Long quizId;
