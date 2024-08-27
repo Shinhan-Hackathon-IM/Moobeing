@@ -26,7 +26,7 @@ export const submitAnswer = async (quizNum, answer) => {
   }
 };
 
-// 3. 정답 결과 가져오기 (엔드포인트가 명확하지 않아 임의로 설정했습니다)
+// 3. 정답 결과 가져오기
 export const getQuizResult = async (quizNum) => {
   try {
     const response = await api.get(`/quiz/${quizNum}/result`);
