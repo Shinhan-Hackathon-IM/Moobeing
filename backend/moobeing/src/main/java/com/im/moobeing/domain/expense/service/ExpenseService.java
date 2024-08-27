@@ -20,6 +20,11 @@ import com.im.moobeing.domain.expense.entity.Expense;
 import com.im.moobeing.domain.expense.entity.ExpenseCategory;
 import com.im.moobeing.domain.expense.repository.ExpenseCategoryRepository;
 import com.im.moobeing.domain.expense.repository.ExpenseRepository;
+import com.im.moobeing.domain.loan.entity.LoanRepaymentRecord;
+import com.im.moobeing.domain.loan.entity.MemberLoan;
+import com.im.moobeing.domain.loan.repository.LoanProductRepository;
+import com.im.moobeing.domain.loan.repository.LoanRepaymentRecordRepository;
+import com.im.moobeing.domain.loan.repository.MemberLoanRepository;
 import com.im.moobeing.domain.member.entity.Member;
 import com.im.moobeing.global.error.ErrorCode;
 import com.im.moobeing.global.error.exception.BadRequestException;
@@ -34,6 +39,9 @@ public class ExpenseService {
 
 	private final ExpenseRepository expenseRepository;
 	private final ExpenseCategoryRepository expenseCategoryRepository;
+	private final MemberLoanRepository memberLoanRepository;
+	private final LoanRepaymentRecordRepository loanRepaymentRecordRepository;
+	private final LoanProductRepository loanProductRepository;
 
 	public List<ExpenseCategoryResponse> getExpenseCategory(Member member, Integer year, Integer month) {
 		validateDate(year, month);
@@ -62,12 +70,37 @@ public class ExpenseService {
 				.filter(expense -> !Objects.isNull(expense.getExpenseDate())) // expenseDate가 nullable
 				.collect(Collectors.groupingBy(
 						expense -> expense.getExpenseDate().toLocalDate(),
-						Collectors.mapping(ExpenseHistoryResponse::from, Collectors.toList())
+						Collectors.mapping(ExpenseHistoryResponse::of, Collectors.toList())
 				));
 
-		return groupedByDate.entrySet().stream()
+		List<ExpenseDateResponse> expenseDateResponses = groupedByDate.entrySet().stream()
 				.map(entry -> ExpenseDateResponse.of(entry.getKey(), entry.getValue()))
 				.collect(Collectors.toList());
+
+		List<MemberLoan> memberLoans = memberLoanRepository.findAllByMemberId(member.getId());
+
+		List<LoanRepaymentRecord> loanRepaymentRecords = new ArrayList<>();
+
+		for (MemberLoan memberLoan : memberLoans) {
+			loanRepaymentRecords.addAll(loanRepaymentRecordRepository.findAllByMemberLoanId(memberLoan.getId()));
+		}
+
+		//todo 여기서 date에 맞는 것과 history에 맞는 것들을 추가해야함. 한바퀴 돌면서 해당 일에 맞는 것들을 찾는다.
+		for (ExpenseDateResponse expenseDateResponse : expenseDateResponses) {
+			for (LoanRepaymentRecord loanRepaymentRecord : loanRepaymentRecords) {
+				if (expenseDateResponse.getDate().getDayOfMonth() == loanRepaymentRecord.getDay() &&
+					expenseDateResponse.getDate().getMonthValue() == loanRepaymentRecord.getMonth() &&
+					expenseDateResponse.getDate().getYear() == loanRepaymentRecord.getYear()){
+					MemberLoan memberLoan = memberLoanRepository.findById(loanRepaymentRecord.getMemberLoanId())
+						.orElseThrow(()->new RuntimeException("todo"));
+					String title = memberLoan.getLoanProductName() + " 상환";
+					int price = Math.toIntExact(loanRepaymentRecord.getRepaymentBalance());
+					expenseDateResponse.getHistory().add(ExpenseHistoryResponse.from(title,"대출", price));
+				}
+			}
+		}
+
+		return expenseDateResponses;
 	}
 
 	private void validateDate(Integer year, Integer month) {
@@ -177,5 +210,31 @@ public class ExpenseService {
 		);
 
 		return GetDrawPiChartResponse.of(getDrawPiChartDtoList, getCategoryListDtoList);
+	}
+
+	/**
+	 * Quiz 생성을 위해 회원의 1주일간 카테고리 별 지출 정보를 가져오는 메서다
+	 * @param member 해당 회원
+	 * @return 회원의 1주일간 카테고리 별 지출 정보
+	 */
+	public List<ExpenseCategoryResponse> getExpenseForQuiz(Member member) {
+		// 1일전 ~ 7일전 까지의 지출 정보를 가져온다.
+		// 오늘을 포함시킬 경우 지출 내용에 변경이 생길 수 있다.
+		LocalDate today = LocalDate.now().minusDays(1);
+		LocalDate from = LocalDate.now().minusDays(7);
+		List<Expense> expenses = expenseRepository.findAllByExpenseDateBetween(from.atStartOfDay(), today.atStartOfDay());
+
+		Map<String, Integer> totalExpensesByCategory = expenses.stream()
+			.collect(Collectors.groupingBy(
+				expense -> expense.getExpenseCategory().getName(),
+				Collectors.summingInt(Expense::getPrice) // 각 카테고리의 총 금액 합산
+			));
+
+		return totalExpensesByCategory.entrySet().stream()
+			.map(entry -> ExpenseCategoryResponse.builder()
+				.categoryName(entry.getKey())
+				.totalPrice(entry.getValue())
+				.build())
+			.collect(Collectors.toList());
 	}
 }

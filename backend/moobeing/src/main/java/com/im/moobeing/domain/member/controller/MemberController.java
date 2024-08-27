@@ -80,15 +80,13 @@ public class MemberController {
     @Operation(summary = "맴버 랜덤 무 뽑기", description = "맴버가 랜덤으로 무 뽑기")
     @PostMapping("/radish")
     public ResponseEntity<?> addMemberRadish(@AuthenticationPrincipal Member member) {
-        memberService.addMemberRadish(member);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.addMemberRadish(member));
     }
 
     @Operation(summary = "애기 무 뽑기", description = "맴버가 애기 무 뽑기")
     @PostMapping("/baby")
     public ResponseEntity<?> addMemberBaby(@AuthenticationPrincipal Member member) {
-        memberService.addMemberBaby(member);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.addMemberBaby(member));
     }
 
     @Operation(summary = "사용자의 보여지는 무 변경", description = "사용자의 무 변경하기")

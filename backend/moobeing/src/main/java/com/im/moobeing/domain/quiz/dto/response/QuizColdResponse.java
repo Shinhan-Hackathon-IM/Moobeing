@@ -8,7 +8,7 @@ import lombok.Getter;
 public class QuizColdResponse {
 	private boolean isExist;
 
-	private static QuizColdResponse from(Boolean isExist) {
+	public static QuizColdResponse from(Boolean isExist) {
 		return new QuizColdResponse(isExist);
 	}
 }

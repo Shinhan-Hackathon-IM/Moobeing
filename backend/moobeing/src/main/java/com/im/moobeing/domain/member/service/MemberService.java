@@ -1,5 +1,6 @@
 package com.im.moobeing.domain.member.service;
 
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import com.im.moobeing.domain.member.dto.request.MemberCreateRequest;
 import com.im.moobeing.domain.member.dto.request.MemberLoginRequest;
 import com.im.moobeing.domain.member.dto.request.MemberPwChangeRequest;
 import com.im.moobeing.domain.member.dto.request.MemberRadishSelectRequest;
+import com.im.moobeing.domain.member.dto.response.AddMemberRadishResponse;
 import com.im.moobeing.domain.member.dto.response.MemberCheckEmailResponse;
 import com.im.moobeing.domain.member.dto.response.MemberCreateResponse;
 import com.im.moobeing.domain.member.dto.response.MemberGetResponse;
@@ -127,7 +129,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void addMemberRadish(Member member) {
+    public AddMemberRadishResponse addMemberRadish(Member member) {
         // 랜덤 Radish ID 선택
         Long randomRadishId = 1 + new Random().nextLong(radishRepository.count());
 
@@ -152,6 +154,9 @@ public class MemberService {
             member.addMemberRadish(newMemberRadish);
             memberRepository.save(member);
         }
+
+        return AddMemberRadishResponse.of(member,radish.getRadishName(),radish.getRadishRank(),
+            radish.getRadishImageUrl());
     }
 
     @Transactional
@@ -181,7 +186,7 @@ public class MemberService {
         return MemberRadishSelectResponse.of(radish.getRadishName(), radish.getRadishRank(), radish.getRadishImageUrl());
     }
 
-    public void addMemberBaby(Member member) {
+    public AddMemberRadishResponse addMemberBaby(Member member) {
         // 랜덤 Radish ID 선택
         Long babyMooRadishId = 3L;
 
@@ -206,5 +211,17 @@ public class MemberService {
             member.addMemberRadish(newMemberRadish);
             memberRepository.save(member);
         }
+
+        return AddMemberRadishResponse.of(member,radish.getRadishName(),radish.getRadishRank(),
+            radish.getRadishImageUrl());
+    }
+
+    /**
+     * Quiz 에서 모든 회원에 대해서 퀴즈를 만들기 위해
+     * 모든 회원을 가져오는 메서드
+     * @return 모든 회원 리스트
+     */
+    public List<Member> getAllMembers() {
+        return memberRepository.findAll();
     }
 }

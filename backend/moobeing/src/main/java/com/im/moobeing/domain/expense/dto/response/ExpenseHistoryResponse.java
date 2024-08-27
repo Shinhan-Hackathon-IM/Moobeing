@@ -12,8 +12,12 @@ public class ExpenseHistoryResponse {
 	private String categoryName;
 	private int price;
 
-	public static ExpenseHistoryResponse from(Expense expense) {
+	public static ExpenseHistoryResponse of(Expense expense) {
 		return new ExpenseHistoryResponse(expense.getTitle(), expense.getExpenseCategory().getName(),
 			expense.getPrice());
+	}
+
+	public static ExpenseHistoryResponse from(String title, String categoryName, int price) {
+		return new ExpenseHistoryResponse(title, categoryName, price);
 	}
 }
