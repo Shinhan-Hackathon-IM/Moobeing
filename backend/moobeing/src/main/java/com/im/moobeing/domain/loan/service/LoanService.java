@@ -1,23 +1,8 @@
 package com.im.moobeing.domain.loan.service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.im.moobeing.domain.loan.dto.GetAllLoanMapDto;
 import com.im.moobeing.domain.loan.dto.GetMemberLoanDto;
-import com.im.moobeing.domain.loan.dto.request.GetAllLoanMapRequest;
-import com.im.moobeing.domain.loan.dto.request.GetBuddyLoanMapRequest;
-import com.im.moobeing.domain.loan.dto.request.GetLoanMapRequest;
-import com.im.moobeing.domain.loan.dto.response.GetAllLoanMapResponse;
-import com.im.moobeing.domain.loan.dto.response.GetLoanMapResponse;
-import com.im.moobeing.domain.loan.dto.response.GetMemberLoanResponse;
-import com.im.moobeing.domain.loan.dto.response.GetMonthlyLoanResponse;
-import com.im.moobeing.domain.loan.dto.response.GetPercentLoanResponse;
-import com.im.moobeing.domain.loan.dto.response.GetSumLoanResponse;
+import com.im.moobeing.domain.loan.dto.response.*;
 import com.im.moobeing.domain.loan.entity.AverageLoanRepaymentRecord;
 import com.im.moobeing.domain.loan.entity.LoanProduct;
 import com.im.moobeing.domain.loan.entity.LoanRepaymentRecord;
@@ -27,8 +12,13 @@ import com.im.moobeing.domain.loan.repository.LoanProductRepository;
 import com.im.moobeing.domain.loan.repository.LoanRepaymentRecordRepository;
 import com.im.moobeing.domain.loan.repository.MemberLoanRepository;
 import com.im.moobeing.domain.member.entity.Member;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -70,8 +60,8 @@ public class LoanService {
 		return GetMemberLoanResponse.of(getMemberLoanDtoList);
 	}
 
-	public GetLoanMapResponse getLoanMap(Member member, GetLoanMapRequest getLoanMapRequest) {
-		MemberLoan memberLoan = memberLoanRepository.findByMemberIdAndLoanProductName(member.getId(), getLoanMapRequest.getLoanProductName())
+	public GetLoanMapResponse getLoanMap(Member member, String reqProductName, int reqPageNum) {
+		MemberLoan memberLoan = memberLoanRepository.findByMemberIdAndLoanProductName(member.getId(), reqProductName)
 			.orElseThrow(() -> new RuntimeException("todo memberLoan 없음"));
 
 		List<LoanRepaymentRecord> loanRepaymentRecordList = loanRepaymentRecordRepository.findAllByMemberLoanId(memberLoan.getId());
@@ -79,7 +69,7 @@ public class LoanService {
 		// 페이지네이션 로직
 		int pageSize = 4;  // 페이지 당 항목 수 (4개씩 표시)
 		int step = 3;  // 3칸씩 이동
-		int pageNum = getLoanMapRequest.getPageNum();  // 요청에서 페이지 번호 가져오기
+		int pageNum = reqPageNum;  // 요청에서 페이지 번호 가져오기
 
 		int fromIndex = (pageNum - 1) * step;
 		int toIndex = Math.min(fromIndex + pageSize, loanRepaymentRecordList.size());
@@ -96,9 +86,9 @@ public class LoanService {
 		List<GetAllLoanMapDto> getAllLoanMapDtoList = new ArrayList<>();
 
 		for (LoanRepaymentRecord record : loanRepaymentRecordList) {
+			totalLoanBalance -= memberLoan.getInitialBalance() - record.getRepaymentBalance();
 			if(start == 0) {
-				maxLoanBalance = memberLoan.getInitialBalance() - record.getRepaymentBalance();
-				totalLoanBalance = maxLoanBalance;
+				maxLoanBalance = totalLoanBalance;
 			}
 
 			getAllLoanMapDtoList.add(GetAllLoanMapDto.builder()
@@ -107,8 +97,8 @@ public class LoanService {
 				.loanBalance(totalLoanBalance)
 				.build());
 
-			if(start++ == 4){
-				minLoanBalance = memberLoan.getInitialBalance() - record.getRepaymentBalance();
+			if(++start == 4){
+				minLoanBalance = totalLoanBalance;
 				break;
 			}
 		}
@@ -117,7 +107,7 @@ public class LoanService {
 		return GetLoanMapResponse.of(maxLoanBalance, minLoanBalance, getAllLoanMapDtoList);
 	}
 
-	public GetAllLoanMapResponse getAllLoanMap(Member member, GetAllLoanMapRequest getAllLoanMapRequest) {
+	public GetAllLoanMapResponse getAllLoanMap(Member member, int pageNum) {
 		// 1. 주어진 Member에 대한 모든 MemberLoan을 가져옴
 		List<MemberLoan> memberLoanList = memberLoanRepository.findAllByMemberId(member.getId());
 
@@ -137,7 +127,7 @@ public class LoanService {
 		int startYear = minYear;
 		int startMonth = minMonth;
 
-		int page = (getAllLoanMapRequest.getPageNum() - 1) * 3;
+		int page = (pageNum - 1) * 3;
 
 		startMonth += page;
 
@@ -249,8 +239,8 @@ public class LoanService {
 		return GetSumLoanResponse.of(sum);
 	}
 
-	public List<LoanRepaymentRecord> getBuddyLoanMap(Member member, GetBuddyLoanMapRequest getBuddyLoanMapRequest) {
-		int pageNum = getBuddyLoanMapRequest.getPageNum();
+	public List<LoanRepaymentRecord> getBuddyLoanMap(Member member, String loanName, int reqPageNum) {
+		int pageNum = reqPageNum;
 
 		// pageNum에 따른 month 범위 설정
 		int startMonth = (pageNum - 1) * 3 + 1;
@@ -260,7 +250,7 @@ public class LoanService {
 		List<AverageLoanRepaymentRecord> averageLoanRepaymentRecordList =
 			averageLoanRepaymentRecordRepository.findByAgeAndLoanNameAndMonthRange(
 				CURRENT_YEAR - Integer.parseInt(member.getBirthday().substring(0,2)),
-				getBuddyLoanMapRequest.getLoanName(),
+					loanName,
 				startMonth,
 				endMonth);
 
