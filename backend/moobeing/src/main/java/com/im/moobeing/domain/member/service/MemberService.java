@@ -1,7 +1,22 @@
 package com.im.moobeing.domain.member.service;
 
-import com.im.moobeing.domain.member.dto.request.*;
-import com.im.moobeing.domain.member.dto.response.*;
+import java.util.Random;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.im.moobeing.domain.member.dto.request.MemberChangeRequest;
+import com.im.moobeing.domain.member.dto.request.MemberCheckEmailRequest;
+import com.im.moobeing.domain.member.dto.request.MemberCreateRequest;
+import com.im.moobeing.domain.member.dto.request.MemberLoginRequest;
+import com.im.moobeing.domain.member.dto.request.MemberPwChangeRequest;
+import com.im.moobeing.domain.member.dto.request.MemberRadishSelectRequest;
+import com.im.moobeing.domain.member.dto.response.MemberCheckEmailResponse;
+import com.im.moobeing.domain.member.dto.response.MemberCreateResponse;
+import com.im.moobeing.domain.member.dto.response.MemberGetResponse;
+import com.im.moobeing.domain.member.dto.response.MemberLoginResponse;
+import com.im.moobeing.domain.member.dto.response.MemberRadishResponse;
+import com.im.moobeing.domain.member.dto.response.MemberRadishSelectResponse;
 import com.im.moobeing.domain.member.entity.Member;
 import com.im.moobeing.domain.member.entity.MemberRadish;
 import com.im.moobeing.domain.member.repository.MemberRepository;
@@ -13,11 +28,8 @@ import com.im.moobeing.global.client.dto.response.GetUserKeyResponse;
 import com.im.moobeing.global.config.ApiKeyConfig;
 import com.im.moobeing.global.error.ErrorCode;
 import com.im.moobeing.global.error.exception.AuthenticationException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Random;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional(readOnly = true)
@@ -167,5 +179,32 @@ public class MemberService {
         memberRepository.save(member);
 
         return MemberRadishSelectResponse.of(radish.getRadishName(), radish.getRadishRank(), radish.getRadishImageUrl());
+    }
+
+    public void addMemberBaby(Member member) {
+        // 랜덤 Radish ID 선택
+        Long babyMooRadishId = 3L;
+
+        // 해당 radishId에 대한 Radish 엔티티를 찾습니다.
+        Radish radish = radishRepository.findById(babyMooRadishId)
+            .orElseThrow(() -> new IllegalArgumentException("Radish not found with id: " + babyMooRadishId));
+
+        // MemberRadish 생성 및 추가
+        MemberRadish existingMemberRadish = member.getMemberRadishes().stream()
+            .filter(memberRadish -> memberRadish.getRadish().getId().equals(babyMooRadishId))
+            .findFirst()
+            .orElse(null);
+
+        if (existingMemberRadish != null) {
+            existingMemberRadish.addRadishNumber();
+        } else {
+            MemberRadish newMemberRadish = MemberRadish.builder()
+                .member(member)
+                .radish(radish)
+                .radishNumber(1L)
+                .build();
+            member.addMemberRadish(newMemberRadish);
+            memberRepository.save(member);
+        }
     }
 }
