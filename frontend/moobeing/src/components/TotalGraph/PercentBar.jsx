@@ -26,7 +26,7 @@ const GraphFill = styled.div`
   background-color: #658b65; /* 배경색보다 더 진한 색 */
   height: 100%;
   border-radius: 20px;
-  width: ${({ fillPercent }) => fillPercent}%;
+  width: ${({ fillpercent }) => fillpercent}%;
   transition: width 2s ease; /* 부드러운 채우기 애니메이션 */
   position: relative;
   display: flex;
@@ -49,7 +49,7 @@ const Text = styled.div`
 function PercentBar() {
   const [fillPercent, setFillPercent] = useState(0);
 
-  // 예시: 데이터를 받아와서 fillPercent 설정
+  // 예시: 데이터를 받아와서 fillpercent 설정
   useEffect(() => {
     // 백엔드나 API로부터 값을 가져와서 설정할 수 있음
     const fetchedPercent = 20; // 이 값을 나중에 백엔드에서 받아오는 값으로 변경

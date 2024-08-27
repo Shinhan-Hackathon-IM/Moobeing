@@ -57,7 +57,7 @@ const GraphFill = styled.div`
     darken(0.2, GraphColors[grade])}; /* 더 진한 색 */
   height: 100%;
   border-radius: 20px;
-  width: ${({ fillPercent }) => fillPercent}%;
+  width: ${({ fillpercent }) => fillpercent}%;
   transition: width 2s ease; /* 부드러운 채우기 애니메이션 */
   position: relative;
   display: flex;
@@ -80,7 +80,7 @@ const Text = styled.div`
 
 function CreditScore() {
   const creditLevel = "A"; // 신용등급
-  const fillPercent = 50; // 그래프에서 얼마나 채울지 (신용점수에 따라 조정)
+  const fillpercent = 50; // 그래프에서 얼마나 채울지 (신용점수에 따라 조정)
 
   return (
     <Container>
@@ -89,7 +89,7 @@ function CreditScore() {
         <CreditLevel>{creditLevel}</CreditLevel>
       </SubHeader>
       <GraphContainer grade={creditLevel}>
-        <GraphFill grade={creditLevel} fillPercent={fillPercent}>
+        <GraphFill grade={creditLevel} fillpercent={fillpercent}>
           <Radish src={radish} alt="Radish" />
         </GraphFill>
       </GraphContainer>
