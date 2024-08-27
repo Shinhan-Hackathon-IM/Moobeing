@@ -1,15 +1,27 @@
 package com.im.moobeing.domain.member.controller;
 
-import com.im.moobeing.domain.member.dto.request.*;
-import com.im.moobeing.domain.member.entity.Member;
-import com.im.moobeing.domain.member.service.MemberService;
-import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.im.moobeing.domain.member.dto.request.MemberChangeRequest;
+import com.im.moobeing.domain.member.dto.request.MemberCheckEmailRequest;
+import com.im.moobeing.domain.member.dto.request.MemberCreateRequest;
+import com.im.moobeing.domain.member.dto.request.MemberLoginRequest;
+import com.im.moobeing.domain.member.dto.request.MemberPwChangeRequest;
+import com.im.moobeing.domain.member.dto.request.MemberRadishSelectRequest;
+import com.im.moobeing.domain.member.entity.Member;
+import com.im.moobeing.domain.member.service.MemberService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/member")
@@ -68,8 +80,13 @@ public class MemberController {
     @Operation(summary = "맴버 랜덤 무 뽑기", description = "맴버가 랜덤으로 무 뽑기")
     @PostMapping("/radish")
     public ResponseEntity<?> addMemberRadish(@AuthenticationPrincipal Member member) {
-        memberService.addMemberRadish(member);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.addMemberRadish(member));
+    }
+
+    @Operation(summary = "애기 무 뽑기", description = "맴버가 애기 무 뽑기")
+    @PostMapping("/baby")
+    public ResponseEntity<?> addMemberBaby(@AuthenticationPrincipal Member member) {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.addMemberBaby(member));
     }
 
     @Operation(summary = "사용자의 보여지는 무 변경", description = "사용자의 무 변경하기")

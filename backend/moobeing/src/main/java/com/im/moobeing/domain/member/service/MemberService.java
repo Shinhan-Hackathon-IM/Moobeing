@@ -1,7 +1,24 @@
 package com.im.moobeing.domain.member.service;
 
-import com.im.moobeing.domain.member.dto.request.*;
-import com.im.moobeing.domain.member.dto.response.*;
+import java.util.List;
+import java.util.Random;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.im.moobeing.domain.member.dto.request.MemberChangeRequest;
+import com.im.moobeing.domain.member.dto.request.MemberCheckEmailRequest;
+import com.im.moobeing.domain.member.dto.request.MemberCreateRequest;
+import com.im.moobeing.domain.member.dto.request.MemberLoginRequest;
+import com.im.moobeing.domain.member.dto.request.MemberPwChangeRequest;
+import com.im.moobeing.domain.member.dto.request.MemberRadishSelectRequest;
+import com.im.moobeing.domain.member.dto.response.AddMemberRadishResponse;
+import com.im.moobeing.domain.member.dto.response.MemberCheckEmailResponse;
+import com.im.moobeing.domain.member.dto.response.MemberCreateResponse;
+import com.im.moobeing.domain.member.dto.response.MemberGetResponse;
+import com.im.moobeing.domain.member.dto.response.MemberLoginResponse;
+import com.im.moobeing.domain.member.dto.response.MemberRadishResponse;
+import com.im.moobeing.domain.member.dto.response.MemberRadishSelectResponse;
 import com.im.moobeing.domain.member.entity.Member;
 import com.im.moobeing.domain.member.entity.MemberRadish;
 import com.im.moobeing.domain.member.repository.MemberRepository;
@@ -13,11 +30,8 @@ import com.im.moobeing.global.client.dto.response.GetUserKeyResponse;
 import com.im.moobeing.global.config.ApiKeyConfig;
 import com.im.moobeing.global.error.ErrorCode;
 import com.im.moobeing.global.error.exception.AuthenticationException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Random;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional(readOnly = true)
@@ -115,7 +129,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void addMemberRadish(Member member) {
+    public AddMemberRadishResponse addMemberRadish(Member member) {
         // 랜덤 Radish ID 선택
         Long randomRadishId = 1 + new Random().nextLong(radishRepository.count());
 
@@ -140,6 +154,9 @@ public class MemberService {
             member.addMemberRadish(newMemberRadish);
             memberRepository.save(member);
         }
+
+        return AddMemberRadishResponse.of(member,radish.getRadishName(),radish.getRadishRank(),
+            radish.getRadishImageUrl());
     }
 
     @Transactional
@@ -167,5 +184,44 @@ public class MemberService {
         memberRepository.save(member);
 
         return MemberRadishSelectResponse.of(radish.getRadishName(), radish.getRadishRank(), radish.getRadishImageUrl());
+    }
+
+    public AddMemberRadishResponse addMemberBaby(Member member) {
+        // 랜덤 Radish ID 선택
+        Long babyMooRadishId = 3L;
+
+        // 해당 radishId에 대한 Radish 엔티티를 찾습니다.
+        Radish radish = radishRepository.findById(babyMooRadishId)
+            .orElseThrow(() -> new IllegalArgumentException("Radish not found with id: " + babyMooRadishId));
+
+        // MemberRadish 생성 및 추가
+        MemberRadish existingMemberRadish = member.getMemberRadishes().stream()
+            .filter(memberRadish -> memberRadish.getRadish().getId().equals(babyMooRadishId))
+            .findFirst()
+            .orElse(null);
+
+        if (existingMemberRadish != null) {
+            existingMemberRadish.addRadishNumber();
+        } else {
+            MemberRadish newMemberRadish = MemberRadish.builder()
+                .member(member)
+                .radish(radish)
+                .radishNumber(1L)
+                .build();
+            member.addMemberRadish(newMemberRadish);
+            memberRepository.save(member);
+        }
+
+        return AddMemberRadishResponse.of(member,radish.getRadishName(),radish.getRadishRank(),
+            radish.getRadishImageUrl());
+    }
+
+    /**
+     * Quiz 에서 모든 회원에 대해서 퀴즈를 만들기 위해
+     * 모든 회원을 가져오는 메서드
+     * @return 모든 회원 리스트
+     */
+    public List<Member> getAllMembers() {
+        return memberRepository.findAll();
     }
 }

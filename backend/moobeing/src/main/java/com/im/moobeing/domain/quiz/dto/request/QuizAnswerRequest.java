@@ -2,16 +2,12 @@ package com.im.moobeing.domain.quiz.dto.request;
 
 import com.im.moobeing.domain.quiz.entity.QuizInputAnswer;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@NoArgsConstructor
-@Getter
-public class QuizAnswerRequest {
-	private int baseValue;
-	private QuizInputAnswer answer;
 
-	public void setAnswer(String answer) {
-		this.answer = QuizInputAnswer.from(answer);
-	}
+
+public record QuizAnswerRequest (String answer){
 }

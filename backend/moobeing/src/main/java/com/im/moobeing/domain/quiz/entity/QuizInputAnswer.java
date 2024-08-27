@@ -9,8 +9,8 @@ import com.im.moobeing.global.error.ErrorCode;
 import com.im.moobeing.global.error.exception.BadRequestException;
 
 public enum QuizInputAnswer {
-	UP("up"),
-	DOWN("down");
+	UP("UP"),
+	DOWN("DOWN");
 
 	private String displayName;
 	private static final Map<String, QuizInputAnswer> convertor = Arrays.stream(QuizInputAnswer.values())

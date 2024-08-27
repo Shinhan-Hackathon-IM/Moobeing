@@ -1,4 +1,11 @@
 package com.im.moobeing.domain.account.repository;
 
-public class AccountRepository {
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.im.moobeing.domain.account.entity.Account;
+
+public interface AccountRepository extends JpaRepository<Account, Long> {
+	List<Account> findByMemberId(Long memberId);
 }
