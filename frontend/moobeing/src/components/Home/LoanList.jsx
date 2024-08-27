@@ -1,6 +1,11 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import goToJourney from "../../assets/button/goToJourney.svg";
+import leftButton from "../../assets/button/leftButton.svg";
+import rightButton from "../../assets/button/rightButton.svg";
+import leftButtonBlack from "../../assets/button/leftButtonBlack.svg";
+import rightButtonBlack from "../../assets/button/rightButtonBlack.svg";
 
 const BankLogo = styled.img`
   width: 50px;
@@ -29,8 +34,8 @@ const LoanItem = styled.div`
 `;
 
 const NavigateButton = styled.button`
-  margin-left: 5px;
-  margin-top: -2px;
+  margin-top: 4px;
+  margin-bottom: 2px;
   cursor: pointer;
   background-color: transparent;
   border: none;
@@ -39,23 +44,28 @@ const NavigateButton = styled.button`
   font-size: 10px;
 `;
 
+const NavigateImage = styled.img`
+  width: 14px;
+  height: 14px;
+`;
+
 const InterestRate = styled.div`
   margin-left: auto;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: bold;
   background-color: #e0eed2;
   padding: 5px 8px;
-  border-radius: 5px;
+  border-radius: 10px;
   color: white;
 `;
 
 const LoanListContainer = styled.div`
   display: flex;
-  flex-direction: column; /* 세로 정렬을 위해 추가 */
-  justify-content: flex-start; /* 컨텐츠를 위쪽에 붙이기 위해 수정 */
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
-  height: 300px;
+  height: 260px;
   overflow: hidden;
   margin-top: 20px;
 `;
@@ -67,25 +77,43 @@ const LoanListWrapper = styled.div`
   width: 100%;
 `;
 
-const DownButton = styled.button`
-  background-color: #c0dda6;
-  color: white;
+const ScrollButton = styled.button`
+  background-color: transparent;
   border: none;
-  padding: 10px 20px;
-  font-size: 15px;
   cursor: pointer;
   border-radius: 10px;
+  display: flex;
+  align-items: center;
+`;
+
+const DownImage = styled.img`
+  width: 20px;
+  height: 20px;
+`;
+
+const PageInfo = styled.div`
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0 10px;
 `;
 
 function LoanList({ loans }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const loansPerPage = 3;
+  const totalPages = Math.ceil(loans.length / loansPerPage);
   const navigate = useNavigate();
 
-  const handleScrollDown = () => {
+  const handleScrollNext = () => {
     setCurrentIndex((prevIndex) => {
       const nextIndex = prevIndex + loansPerPage;
-      return nextIndex >= loans.length ? 0 : nextIndex; // 무한 순환
+      return nextIndex >= loans.length ? 0 : nextIndex; // Loop back to the first page
+    });
+  };
+
+  const handleScrollPrev = () => {
+    setCurrentIndex((prevIndex) => {
+      const prevIndexNew = prevIndex - loansPerPage;
+      return prevIndexNew < 0 ? loans.length - loansPerPage : prevIndexNew; // Loop back to the last page
     });
   };
 
@@ -94,6 +122,7 @@ function LoanList({ loans }) {
   };
 
   const visibleLoans = loans.slice(currentIndex, currentIndex + loansPerPage);
+  const currentPage = Math.floor(currentIndex / loansPerPage) + 1;
 
   return (
     <>
@@ -108,7 +137,9 @@ function LoanList({ loans }) {
               <LoanInfo>
                 <LoanName>
                   <div>{loan.loan_type}</div>
-                  <NavigateButton>&gt;</NavigateButton>
+                  <NavigateButton>
+                    <NavigateImage src={goToJourney} alt="여정지도" />
+                  </NavigateButton>
                 </LoanName>
                 <div>{loan.loan_amount.toLocaleString()} 원</div>
               </LoanInfo>
@@ -117,7 +148,21 @@ function LoanList({ loans }) {
           ))}
         </LoanListWrapper>
       </LoanListContainer>
-      <DownButton onClick={handleScrollDown}>아래로</DownButton>
+      <ScrollButton>
+        <DownImage
+          src={currentPage > 1 ? leftButtonBlack : leftButton}
+          alt="이전"
+          onClick={handleScrollPrev}
+        />
+        <PageInfo>
+          {currentPage}/{totalPages}
+        </PageInfo>
+        <DownImage
+          src={currentPage < totalPages ? rightButtonBlack : rightButton}
+          alt="다음"
+          onClick={handleScrollNext}
+        />
+      </ScrollButton>
     </>
   );
 }

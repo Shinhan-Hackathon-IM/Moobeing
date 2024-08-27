@@ -9,16 +9,21 @@ import Footer from "../components/Fixed/Footer";
 import Header from "../components/Fixed/Header";
 
 const PageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
-  overflow-x: hidden;
+  min-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden; /* 추가: 가로 스크롤 숨기기 */
+  box-sizing: border-box;
 `;
 
 const Container = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  width: 100%;
-  padding: 5% 0 0 0; // 하단 패딩 제거
+  padding: 5% 0 0 0;
   box-sizing: border-box;
 `;
 
@@ -26,15 +31,16 @@ const Rectangle = styled.div`
   width: 100%;
   height: 70px;
   background-color: #c0dda5;
-  position: relative;
+  bottom: 65px; /* Footer 바로 위에 배치 */
   z-index: 1;
+  padding-top: 90px;
 `;
 
 const RadishWrapper = styled.div`
   width: 100%;
   position: relative;
   z-index: 2;
-  margin-bottom: -30px; // Rectangle과 겹치도록 음수 마진 적용
+  margin-bottom: -30px;
 `;
 
 const TotalJourney = () => {
@@ -92,7 +98,7 @@ const TotalJourney = () => {
       <Container>
         <TotalGraph data={data} peerData={peerData} />
         <PercentBar />
-        <PlannedLoanBalance />
+        {/* <PlannedLoanBalance /> */}
         <LeftMoney />
         <RadishWrapper>
           <HiddenRadish PaidLoanNum={paidLoanNum} TotalLoanNum={totalLoanNum} />
