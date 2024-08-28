@@ -13,8 +13,10 @@ import lombok.Getter;
 @Builder
 public class GetDrawPiChartResponse {
 	private Long totalExpense;
+
 	@JsonProperty("getPieChartList")
 	private List<GetDrawPiChartDto> getDrawPiChartDtoList;
+
 	@JsonProperty("getCategoryList")
 	private List<GetCategoryListDto> getCategoryListDtoList;
 

@@ -24,7 +24,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class MemberController {
 
