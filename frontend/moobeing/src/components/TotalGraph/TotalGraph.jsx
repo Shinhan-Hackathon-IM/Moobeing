@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import {
   LineChart,
@@ -10,46 +10,111 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import leftButton from "../../assets/button/leftButtonWhite.svg";
+import rigthButton from "../../assets/button/rightButtonWhite.svg";
 
 const GraphContainer = styled.div`
   background-color: #f5fded;
   height: 550px;
-  width: 100%;
+  width: 90%;
   margin-bottom: 5%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding: 10px;
+  padding: 20px 10px 10px 10px;
   box-sizing: border-box;
   border-radius: 5%;
+  position: relative;
 `;
 
 const ChartContainer = styled.div`
-  width: 100%;
+  width: 87%;
   height: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
+`;
+
+const TitleOfChart = styled.h1`
+  margin-top: 4vh;
+  margin-bottom: 2vh;
 `;
 
 const ButtonContainer = styled.div`
-  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  right: 0;
+  transform: translateY(-50%);
+  width: 97%;
   display: flex;
   justify-content: space-between;
-  margin-top: 10px;
+  pointer-events: none; /* 버튼 외 영역은 클릭 이벤트 무시 */
 `;
 
 const Button = styled.button`
-  padding: 5px 10px;
+  padding: 5px;
   cursor: pointer;
+  background-color: #e0eed2;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto; /* 버튼은 클릭 가능하게 */
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #348833;
+  }
+
+  img {
+    width: 18px;
+    height: 18px;
+  }
 `;
 
-const ToggleButton = styled.button`
-  padding: 5px 10px;
+const ToggleWrapper = styled.div`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+`;
+
+const ToggleButton = styled.div`
+  position: relative;
+  width: 60px;
+  height: 35px;
+  background-color: ${(props) => (props.active ? "#c1e1c1" : "#E0EED2")};
+  border-radius: 20px;
   cursor: pointer;
-  margin-bottom: 10px;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ToggleCircle = styled.div`
+  position: absolute;
+  top: 3px;
+  left: ${(props) => (props.active ? "calc(100% - 33px)" : "3px")};
+  width: 30px;
+  height: 30px;
+  background-color: #348833;
+  border-radius: 50%;
+  transition: left 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
 `;
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -68,8 +133,9 @@ const CustomTooltip = ({ active, payload, label }) => {
       <div
         style={{
           backgroundColor: "white",
-          padding: "5px",
+          padding: "3px 10px",
           border: "1px solid #ccc",
+          borderRadius: "10px",
         }}
       >
         <p>{`${label}월`}</p>
@@ -160,15 +226,19 @@ function TotalGraph({ data, peerData }) {
 
   return (
     <GraphContainer>
-      <h1>전체여정</h1>
-      <ToggleButton onClick={() => setShowPeerData(!showPeerData)}>
-        {showPeerData ? "또래 데이터 숨기기" : "또래 데이터 보기"}
-      </ToggleButton>
+      <ToggleWrapper onClick={() => setShowPeerData(!showPeerData)}>
+        <ToggleButton active={showPeerData}>
+          <ToggleCircle active={showPeerData}>
+            {showPeerData ? "끄기" : "또래"}
+          </ToggleCircle>
+        </ToggleButton>
+      </ToggleWrapper>
+      <TitleOfChart>전체여정</TitleOfChart>
       <ChartContainer>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={visibleData}
-            margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+            margin={{ top: 5, right: 12, left: -10, bottom: 5 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
@@ -184,7 +254,7 @@ function TotalGraph({ data, peerData }) {
               tick={{ fontSize: 10 }}
             />
             <Tooltip content={<CustomTooltip />} />
-            <Legend />
+            <Legend wrapperStyle={{ paddingLeft: 30 }} />
             <Line
               type="monotone"
               dataKey="replayment_amount"
@@ -221,14 +291,16 @@ function TotalGraph({ data, peerData }) {
         <Button
           onClick={() => handleScroll(-1)}
           disabled={visibleRange[0] === 0}
+          style={{ left: "10px" }}
         >
-          &lt; 이전
+          <img src={leftButton} alt="이전" />
         </Button>
         <Button
           onClick={() => handleScroll(1)}
           disabled={visibleRange[1] >= data.items.length}
+          style={{ right: "10px" }}
         >
-          다음 &gt;
+          <img src={rigthButton} alt="다음" />
         </Button>
       </ButtonContainer>
     </GraphContainer>

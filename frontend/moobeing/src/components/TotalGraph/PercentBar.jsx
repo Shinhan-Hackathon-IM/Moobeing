@@ -3,7 +3,7 @@ import styled from "styled-components";
 import radishImage from "../../assets/radishes/basicRad.svg"; // Radish 이미지 경로를 맞춰주세요
 
 const BarContainer = styled.div`
-  width: 100%;
+  width: 95%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -47,23 +47,23 @@ const Text = styled.div`
 `;
 
 function PercentBar() {
-  const [fillPercent, setFillPercent] = useState(0);
+  const [fillpercent, setfillpercent] = useState(0);
 
   // 예시: 데이터를 받아와서 fillpercent 설정
   useEffect(() => {
     // 백엔드나 API로부터 값을 가져와서 설정할 수 있음
     const fetchedPercent = 20; // 이 값을 나중에 백엔드에서 받아오는 값으로 변경
-    setFillPercent(fetchedPercent);
+    setfillpercent(fetchedPercent);
   }, []); // 처음 렌더링 시 실행
 
   return (
     <BarContainer>
       <GraphContainer>
-        <GraphFill fillPercent={fillPercent}>
+        <GraphFill fillpercent={fillpercent}>
           <Radish src={radishImage} alt="Radish" />
         </GraphFill>
       </GraphContainer>
-      <Text>{fillPercent}% 상환했습니다!</Text>
+      <Text>{fillpercent}% 상환했습니다!</Text>
     </BarContainer>
   );
 }

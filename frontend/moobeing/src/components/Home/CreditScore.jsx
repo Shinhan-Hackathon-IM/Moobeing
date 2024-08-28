@@ -13,14 +13,15 @@ const GraphColors = {
 
 const Container = styled.div`
   background-color: #f5fded;
+  border-radius: 20px;
   height: 600px;
   width: 90%;
   margin-bottom: 5%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  padding: 20px;
+  justify-content: center; /* 모든 요소를 수직 중앙 정렬 */
+  align-items: center; /* 모든 요소를 수평 중앙 정렬 */
+  padding: 8%;
   box-sizing: border-box;
 `;
 
@@ -32,14 +33,19 @@ const SubHeader = styled.div`
   margin-bottom: 20px;
 `;
 
-const SubTitle = styled.div`
-  font-size: 1.5rem;
-  font-weight: bold;
+const SubTitle = styled.h2`
+  margin: 0;
 `;
 
 const CreditLevel = styled.div`
-  font-size: 1.5rem;
+  background-color: ${({ grade }) =>
+    GraphColors[grade]}; /* 배경색을 등급별로 설정 */
+  font-size: 1rem;
   font-weight: bold;
+  padding-left: 8px;
+  border-radius: 15px; /* 모서리를 약간 둥글게 */
+  width: 25px;
+  height: 25px;
 `;
 
 const GraphContainer = styled.div`
@@ -50,14 +56,18 @@ const GraphContainer = styled.div`
   border-radius: 20px;
   overflow: visible; /* 그래프 밖으로 삐져나올 수 있도록 설정 */
   position: relative;
+  margin: 15px 0px;
 `;
 
-const GraphFill = styled.div`
+const GraphFill = styled.div.attrs(({ fillpercent }) => ({
+  style: {
+    width: `${fillpercent}%`, // Use inline styles to apply the fill width
+  },
+}))`
   background-color: ${({ grade }) =>
     darken(0.2, GraphColors[grade])}; /* 더 진한 색 */
   height: 100%;
   border-radius: 20px;
-  width: ${({ fillpercent }) => fillpercent}%;
   transition: width 2s ease; /* 부드러운 채우기 애니메이션 */
   position: relative;
   display: flex;
@@ -74,19 +84,23 @@ const Radish = styled.img`
 `;
 
 const Text = styled.div`
-  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
   font-size: 1rem;
 `;
 
 function CreditScore() {
-  const creditLevel = "A"; // 신용등급
+  const creditLevel = "E"; // 신용등급
   const fillpercent = 50; // 그래프에서 얼마나 채울지 (신용점수에 따라 조정)
 
   return (
     <Container>
       <SubHeader>
         <SubTitle>나의 신용등급</SubTitle>
-        <CreditLevel>{creditLevel}</CreditLevel>
+        {/* 신용등급에 맞게 CreditLevel의 배경색을 설정하기 위해 grade 속성 추가 */}
+        <CreditLevel grade={creditLevel}>{creditLevel}</CreditLevel>
       </SubHeader>
       <GraphContainer grade={creditLevel}>
         <GraphFill grade={creditLevel} fillpercent={fillpercent}>

@@ -2,15 +2,30 @@ import React from "react";
 import styled from "styled-components";
 import TotalGraph from "../components/TotalGraph/TotalGraph";
 import PercentBar from "../components/TotalGraph/PercentBar";
-import PlannedLoanBalance from "../components/TotalGraph/PlannedLoanBalance";
 import HiddenRadish from "../components/TotalGraph/HiddenRadish";
 import LeftMoney from "../components/TotalGraph/LeftMoney";
 import Footer from "../components/Fixed/Footer";
 import Header from "../components/Fixed/Header";
 
 const PageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  align-items: center;
+`;
+
+const ScrollableContent = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  overflow-y: auto;
   overflow-x: hidden;
+  box-sizing: border-box;
 `;
 
 const Container = styled.div`
@@ -18,7 +33,7 @@ const Container = styled.div`
   align-items: center;
   flex-direction: column;
   width: 100%;
-  padding: 8% 8% 0 8%; // 하단 패딩 제거
+  padding: 5% 0 0 0;
   box-sizing: border-box;
 `;
 
@@ -26,15 +41,16 @@ const Rectangle = styled.div`
   width: 100%;
   height: 70px;
   background-color: #c0dda5;
-  position: relative;
+  bottom: 65px;
   z-index: 1;
+  padding-top: 90px;
 `;
 
 const RadishWrapper = styled.div`
   width: 100%;
   position: relative;
   z-index: 2;
-  margin-bottom: -30px; // Rectangle과 겹치도록 음수 마진 적용
+  margin-bottom: -30px;
 `;
 
 const TotalJourney = () => {
@@ -88,17 +104,21 @@ const TotalJourney = () => {
 
   return (
     <PageWrapper>
-      <Header />
-      <Container>
-        <TotalGraph data={data} peerData={peerData} />
-        <PercentBar />
-        <PlannedLoanBalance />
-        <LeftMoney />
-        <RadishWrapper>
-          <HiddenRadish PaidLoanNum={paidLoanNum} TotalLoanNum={totalLoanNum} />
-        </RadishWrapper>
-      </Container>
-      <Rectangle />
+      <ScrollableContent>
+        <Header />
+        <Container>
+          <TotalGraph data={data} peerData={peerData} />
+          <PercentBar />
+          <LeftMoney />
+          <RadishWrapper>
+            <HiddenRadish
+              PaidLoanNum={paidLoanNum}
+              TotalLoanNum={totalLoanNum}
+            />
+          </RadishWrapper>
+        </Container>
+        <Rectangle />
+      </ScrollableContent>
       <Footer />
     </PageWrapper>
   );
