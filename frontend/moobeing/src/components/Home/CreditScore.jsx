@@ -42,11 +42,10 @@ const CreditLevel = styled.div`
     GraphColors[grade]}; /* 배경색을 등급별로 설정 */
   font-size: 1rem;
   font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 10px; /* 모서리를 약간 둥글게 */
-  width: 15px;
+  padding-left: 8px;
+  border-radius: 15px; /* 모서리를 약간 둥글게 */
+  width: 25px;
   height: 25px;
-  text-align: center;
 `;
 
 const GraphContainer = styled.div`

@@ -21,7 +21,7 @@ const Container = styled.div`
   border-radius: 20px;
   height: 300px;
   width: 90%;
-  margin-bottom: 5%;
+  margin: 8% 0 3% 0;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -31,8 +31,8 @@ const Container = styled.div`
   box-sizing: border-box;
   color: #24272d;
   box-shadow: 3px 3px 3px #d9d9d9;
-  animation: ${({ isClosing }) =>
-    isClosing
+  animation: ${(props) =>
+    props.$isclosing
       ? css`
           ${fadeOut} 0.5s ease-out forwards
         `
@@ -42,8 +42,8 @@ const Container = styled.div`
 
 const CloseButton = styled.button`
   position: absolute;
-  top: 10px;
-  right: 8px;
+  top: 8px;
+  right: 12px;
   background: none;
   border: none;
   font-size: 1.5rem;
@@ -94,26 +94,25 @@ const QuizButton = styled.button`
 
 function QuizPopup() {
   const [isVisible, setIsVisible] = useState(true);
-  const [isClosing, setIsClosing] = useState(false); // State to handle the closing animation
-  const navigate = useNavigate(); // useNavigate 훅 사용
-
+  const [isClosing, setIsClosing] = useState(false);
+  const navigate = useNavigate();
   const quizId = null; // 실제로는 API 호출 또는 다른 방법으로 설정될 것
 
   const handleClose = () => {
-    setIsClosing(true); // Start the fade-out animation
+    setIsClosing(true);
     setTimeout(() => {
-      setIsVisible(false); // Hide the component after animation
-    }, 500); // Match the timeout with the animation duration
+      setIsVisible(false);
+    }, 500);
   };
 
   const handleQuiz = () => {
     navigate(`/quiz/result/${quizId}`);
   };
 
-  if (!isVisible) return null; // 컴포넌트를 숨기기
+  if (!isVisible) return null;
 
   return (
-    <Container isClosing={isClosing}>
+    <Container $isclosing={isClosing}>
       <CloseButton onClick={handleClose}>
         <CloseImg src={closeButton} alt="닫기" />
       </CloseButton>

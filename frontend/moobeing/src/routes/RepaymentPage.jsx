@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import Header from "../components/Fixed/Header";
 import Footer from "../components/Fixed/Footer";
-import DropDownArrow from "../assets/dropdown/DropdownArrow.svg";
+import DropDownArrow from "../assets/dropdown/DropdownArrow.png";
 
 const Container = styled.div`
   display: flex;
@@ -72,7 +72,7 @@ const CustomDropdownHeader = styled.div`
   background-image: url(${DropDownArrow});
   background-repeat: no-repeat;
   background-position: right 8px center;
-  background-size: 14px 14px;
+  background-size: 15px 10px;
 
   &:focus {
     border-bottom: 2px solid #4caf50;
@@ -91,6 +91,7 @@ const CustomDropdownList = styled.ul`
   overflow-y: auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+  border-radius: 10px;
 `;
 
 const CustomDropdownItem = styled.li`
@@ -149,8 +150,9 @@ const AmountButtons = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
-  justify-content: center;
+  justify-content: flex-end;
   width: 100%;
+  margin-bottom: 10px;
 `;
 
 const AmountButton = styled.button`

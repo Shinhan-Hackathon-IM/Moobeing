@@ -2,20 +2,33 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Footer from "../components/Fixed/Footer";
 import Header from "../components/Fixed/Header";
+import Line from "../assets/button/Line.svg";
 
-const PageContainer = styled.div`
+const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+`;
+
+const ScrollableContent = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
 `;
 
 const ContentContainer = styled.div`
   flex: 1;
-  overflow-y: auto;
-  padding-bottom: 60px;
+  margin-bottom: 20px;
 `;
 
 const Container = styled.div`
+  margin-top: 5vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -35,20 +48,14 @@ const SortButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  &:first-child::after {
-    content: " |";
-    margin: 0 5px;
-  }
 `;
 
 const ChooseButton = styled.button`
   align-self: flex-end;
   margin-right: 20px;
   margin-bottom: 20px;
-  background-color: ${(props) => (props.isActive ? "#348833" : "#E0EED2")};
-  color: ${(props) =>
-    props.isActive ? "white" : "black"}; /* 글씨 색상 변경 */
-
+  background-color: ${(props) => (props.isactive ? "#348833" : "#E0EED2")};
+  color: ${(props) => (props.isactive ? "white" : "black")};
   border: none;
   border-radius: 30px;
   padding: 10px 20px;
@@ -61,9 +68,12 @@ const CardContainer = styled.div`
   justify-content: flex-start;
   gap: 20px;
   padding: 0 20px;
+  margin-bottom: 50px;
 `;
 
-const CharacterCard = styled.div`
+const CharacterCard = styled.div.attrs((props) => ({
+  selectable: props.isselectable ? "true" : undefined,
+}))`
   width: 160px;
   height: 150px;
   background-color: #f5fded;
@@ -73,7 +83,7 @@ const CharacterCard = styled.div`
   justify-content: center;
   position: relative;
   border-radius: 10%;
-  cursor: ${(props) => (props.isSelectable ? "pointer" : "default")};
+  cursor: ${(props) => (props.selectable ? "pointer" : "default")};
   box-shadow: 0.3px 0.3px 6px rgba(0, 0, 0, 0.12);
   ${(props) =>
     props.isSelected &&
@@ -93,7 +103,7 @@ const CharacterName = styled.span`
   top: 10px;
   right: 10px;
   padding: 2px 5px;
-  border-radius: 5px;
+  border-radius: 20px;
   background-color: ${(props) => {
     switch (props.rank) {
       case "B":
@@ -114,14 +124,15 @@ const CharacterCount = styled.span`
   right: 10px;
 `;
 
-// const DecisionButtonContainer = styled.div`
-//   position: sticky;
-//   bottom: 10px;
-//   width: 100%;
-//   display: flex;
-//   justify-content: center;
-//   background-color: transparent; /* 배경을 투명으로 설정 */
-// `;
+const DecisionButtonContainer = styled.div`
+  position: fixed;
+  bottom: 90px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 1000;
+`;
 
 const DecisionButton = styled.button`
   background-color: #348833;
@@ -131,20 +142,84 @@ const DecisionButton = styled.button`
   padding: 10px 20px;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
 
-  position: sticky;
-  bottom: 10px; /* 스크롤 시 하단에 고정될 위치 */
-  z-index: 10; /* 다른 요소 위로 배치 */
+const LineImg = styled.img`
+  height: 15px;
+  padding: 0px 10px;
+  margin-top: 2px;
 `;
 
 const RadishCollection = () => {
   const [sortBy, setSortBy] = useState("date");
   const [isChooseActive, setIsChooseActive] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [characters, setCharacters] = useState([
+    {
+      radishId: 5,
+      radishName: "무신사",
+      radishImageUrl: "string",
+      radishRank: "A",
+      radishNumber: 2,
+    },
+    {
+      radishId: 1,
+      radishName: "마마무",
+      radishImageUrl: "string",
+      radishRank: "A",
+      radishNumber: 1,
+    },
+    {
+      radishId: 6,
+      radishName: "애기무",
+      radishImageUrl: "string",
+      radishRank: "B",
+      radishNumber: 1,
+    },
+    {
+      radishId: 4,
+      radishName: "무지개",
+      radishImageUrl: "string",
+      radishRank: "S",
+      radishNumber: 1,
+    },
+    {
+      radishId: 7,
+      radishName: "그냥무",
+      radishImageUrl: "string",
+      radishRank: "A",
+      radishNumber: 1,
+    },
+    {
+      radishId: 9,
+      radishName: "저냥무",
+      radishImageUrl: "string",
+      radishRank: "A",
+      radishNumber: 1,
+    },
+    {
+      radishId: 8,
+      radishName: "피곤해무",
+      radishImageUrl: "string",
+      radishRank: "S",
+      radishNumber: 1,
+    },
+  ]);
+
+  const [originalCharacters] = useState(characters);
 
   const handleSort = (type) => {
+    if (type === "date") {
+      setCharacters([...originalCharacters]);
+    } else if (type === "radishRank") {
+      const sortedCharacters = [...characters].sort((a, b) => {
+        if (a.radishRank < b.radishRank) return -1;
+        if (a.radishRank > b.radishRank) return 1;
+        return originalCharacters.indexOf(a) - originalCharacters.indexOf(b);
+      });
+      setCharacters(sortedCharacters);
+    }
     setSortBy(type);
-    // 여기에 정렬 로직 추가
   };
 
   const handleChoose = () => {
@@ -158,51 +233,49 @@ const RadishCollection = () => {
     }
   };
 
-  // 임시 캐릭터 데이터
-  const characters = [
-    { id: 1, name: "캐릭터1", count: 5, rank: "B" },
-    { id: 2, name: "캐릭터2", count: 3, rank: "A" },
-    { id: 3, name: "캐릭터3", count: 7, rank: "S" },
-    { id: 4, name: "캐릭터4", count: 2, rank: "B" },
-    { id: 5, name: "캐릭터5", count: 6, rank: "A" },
-    { id: 4, name: "캐릭터4", count: 2, rank: "B" },
-    { id: 5, name: "캐릭터5", count: 6, rank: "A" },
-    { id: 2, name: "캐릭터2", count: 3, rank: "A" },
-    { id: 2, name: "캐릭터2", count: 3, rank: "A" },
-  ];
-
   return (
-    <PageContainer>
+    <PageWrapper>
       <Header />
-      <ContentContainer>
-        <Container>
-          <Subtitle>무 컬렉션</Subtitle>
-          <SortButtonContainer>
-            <SortButton onClick={() => handleSort("date")}>날짜순</SortButton>
-            <SortButton onClick={() => handleSort("rank")}>랭킹순</SortButton>
-          </SortButtonContainer>
-          <ChooseButton onClick={handleChoose} isActive={isChooseActive}>
-            선택
-          </ChooseButton>
-          <CardContainer>
-            {characters.map((char) => (
-              <CharacterCard
-                key={char.id}
-                isSelectable={isChooseActive}
-                isSelected={selectedCharacter === char.id}
-                onClick={() => handleCardClick(char.id)}
-              >
-                <CharacterImage />
-                <CharacterName rank={char.rank}>{char.name}</CharacterName>
-                <CharacterCount>{char.count}</CharacterCount>
-              </CharacterCard>
-            ))}
-          </CardContainer>
-        </Container>
-      </ContentContainer>
-      {selectedCharacter !== null && <DecisionButton>결정</DecisionButton>}
+      <ScrollableContent>
+        <ContentContainer>
+          <Container>
+            <Subtitle>무 컬렉션</Subtitle>
+            <SortButtonContainer>
+              <SortButton onClick={() => handleSort("date")}>날짜순</SortButton>
+              <LineImg src={Line} alt="Line" />
+              <SortButton onClick={() => handleSort("radishRank")}>
+                랭킹순
+              </SortButton>
+            </SortButtonContainer>
+            <ChooseButton onClick={handleChoose} isactive={isChooseActive}>
+              선택
+            </ChooseButton>
+            <CardContainer>
+              {characters.map((char) => (
+                <CharacterCard
+                  key={char.radishId}
+                  isselectable={isChooseActive}
+                  isSelected={selectedCharacter === char.radishId}
+                  onClick={() => handleCardClick(char.radishId)}
+                >
+                  <CharacterImage />
+                  <CharacterName rank={char.radishRank}>
+                    {char.radishName}
+                  </CharacterName>
+                  <CharacterCount>{char.radishRank}</CharacterCount>
+                </CharacterCard>
+              ))}
+            </CardContainer>
+          </Container>
+        </ContentContainer>
+      </ScrollableContent>
       <Footer />
-    </PageContainer>
+      {selectedCharacter !== null && (
+        <DecisionButtonContainer>
+          <DecisionButton>결정</DecisionButton>
+        </DecisionButtonContainer>
+      )}
+    </PageWrapper>
   );
 };
 

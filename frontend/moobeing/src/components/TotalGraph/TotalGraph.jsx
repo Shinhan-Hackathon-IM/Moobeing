@@ -38,6 +38,11 @@ const ChartContainer = styled.div`
   position: relative;
 `;
 
+const TitleOfChart = styled.h1`
+  margin-top: 4vh;
+  margin-bottom: 2vh;
+`;
+
 const ButtonContainer = styled.div`
   position: absolute;
   top: 50%;
@@ -228,7 +233,7 @@ function TotalGraph({ data, peerData }) {
           </ToggleCircle>
         </ToggleButton>
       </ToggleWrapper>
-      <h1>전체여정</h1>
+      <TitleOfChart>전체여정</TitleOfChart>
       <ChartContainer>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
