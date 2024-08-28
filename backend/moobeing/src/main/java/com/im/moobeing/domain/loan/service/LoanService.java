@@ -1,8 +1,20 @@
 package com.im.moobeing.domain.loan.service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.im.moobeing.domain.loan.dto.GetAllLoanMapDto;
 import com.im.moobeing.domain.loan.dto.GetMemberLoanDto;
-import com.im.moobeing.domain.loan.dto.response.*;
+import com.im.moobeing.domain.loan.dto.response.GetAllLoanMapResponse;
+import com.im.moobeing.domain.loan.dto.response.GetLoanMapResponse;
+import com.im.moobeing.domain.loan.dto.response.GetMemberLoanResponse;
+import com.im.moobeing.domain.loan.dto.response.GetMonthlyLoanResponse;
+import com.im.moobeing.domain.loan.dto.response.GetPercentLoanResponse;
+import com.im.moobeing.domain.loan.dto.response.GetSumLoanResponse;
 import com.im.moobeing.domain.loan.entity.AverageLoanRepaymentRecord;
 import com.im.moobeing.domain.loan.entity.LoanProduct;
 import com.im.moobeing.domain.loan.entity.LoanRepaymentRecord;
@@ -12,13 +24,8 @@ import com.im.moobeing.domain.loan.repository.LoanProductRepository;
 import com.im.moobeing.domain.loan.repository.LoanRepaymentRecordRepository;
 import com.im.moobeing.domain.loan.repository.MemberLoanRepository;
 import com.im.moobeing.domain.member.entity.Member;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional(readOnly = true)
@@ -84,13 +91,13 @@ public class LoanService {
 
 		long maxLoanBalance = 0;
 		long minLoanBalance = 0;
-		long totalLoanBalance = 0;
+		long totalLoanBalance = memberLoan.getInitialBalance();
 		int start = 0;
 
 		List<GetAllLoanMapDto> getAllLoanMapDtoList = new ArrayList<>();
 
 		for (LoanRepaymentRecord record : loanRepaymentRecordList) {
-			totalLoanBalance -= memberLoan.getInitialBalance() - record.getRepaymentBalance();
+			totalLoanBalance -=  record.getRepaymentBalance();
 			if(start == 0) {
 				maxLoanBalance = totalLoanBalance;
 			}
