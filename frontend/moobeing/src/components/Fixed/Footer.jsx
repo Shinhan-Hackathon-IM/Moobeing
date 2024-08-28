@@ -8,26 +8,26 @@ import RadishIcon from "../../assets/button/RadishButton.svg";
 const StyledFooter = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 77px;
-  width: 100%;
-  position: sticky;
-  bottom: -1px;
+  justify-content: space-around; /* 아이템들이 균등하게 배치되도록 설정 */
+  height: 60px; /* Footer의 기본 높이 설정 */
+  width: 100%; /* 화면 전체 너비를 차지 */
+  position: fixed;
+  bottom: 0;
   background-color: #ffffff;
-  box-shadow: 0px -1px 4px #D9D9D9;
+  box-shadow: 0px -1px 4px #d9d9d9;
   z-index: 1000;
 
   .footer-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    flex-grow: 1; /* 아이템들이 균등하게 공간을 차지하도록 설정 */
     padding: 10px 0;
     cursor: pointer;
   }
 
   .footer-icon {
-    width: 28px;
+    width: 28px; /* 아이콘 크기 설정 */
     height: 28px;
   }
 
@@ -42,10 +42,10 @@ const StyledFooter = styled.div`
   }
 
   @media (max-width: 768px) {
-    gap: 30px;
-    
+    height: 50px; /* 모바일에서 Footer 높이 조정 */
+
     .footer-item {
-      width: 60px;
+      padding: 8px 0;
     }
 
     .footer-icon {
@@ -57,23 +57,33 @@ const StyledFooter = styled.div`
       font-size: 12px;
     }
   }
+
+  @media (min-width: 769px) {
+    max-width: 100vw; /* 웹일 때 가로 길이를 화면 전체로 설정 */
+    width: 100%;
+    left: 0;
+    right: 0;
+
+    .footer-item {
+      max-width: 120px; /* 각 아이템이 너무 넓어지지 않도록 최대 너비 설정 */
+    }
+  }
 `;
 
 const Footer = () => {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleHomeClick = () => {
-    navigate("/")
+    navigate("/");
   };
   const handleJourneyClick = () => {
-    navigate("/total-journey")
+    navigate("/total-journey");
   };
   const handleSpendClick = () => {
-    navigate("/spend")
+    navigate("/spend");
   };
   const handleRadishClick = () => {
-    navigate("/radish-collection")
+    navigate("/radish-collection");
   };
 
   return (
