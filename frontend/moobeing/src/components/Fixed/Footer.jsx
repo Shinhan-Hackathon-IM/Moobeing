@@ -8,33 +8,36 @@ import RadishIcon from "../../assets/button/RadishButton.svg";
 const StyledFooter = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 77px;
+  justify-content: space-evenly; /* 아이템들을 균등하게 배치 */
+  height: 60px; /* 높이 조정 */
+  max-width: 500px; /* Footer의 최대 너비 제한 */
   width: 100%;
-  position: sticky;
-  bottom: -1px;
+  position: fixed;
+  bottom: 0; /* bottom을 0으로 설정 */
+  left: 50%; /* 화면 가운데 정렬을 위해 left와 transform 사용 */
+  transform: translateX(-50%);
   background-color: #ffffff;
-  box-shadow: 0px -1px 4px #D9D9D9;
+  box-shadow: 0px -1px 4px #d9d9d9;
   z-index: 1000;
 
   .footer-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    flex-grow: 1; /* 아이템들이 균등하게 공간을 차지하도록 설정 */
     padding: 10px 0;
     cursor: pointer;
   }
 
   .footer-icon {
-    width: 28px;
-    height: 28px;
+    width: 24px; /* 아이콘 크기 조정 */
+    height: 24px;
   }
 
   .text-wrapper {
     color: #7a7a7a;
     font-family: "NanumSquare-Bold", Helvetica;
-    font-size: 13px;
+    font-size: 12px; /* 글자 크기 조정 */
     font-weight: 700;
     text-align: center;
     white-space: nowrap;
@@ -42,38 +45,31 @@ const StyledFooter = styled.div`
   }
 
   @media (max-width: 768px) {
-    gap: 30px;
-    
-    .footer-item {
-      width: 60px;
-    }
-
+    height: 50px; /* 모바일에서는 높이를 더 작게 조정 */
     .footer-icon {
-      width: 24px;
-      height: 24px;
+      width: 20px;
+      height: 20px;
     }
-
     .text-wrapper {
-      font-size: 12px;
+      font-size: 11px;
     }
   }
 `;
 
 const Footer = () => {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleHomeClick = () => {
-    navigate("/")
+    navigate("/");
   };
   const handleJourneyClick = () => {
-    navigate("/total-journey")
+    navigate("/total-journey");
   };
   const handleSpendClick = () => {
-    navigate("/spend")
+    navigate("/spend");
   };
   const handleRadishClick = () => {
-    navigate("/radish-collection")
+    navigate("/radish-collection");
   };
 
   return (
