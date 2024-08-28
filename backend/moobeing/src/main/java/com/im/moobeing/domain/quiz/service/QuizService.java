@@ -80,6 +80,8 @@ public class QuizService {
 		}else if (quiz.getAnswer() <= quiz.getExample() && quizAnswerRequest.answer().equals(QuizInputAnswer.DOWN.getDisplayName())){
 			quiz.updateCorrect(true);
 		}
+		quiz.setQuizStatus(QuizStatus.DONE);
+
 		quizRepository.save(quiz);
 
 		String[] messages = {
@@ -153,4 +155,23 @@ public class QuizService {
 		quizRepository.updateAllByStatus(QuizStatus.EXPIRED);
 	}
 
+	@Transactional
+	public String closeQuizAnswer(Member member, long quizNum) {
+		Quiz quiz = quizRepository.findByQuizId(quizNum)
+			.orElseThrow(() -> new EntityNotFoundException(
+				ErrorCode.QZ_NOT_FOUND_QUIZ));
+		quiz.setQuizStatus(QuizStatus.DONE);
+
+		return "히히 퀴즈 너 잠깐 나가있어";
+	}
+
+	@Transactional
+	public String openQuizAnswer(Member member, long quizNum) {
+		Quiz quiz = quizRepository.findByQuizId(quizNum)
+			.orElseThrow(() -> new EntityNotFoundException(
+				ErrorCode.QZ_NOT_FOUND_QUIZ));
+		quiz.setQuizStatus(QuizStatus.NOT_STARTED);
+
+		return "히히 살아났다!!";
+	}
 }

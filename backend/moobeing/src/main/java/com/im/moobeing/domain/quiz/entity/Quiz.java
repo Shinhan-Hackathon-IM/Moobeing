@@ -67,4 +67,8 @@ public class Quiz extends BaseTimeEntity {
 		this.endedAt = LocalDateTime.now();
 		this.isCorrect = isCorrect;
 	}
+
+	public void setQuizStatus(QuizStatus status) {
+		this.status = status;
+	}
 }
