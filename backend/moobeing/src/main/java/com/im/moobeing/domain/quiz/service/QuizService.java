@@ -81,7 +81,26 @@ public class QuizService {
 			quiz.updateCorrect(true);
 		}
 		quizRepository.save(quiz);
-		return QuizAnswerResponse.from(quiz);
+
+		String[] messages = {
+			"저축을 시작하는 가장 좋은 방법은 월급의 일정 비율을 자동이체로 설정하는 거에요!",
+			"필요한 것과 원하는 것을 구분하는 것이 현명한 소비의 첫걸음이에요.",
+			"할인 상품이라도 꼭 필요한지 다시 한번 생각해보세요!",
+			"가계부를 쓰는 습관이 돈을 아끼는 데 큰 도움이 돼요.",
+			"카드 대신 현금을 사용하는 것도 과소비를 줄이는 방법이에요.",
+			"월말이 되기 전에 예산을 체크하고 남은 금액을 확인해보세요.",
+			"가장 비싼 선택이 항상 가장 좋은 선택은 아니에요!",
+			"외식 대신 집에서 요리하면 식비를 절약할 수 있어요.",
+			"소비를 줄이는 가장 쉬운 방법은 필요한 것을 미리 리스트로 작성하는 거에요.",
+			"계획적인 소비가 자산을 불리는 지름길입니다!"
+		};
+		// 랜덤 객체 생성
+		Random random = new Random();
+
+		// 배열의 길이 내에서 랜덤 인덱스 생성
+		int randomIndex = random.nextInt(messages.length);
+
+		return QuizAnswerResponse.from(quiz, messages[randomIndex]);
 	}
 
 

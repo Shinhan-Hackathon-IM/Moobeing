@@ -1,14 +1,22 @@
 package com.im.moobeing.domain.credit.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.im.moobeing.domain.account.entity.Account;
+import com.im.moobeing.domain.account.repository.AccountRepository;
 import com.im.moobeing.domain.credit.dto.response.CreditGetResponse;
+import com.im.moobeing.domain.loan.entity.MemberLoan;
+import com.im.moobeing.domain.loan.repository.MemberLoanRepository;
 import com.im.moobeing.domain.member.entity.Member;
 import com.im.moobeing.global.client.ShinhanClient;
 import com.im.moobeing.global.client.dto.request.GetInquireMyCreditRatingRequest;
 import com.im.moobeing.global.client.dto.response.GetInquireMyCreditRatingResponse;
 import com.im.moobeing.global.config.ApiKeyConfig;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
@@ -17,6 +25,8 @@ public class CreditService {
 
     private final ShinhanClient shinhanClient;
     private final ApiKeyConfig apiKeyConfig;
+    private final MemberLoanRepository memberLoanRepository;
+    private final AccountRepository accountRepository;
 
     public CreditGetResponse getCredit(Member member) {
         // GetLoanInquireMyCreditRatingRequest 객체를 생성
@@ -28,7 +38,19 @@ public class CreditService {
         getInquireMyCreditRatingResponse = shinhanClient.getInquireMyCreditRating(request);
 
         // 총 자산 값 가져오기
-        long totalAssetValue = Long.parseLong(getInquireMyCreditRatingResponse.getRec().getTotalAssetValue());
+        // long totalAssetValue = Long.parseLong(getInquireMyCreditRatingResponse.getRec().getTotalAssetValue());
+        long totalAssetValue = 0L;
+        List<MemberLoan> memberLoanList = memberLoanRepository.findAllByMemberId(member.getId());
+        List<Account> accountList = accountRepository.findByMemberId(member.getId());
+
+        for (MemberLoan memberLoan : memberLoanList) {
+            totalAssetValue -= memberLoan.getRemainingBalance();
+        }
+
+        for (Account account : accountList) {
+            totalAssetValue += account.getAccountBalance();
+        }
+
         long neededAmount;
 
         // 조건에 따른 result 값 계산
