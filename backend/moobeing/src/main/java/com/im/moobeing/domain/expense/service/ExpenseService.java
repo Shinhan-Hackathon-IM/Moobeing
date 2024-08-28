@@ -1,14 +1,5 @@
 package com.im.moobeing.domain.expense.service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
 import com.im.moobeing.domain.expense.dto.GetCategoryListDto;
 import com.im.moobeing.domain.expense.dto.GetDrawPiChartDto;
 import com.im.moobeing.domain.expense.dto.request.ExpenseCreateRequest;
@@ -28,9 +19,16 @@ import com.im.moobeing.domain.loan.repository.MemberLoanRepository;
 import com.im.moobeing.domain.member.entity.Member;
 import com.im.moobeing.global.error.ErrorCode;
 import com.im.moobeing.global.error.exception.BadRequestException;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -209,7 +207,7 @@ public class ExpenseService {
 			GetCategoryListDto.of("건강", healthPercent, healthAmount)
 		);
 
-		return GetDrawPiChartResponse.of(getDrawPiChartDtoList, getCategoryListDtoList);
+		return GetDrawPiChartResponse.of(totalAmount, getDrawPiChartDtoList, getCategoryListDtoList);
 	}
 
 	/**

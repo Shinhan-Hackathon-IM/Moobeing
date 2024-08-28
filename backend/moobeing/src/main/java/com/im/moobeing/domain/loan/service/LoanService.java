@@ -38,6 +38,8 @@ public class LoanService {
 
 		List<GetMemberLoanDto> getMemberLoanDtoList = new ArrayList<>();
 
+		Long totalLoanAmount = 0L;
+
 		for (MemberLoan loan : memberLoan) {
 			if(loan.getRemainingBalance() == 0){
 				continue;
@@ -49,6 +51,8 @@ public class LoanService {
 			getMemberLoanDtoList.add(
 				GetMemberLoanDto.of(loan, product)
 			);
+
+			totalLoanAmount += loan.getRemainingBalance();
 		}
 
 		if (sort.equals("rate")) {
@@ -57,7 +61,7 @@ public class LoanService {
 			getMemberLoanDtoList.sort(Comparator.comparing(GetMemberLoanDto::getRemainingBalance).reversed());
 		}
 
-		return GetMemberLoanResponse.of(getMemberLoanDtoList);
+		return GetMemberLoanResponse.of(totalLoanAmount, getMemberLoanDtoList);
 	}
 
 	public GetLoanMapResponse getLoanMap(Member member, String reqProductName, int reqPageNum) {
