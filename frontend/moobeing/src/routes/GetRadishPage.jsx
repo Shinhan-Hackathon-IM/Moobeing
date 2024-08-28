@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled, { keyframes, css } from "styled-components";
+import confetti from "canvas-confetti";
 import soil from "../assets/pot/soill.png";
 import basicRad from "../assets/radishes/basicRad.svg";
 import arrow from "../assets/quiz/upArrow.svg";
@@ -14,6 +15,12 @@ const Container = styled.div`
   align-items: flex-end;
   overflow: hidden;
   background-color: #d2ebee;
+  transition: filter 0.8s ease;
+  ${(props) =>
+    props.$blur &&
+    css`
+      filter: blur(5px) brightness(0.7);
+    `}
 `;
 
 const Soil = styled.img`
@@ -55,7 +62,7 @@ const Text = styled.div`
   color: black;
   font-size: 35px;
   text-align: center;
-  white-space: nowrap; /* 줄 바꿈 없이 한 줄로 처리 */
+  white-space: nowrap;
 `;
 
 const PageWrapper = styled.div`
@@ -65,6 +72,7 @@ const PageWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-end;
+  position: relative;
 `;
 
 const ButtonWrapper = styled.div`
@@ -100,29 +108,78 @@ const ArrowIcon = styled.img`
   height: 40px;
 `;
 
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translate(-50%, -40%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+`;
+
+const CardWrapper = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  animation: ${fadeIn} 0.8s ease-out;
+`;
+
+const ConfettiCanvas = styled.canvas`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+`;
+
 function GetRadish() {
   const [pullCount, setPullCount] = useState(0);
   const [isShaking, setIsShaking] = useState(false);
   const [bottom, setBottom] = useState(0);
+  const [showCard, setShowCard] = useState(false);
+  const confettiCanvasRef = useRef(null);
 
   const handlePullRadish = () => {
-    if (pullCount < 3) {
+    if (pullCount < 6) {
       setPullCount((prev) => prev + 1);
       setIsShaking(true);
-      setBottom((prev) => prev + 3); // 85% / 3 ≈ 28.33%
+      setBottom((prev) => prev + 3);
       setTimeout(() => setIsShaking(false), 500);
     }
   };
 
+  const fireConfetti = () => {
+    const myConfetti = confetti.create(confettiCanvasRef.current, {
+      resize: true,
+      useWorker: true,
+    });
+
+    myConfetti({
+      particleCount: 100,
+      spread: 90,
+      origin: { x: 0, y: 0.8 },
+    });
+
+    myConfetti({
+      particleCount: 100,
+      spread: 130,
+      origin: { x: 1, y: 0.8 },
+    });
+  };
+
   useEffect(() => {
-    if (pullCount === 3) {
+    if (pullCount === 5) {
       setBottom(30);
+      setTimeout(() => {
+        setShowCard(true);
+        fireConfetti();
+      }, 500);
     }
   }, [pullCount]);
 
   return (
     <PageWrapper>
-      <Container>
+      <Container $blur={showCard}>
         <BasicRadish
           src={basicRad}
           alt="Radish"
@@ -131,12 +188,18 @@ function GetRadish() {
         />
         <Soil src={soil} alt="Soil" />
         <Text>무를 뽑아주세요</Text>
+        <ButtonWrapper>
+          <Button onClick={handlePullRadish} disabled={pullCount === 5}>
+            <ArrowIcon src={arrow} alt="Arrow Icon" />
+          </Button>
+        </ButtonWrapper>
       </Container>
-      <ButtonWrapper>
-        <Button onClick={handlePullRadish}>
-          <ArrowIcon src={arrow} alt="Arrow Icon" />
-        </Button>
-      </ButtonWrapper>
+      {showCard && (
+        <CardWrapper>
+          <RadishCard />
+        </CardWrapper>
+      )}
+      <ConfettiCanvas ref={confettiCanvasRef} />
     </PageWrapper>
   );
 }
