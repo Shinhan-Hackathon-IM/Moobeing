@@ -74,6 +74,7 @@ public class QuizService {
 		if (!(quiz.getMember().getId().equals(member.getId()))){
 			throw new AuthenticationException(ErrorCode.QZ_UNAUTHORIZED);
 		}
+		quiz.updateCorrect(false);
 		// 정답이 예시보다 크고 사용자도 같은 응답을 했을 경우
 		if (quiz.getAnswer() >= quiz.getExample() && quizAnswerRequest.answer().equals(QuizInputAnswer.UP.getDisplayName()) ){
 			quiz.updateCorrect(true);
