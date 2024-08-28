@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { getQuizzes, submitAnswer } from "../apis/QuizApi";
+import { getNotStartedQuiz, submitAnswer } from "../apis/QuizApi";
 import upArrow from "../assets/quiz/upArrow.svg";
 import downArrow from "../assets/quiz/downArrow.svg";
 import { useNavigate } from "react-router-dom";
@@ -68,8 +68,13 @@ function Quiz() {
   useEffect(() => {
     async function fetchQuiz() {
       try {
-        const data = await getQuizzes();
-        setQuizData(data[0]);
+        const data = await getNotStartedQuiz();
+        if (data) {
+          setQuizData(data);
+        } else {
+          console.log("시작되지 않은 퀴즈가 없습니다.");
+          // 퀴즈가 없을 때의 처리를 여기에 추가할 수 있습니다.
+        }
       } catch (error) {
         console.error("퀴즈 불러오기 실패:", error);
       }
@@ -81,23 +86,23 @@ function Quiz() {
     if (!quizData) return;
     try {
       await submitAnswer(quizData.quiz_id, answer);
-      navigate(`/quiz/${quizData.quiz_id}/result`);
+      navigate(`/quiz/result`);
     } catch (error) {
       console.error("답변 제출 실패:", error);
     }
   };
 
-  if (!quizData) return <div>Loading...</div>;
+  if (!quizData) return <div>잠시만용!!</div>;
 
   return (
     <PageContainer>
       <QuizContainer>
         <QuizText>
-          제갈싸피님의
+          username님의
           <br />
           지난 주 지출액은
           <br />
-          20만원
+          {quizData.example}원
         </QuizText>
         <ButtonContainer>
           <UpButton onClick={() => handleAnswer("up")}>

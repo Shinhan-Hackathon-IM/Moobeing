@@ -65,7 +65,7 @@ function QuizPopup() {
     <Container>
       <CloseButton onClick={handleClose}>×</CloseButton>
       <SubTitle>
-        김싸피님, "내 소비내역 맞추기"
+        {김싸피}님, "내 소비내역 맞추기"
         <br />
         퀴즈가 도착했어요
       </SubTitle>
