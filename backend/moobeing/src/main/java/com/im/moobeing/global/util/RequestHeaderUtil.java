@@ -1,10 +1,16 @@
 package com.im.moobeing.global.util;
 
+import com.im.moobeing.global.client.dto.CommonHeader;
 import com.im.moobeing.global.config.ApiKeyConfig;
+import lombok.RequiredArgsConstructor;
+
 import java.lang.reflect.Constructor;
 
 //todo 다시보기 이해 안됨. chagpt가 해줌.
+@RequiredArgsConstructor
 public class RequestHeaderUtil {
+
+    private final ApiKeyConfig apiKeyConfig;
 
     // Header 객체를 생성하는 제네릭 메소드
     public static <T> T createHeader(Class<T> headerClass, Class<?> requestClass, ApiKeyConfig apiKeyConfig, String userKey) {

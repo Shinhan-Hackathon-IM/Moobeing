@@ -51,8 +51,11 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<MemberRadish> memberRadishes = new ArrayList<>();
 
+    @Column
+    private String account;
+
     @Builder
-    public Member(Long id, String email, String password, Long totalPoints, Long totalLoan, String name, String gender, String birthday, String userKey) {
+    public Member(Long id, String email, String password, Long totalPoints, Long totalLoan, String name, String gender, String birthday, String userKey, String account) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -62,6 +65,7 @@ public class Member extends BaseTimeEntity {
         this.gender = gender;
         this.birthday = birthday;
         this.userKey = userKey;
+        this.account = account;
     }
 
     public void changeMember(MemberChangeRequest memberChangeRequest){
@@ -83,4 +87,6 @@ public class Member extends BaseTimeEntity {
     public void setMemberRadishId(Long selectedRadishId) {
         this.selectedRadishId = selectedRadishId;
     }
+
+    public void setMemberAccount(String account) { this.account = account; }
 }

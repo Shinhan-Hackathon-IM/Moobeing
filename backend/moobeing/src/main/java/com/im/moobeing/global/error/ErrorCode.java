@@ -31,7 +31,20 @@ public enum ErrorCode {
 	QZ_NOT_FOUND_QUIZ(HttpStatus.NOT_FOUND, "QZ001", "해당 퀴즈가 존재하지 않습니다."),
 	QZ_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "QZ002", "해당 퀴즈에 대한 접근 권한이 없습니다."),
 	INVALID_QUIZ_TYPE(HttpStatus.BAD_REQUEST, "QZ002", "올바르지 않은 퀴즈 타입입니다."),
-	INVALID_STATUS_TYPE(HttpStatus.BAD_REQUEST, "QZ003", "올바르지 않은 퀴즈 상태입니다.");
+	INVALID_STATUS_TYPE(HttpStatus.BAD_REQUEST, "QZ003", "올바르지 않은 퀴즈 상태입니다."),
+
+	// Account
+	AC_INVALID_BANK_CODE(HttpStatus.BAD_REQUEST, "AC001", "잘못된 BankCode 입니다."),
+	AC_ALREADY_EXISTS_PRODUCT(HttpStatus.TOO_MANY_REQUESTS, "AC002", "이미 계좌 상품이 존재합니다."),
+	AC_INVALID_PRODUCT_CODE(HttpStatus.BAD_REQUEST, "AC003", "잘못된 상품 코드입니다."),
+	AC_INVALID_ACCOUNT_NUM(HttpStatus.BAD_REQUEST, "AC004", "잘못된 계좌번호입니다."),
+	AC_INSUFFICIENT_BALANCE(HttpStatus.BAD_REQUEST, "AC005", "잔액이 부족합니다."),
+	AC_INVALID_TO_ACCOUNT_NUM(HttpStatus.BAD_REQUEST, "AC006", "잘못된 계좌번호로 전송을 시도했습니다."),
+
+	// Loan
+	LN_CREDIT_SCORE_TOO_LOW(HttpStatus.FORBIDDEN, "LN001", "신용등급이 낮아 대출이 거절되었습니다."),
+	LN_ALREADY_EXISTS_PRODUCT(HttpStatus.TOO_MANY_REQUESTS, "LN002", "이미 대출 상품이 존재합니다."),
+	LN_INVALID_PRODUCT_CODE(HttpStatus.BAD_REQUEST, "LN003", "잘못된 상품 코드입니다.");
 
 	private final HttpStatus status;
 	private final String code;

@@ -34,8 +34,10 @@ public class LoanProduct {
 	@Column(name = "description", length = 200)
 	private String description;
 
+	private String accountTypeUniqueNo;
+
 	@Builder
-	public LoanProduct(Long id, String loanName, String bankImageUrl, String bankName, Long loanPeriod, Double interestRate, String description) {
+	public LoanProduct(Long id, String loanName, String bankImageUrl, String bankName, Long loanPeriod, Double interestRate, String description, String accountTypeUniqueNo) {
 		this.id = id;
 		this.loanName = loanName;
 		this.bankImageUrl = bankImageUrl;
@@ -43,5 +45,6 @@ public class LoanProduct {
 		this.loanPeriod = loanPeriod;
 		this.interestRate = interestRate;
 		this.description = description;
+		this.accountTypeUniqueNo = accountTypeUniqueNo;
 	}
 }

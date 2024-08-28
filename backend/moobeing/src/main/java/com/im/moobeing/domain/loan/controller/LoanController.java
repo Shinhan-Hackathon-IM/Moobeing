@@ -1,12 +1,14 @@
 package com.im.moobeing.domain.loan.controller;
 
+import com.im.moobeing.domain.loan.dto.request.LoanCreateRequest;
+import com.im.moobeing.domain.loan.service.LoanService;
+import com.im.moobeing.domain.member.entity.Member;
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.im.moobeing.domain.loan.service.LoanService;
 import com.im.moobeing.domain.member.entity.Member;
@@ -21,7 +23,7 @@ public class LoanController {
 
 	private final LoanService loanService;
 
-	@Operation(summary = "맴버의 대출 리스트 조회", description = "맴버의 대출 리스트를 조회한다.")
+	@Operation(summary = "맴버의 대출 리스트 조회", description = "맴버의 대출 리스트를 조회한다. rate or amount")
 	@GetMapping()
 	public ResponseEntity<?> getMemberLoan(@AuthenticationPrincipal Member member, @RequestParam String sort){
 		return ResponseEntity.status(HttpStatus.OK).body(loanService.getMemberLoan(member, sort));
@@ -61,5 +63,17 @@ public class LoanController {
 	@GetMapping("/percent")
 	public ResponseEntity<?> getPercentLoan(@AuthenticationPrincipal Member member){
 		return ResponseEntity.status(HttpStatus.OK).body(loanService.getPercentLoan(member));
+	}
+
+	@Operation(summary = "대출 상품 확인하기", description = "모든 대출 상품을 확인합니다.")
+	@GetMapping("/product")
+	public ResponseEntity<?> getProductLoan(){
+		return ResponseEntity.ok(loanService.getAllLoan());
+	}
+
+	@Operation(summary = "대출 받기", description = "대출을 받습니다.")
+	@PostMapping
+	public ResponseEntity<?> evaluateLoan(@AuthenticationPrincipal Member member, @RequestBody LoanCreateRequest request) {
+		return ResponseEntity.ok(loanService.createLoan(member, request));
 	}
 }

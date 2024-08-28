@@ -1,19 +1,20 @@
-package com.im.moobeing.global.client.dto.request;
+package com.im.moobeing.domain.account.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.im.moobeing.global.config.ApiKeyConfig;
 import com.im.moobeing.global.util.RequestHeaderUtil;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-public class GetInquireMyCreditRatingRequest {
+public class GetCreateDemandDepositAccountRequest {
 
-    @JsonProperty("Header")  // JSON으로 직렬화될 때 "Header"로 이름이 설정됩니다.
+    @JsonProperty("Header")
     private final Header header;
+    private final String accountTypeUniqueNo;
 
-    public GetInquireMyCreditRatingRequest(ApiKeyConfig apiKeyConfig, String userKey) {
-        this.header = RequestHeaderUtil.createHeader(Header.class, this.getClass(), apiKeyConfig, userKey);
+    public GetCreateDemandDepositAccountRequest(ApiKeyConfig apiKeyConfig, String userKey, String productCode) {
+        this.header = RequestHeaderUtil.createHeader(GetCreateDemandDepositAccountRequest.Header.class, this.getClass(), apiKeyConfig, userKey);
+        this.accountTypeUniqueNo = productCode;
     }
 
     public record Header(String apiName, String transmissionDate, String transmissionTime, String institutionCode,

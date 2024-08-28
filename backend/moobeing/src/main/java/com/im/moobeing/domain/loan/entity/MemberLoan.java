@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "MemberLoan")
-public class MemberLoan {
+public class MemberLoan { // 은행 코드
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
