@@ -17,6 +17,7 @@
     "@nivo/core": "^0.87.0",
     "@nivo/pie": "^0.87.0",
     "axios": "^1.7.5",
+    "canvas-confetti": "^1.9.3",
     "dayjs": "^1.11.13",
     "polished": "^4.3.1",
     "prop-types": "^15.8.1",

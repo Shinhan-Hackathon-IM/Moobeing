@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import LoanHistory from "../components/Home/LoanHistory";
 import LoanPayment from "../components/Home/LoanPayment";
@@ -34,6 +34,8 @@ const slideDown = keyframes`
     opacity: 1;
   }
 `;
+
+import { getNotStartedQuiz } from "../apis/QuizApi";
 
 const Container = styled.div`
   flex: 1;
@@ -72,6 +74,21 @@ const Home = () => {
   const handleAlarmClick = () => {
     setQuizPopupVisible(true);
   };
+
+  const [quizData, setQuizData] = useState(null);
+
+  useEffect(() => {
+    const fetchQuizData = async () => {
+      try {
+        const data = await getNotStartedQuiz();
+        setQuizData(data);
+      } catch (error) {
+        console.error("퀴즈 데이터 가져오기 실패:", error);
+      }
+    };
+
+    fetchQuizData();
+  }, []);
 
   return (
     <Screen>
