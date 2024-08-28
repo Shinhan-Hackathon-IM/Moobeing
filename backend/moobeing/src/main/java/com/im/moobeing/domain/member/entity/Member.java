@@ -1,16 +1,24 @@
 package com.im.moobeing.domain.member.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.im.moobeing.domain.member.dto.request.MemberChangeRequest;
 import com.im.moobeing.domain.member.dto.request.MemberPwChangeRequest;
 import com.im.moobeing.global.entity.BaseTimeEntity;
-import jakarta.persistence.*;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity(name="member")
 @Getter
@@ -21,7 +29,7 @@ public class Member extends BaseTimeEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "email", nullable = false, length = 20)
+    @Column(name = "email", nullable = false, length = 40)
     private String email;
 
     @Column(name = "password", nullable = false, length = 20)
@@ -51,8 +59,11 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<MemberRadish> memberRadishes = new ArrayList<>();
 
+    @Column
+    private String account;
+
     @Builder
-    public Member(Long id, String email, String password, Long totalPoints, Long totalLoan, String name, String gender, String birthday, String userKey) {
+    public Member(Long id, String email, String password, Long totalPoints, Long totalLoan, String name, String gender, String birthday, String userKey, String account) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -62,6 +73,7 @@ public class Member extends BaseTimeEntity {
         this.gender = gender;
         this.birthday = birthday;
         this.userKey = userKey;
+        this.account = account;
     }
 
     public void changeMember(MemberChangeRequest memberChangeRequest){
@@ -83,4 +95,6 @@ public class Member extends BaseTimeEntity {
     public void setMemberRadishId(Long selectedRadishId) {
         this.selectedRadishId = selectedRadishId;
     }
+
+    public void setMemberAccount(String account) { this.account = account; }
 }

@@ -141,7 +141,7 @@ public class MemberService {
         }
 
         return AddMemberRadishResponse.of(member,radish.getRadishName(),radish.getRadishRank(),
-            radish.getRadishImageUrl());
+            radish.getRadishImageUrl(), radish.getRadishMessage());
     }
 
     @Transactional
@@ -198,7 +198,7 @@ public class MemberService {
         }
 
         return AddMemberRadishResponse.of(member,radish.getRadishName(),radish.getRadishRank(),
-            radish.getRadishImageUrl());
+            radish.getRadishImageUrl(), radish.getRadishMessage());
     }
 
     /**
