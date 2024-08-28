@@ -1,6 +1,10 @@
 server:
   servlet:
     context-path: /api
+    session:
+      cookie:
+        same-site: none
+        secure: true
 
 spring:
   application:
@@ -34,3 +38,4 @@ spring:
   logging:
     level:
       com.app: debug
+
