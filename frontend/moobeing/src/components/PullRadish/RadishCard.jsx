@@ -1,4 +1,4 @@
-import basicRad from "../../assets/Radishes/basicRad.svg";
+import basicRad from "../../assets/radishes/basicRad.svg";
 import styled from "styled-components";
 
 function RadishCard() {
