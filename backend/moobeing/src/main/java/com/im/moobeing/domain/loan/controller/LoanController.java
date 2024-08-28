@@ -29,14 +29,14 @@ public class LoanController {
 
 	@Operation(summary = "선택한 대출 여정지도 검색", description = "선택한 대출 여정 지도를 검색한다.")
 	@GetMapping("/map")
-	public ResponseEntity<?> getLoanMap(@AuthenticationPrincipal Member member, @RequestParam String loanProductName, @RequestParam int page){
-		return ResponseEntity.status(HttpStatus.OK).body(loanService.getLoanMap(member, loanProductName, page));
+	public ResponseEntity<?> getLoanMap(@AuthenticationPrincipal Member member, @RequestParam String loanProductName){
+		return ResponseEntity.status(HttpStatus.OK).body(loanService.getLoanMap(member, loanProductName));
 	}
 
 	@Operation(summary = "총합 대출 여정지도 검색", description = "총합 대출 여정 지도를 검색한다.")
 	@GetMapping("/all-map")
-	public ResponseEntity<?> getAllLoanMap(@AuthenticationPrincipal Member member, @RequestParam int page){
-		return ResponseEntity.status(HttpStatus.OK).body(loanService.getAllLoanMap(member, page));
+	public ResponseEntity<?> getAllLoanMap(@AuthenticationPrincipal Member member){
+		return ResponseEntity.status(HttpStatus.OK).body(loanService.getAllLoanMap(member));
 	}
 
 	@Operation(summary = "나의 대출금 총금액 확인", description = "나의 대출금 총 금액을 확인한다")
@@ -47,8 +47,8 @@ public class LoanController {
 
 	@Operation(summary = "또래 상환능력 조회", description = "또래 상환능력 조회 하기")
 	@GetMapping("/buddy")
-	public ResponseEntity<?> getBuddyLoanMap(@AuthenticationPrincipal Member member, @RequestParam String loanName, @RequestParam int pageNum){
-		return ResponseEntity.status(HttpStatus.OK).body(loanService.getBuddyLoanMap(member, loanName, pageNum));
+	public ResponseEntity<?> getBuddyLoanMap(@AuthenticationPrincipal Member member, @RequestParam String loanName){
+		return ResponseEntity.status(HttpStatus.OK).body(loanService.getBuddyLoanMap(member, loanName));
 	}
 
 	@Operation(summary = "이번달 상환 예정 금액 구하기", description = "이번달 상환 예정 금액 구하기")

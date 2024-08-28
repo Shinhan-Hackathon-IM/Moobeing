@@ -7,12 +7,12 @@ import lombok.Getter;
 @Builder
 public class CreditGetResponse {
     private String ratingName;
-    private Long requireUpRating;
+    private Double ratingPercent;
 
-    public static CreditGetResponse of(String ratingName, Long requireUpRating) {
+    public static CreditGetResponse of(String ratingName, Double ratingPercent) {
         return CreditGetResponse.builder()
                 .ratingName(ratingName)
-                .requireUpRating(requireUpRating)
+                .ratingPercent(ratingPercent)
                 .build();
     }
 }
