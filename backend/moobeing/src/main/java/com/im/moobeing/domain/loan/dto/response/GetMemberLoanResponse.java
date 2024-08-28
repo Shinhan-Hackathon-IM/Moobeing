@@ -1,10 +1,11 @@
 package com.im.moobeing.domain.loan.dto.response;
 
+import java.util.List;
+
 import com.im.moobeing.domain.loan.dto.GetMemberLoanDto;
+
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
 
 @Getter
 @Builder
