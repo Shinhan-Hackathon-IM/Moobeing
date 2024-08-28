@@ -3,7 +3,7 @@ import styled from "styled-components";
 import radishImage from "../../assets/radishes/basicRad.svg"; // Radish 이미지 경로를 맞춰주세요
 
 const BarContainer = styled.div`
-  width: 85%;
+  width: 95%;
   display: flex;
   flex-direction: column;
   justify-content: center;

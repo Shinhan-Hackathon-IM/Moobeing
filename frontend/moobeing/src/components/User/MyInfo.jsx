@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -11,12 +11,12 @@ const Container = styled.div`
 
 const PasswordChangebutton = styled.button`
   padding: 10px;
-  background-color: #E0EED2;
-  color: #24272D;
+  background-color: #e0eed2;
+  color: #24272d;
   border: none;
   cursor: pointer;
-  border-radius: 10px;
-`
+  border-radius: 20px;
+`;
 
 const SubHeader = styled.div`
   background-color: #f5fded;
@@ -42,11 +42,15 @@ const Contents = styled.div`
   box-sizing: border-box;
 `;
 
+const SubTitle = styled.h3`
+  margin-bottom: 4vh;
+`;
+
 const InfoRow = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 15px; 
+  margin-bottom: 15px;
 `;
 
 const Label = styled.div`
@@ -58,14 +62,14 @@ const Value = styled.div`
 `;
 
 const LogoutButton = styled.div`
-  height: 25px;
-  width: 18%;
-  border-radius: 10px;
+  height: 10%;
+  width: 25%;
+  border-radius: 20px;
   margin-top: 15vh;
   margin-bottom: 5px;
   padding: 10px 20px;
-  background-color: #E0EED2;
-  color: #24272D;
+  background-color: #e0eed2;
+  color: #24272d;
   font-size: 15px;
   font-weight: bold;
   border: none;
@@ -75,26 +79,28 @@ const LogoutButton = styled.div`
   justify-content: center;
 `;
 
-const MyInfo = ({ onPasswordChangeClick }) => { 
+const MyInfo = ({ onPasswordChangeClick }) => {
   // 더미 데이터 생성
   const userData = {
     email: "ssafy11@shinhan.com",
     totalPoints: 1500,
-    totalLoan: '300,000',
+    totalLoan: "300,000",
     name: "제갈싸피",
     gender: "M",
     birthday: "2000-01-01",
-    phoneNumber: "010-1234-5678"
+    phoneNumber: "010-1234-5678",
   };
 
   return (
     <Container>
       <SubHeader>
         <span>{userData.name}님</span>
-        <PasswordChangebutton onClick={onPasswordChangeClick}>비밀번호 변경</PasswordChangebutton>
+        <PasswordChangebutton onClick={onPasswordChangeClick}>
+          비밀번호 변경
+        </PasswordChangebutton>
       </SubHeader>
       <Contents>
-        <h3>개인정보</h3>
+        <SubTitle>개인정보</SubTitle>
         <InfoRow>
           <Label>이메일</Label>
           <Value>{userData.email}</Value>
@@ -109,12 +115,10 @@ const MyInfo = ({ onPasswordChangeClick }) => {
         </InfoRow>
         <InfoRow>
           <Label>성별</Label>
-          <Value>{userData.gender === 'M' ? '남성' : '여성'}</Value>
+          <Value>{userData.gender === "M" ? "남성" : "여성"}</Value>
         </InfoRow>
       </Contents>
-      <LogoutButton>
-        로그아웃
-      </LogoutButton>
+      <LogoutButton>로그아웃</LogoutButton>
     </Container>
   );
 };

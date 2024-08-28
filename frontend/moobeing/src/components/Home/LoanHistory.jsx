@@ -41,8 +41,9 @@ const SortButton = styled.p`
   font-size: 12px;
   padding: 5px;
   cursor: pointer;
-  background-color: ${(props) => (props.isActive ? "#348833" : "#e0eed2")};
-  color: ${(props) => (props.isActive ? "#ffffff" : "#000000")};
+  background-color: ${(props) =>
+    props.isactive === "true" ? "#348833" : "#e0eed2"};
+  color: ${(props) => (props.isactive === "true" ? "#ffffff" : "#000000")};
   border-radius: 10px;
 `;
 
@@ -172,13 +173,13 @@ function LoanHistory() {
         <SortButtonContainer>
           <SortButton
             onClick={sortByInterestRate}
-            isActive={activeSort === "interest"}
+            isactive={activeSort === "interest" ? "true" : "false"}
           >
             금리순
           </SortButton>
           <SortButton
             onClick={sortByLoanMoney}
-            isActive={activeSort === "amount"}
+            isactive={activeSort === "amount" ? "true" : "false"}
           >
             금액순
           </SortButton>

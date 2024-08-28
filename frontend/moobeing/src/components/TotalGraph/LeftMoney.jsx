@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import DropDownArrow from "../../assets/dropdown/DropdownArrow.svg";
+import DropDownArrow from "../../assets/dropdown/DropdownArrow.png";
 
 const Container = styled.div`
   background-color: #f5fded;
@@ -77,7 +77,7 @@ const CustomDropdownHeader = styled.div`
   background-image: url(${DropDownArrow});
   background-repeat: no-repeat;
   background-position: right 12px center;
-  background-size: 14px 14px;
+  background-size: 15px 10px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
