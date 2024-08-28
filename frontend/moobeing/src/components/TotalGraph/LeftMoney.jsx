@@ -5,7 +5,7 @@ import DropDownArrow from "../../assets/dropdown/DropdownArrow.png";
 
 const Container = styled.div`
   background-color: #f5fded;
-  height: 300px;
+  height: 320px;
   width: 90%;
   max-width: 1200px; /* 최대 너비 설정 */
   margin-bottom: 5%;
@@ -58,7 +58,7 @@ const PayButton = styled.button`
 
 const CustomDropdownContainer = styled.div`
   position: relative;
-  width: 180px;
+  width: 170px;
   max-width: 300px; /* 드롭다운의 최대 너비 설정 */
   display: inline-block;
   margin: 10px 0;

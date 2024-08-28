@@ -48,14 +48,17 @@ const SortButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
+  font-size: 13px;
+  font-weight: ${(props) => (props.isselected ? "bold" : "normal")};
 `;
 
 const ChooseButton = styled.button`
   align-self: flex-end;
   margin-right: 20px;
   margin-bottom: 20px;
-  background-color: ${(props) => (props.isactive ? "#348833" : "#E0EED2")};
-  color: ${(props) => (props.isactive ? "white" : "black")};
+  background-color: ${(props) =>
+    props.isactive === "true" ? "#348833" : "#E0EED2"};
+  color: ${(props) => (props.isactive === "true" ? "white" : "black")};
   border: none;
   border-radius: 30px;
   padding: 10px 20px;
@@ -71,10 +74,9 @@ const CardContainer = styled.div`
   margin-bottom: 50px;
 `;
 
-const CharacterCard = styled.div.attrs((props) => ({
-  selectable: props.isselectable ? "true" : undefined,
-}))`
-  width: 160px;
+const CharacterCard = styled.div`
+  width: 45%;
+  margin-left: 3px;
   height: 150px;
   background-color: #f5fded;
   display: flex;
@@ -83,10 +85,10 @@ const CharacterCard = styled.div.attrs((props) => ({
   justify-content: center;
   position: relative;
   border-radius: 10%;
-  cursor: ${(props) => (props.selectable ? "pointer" : "default")};
+  cursor: ${(props) => (props.isselectable === "true" ? "pointer" : "default")};
   box-shadow: 0.3px 0.3px 6px rgba(0, 0, 0, 0.12);
   ${(props) =>
-    props.isSelected &&
+    props.isselected &&
     `
     filter: drop-shadow(0 0 8px #348833);
   `}
@@ -154,6 +156,7 @@ const RadishCollection = () => {
   const [sortBy, setSortBy] = useState("date");
   const [isChooseActive, setIsChooseActive] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [selectedSort, setSelectedSort] = useState("date");
   const [characters, setCharacters] = useState([
     {
       radishId: 5,
@@ -220,6 +223,7 @@ const RadishCollection = () => {
       setCharacters(sortedCharacters);
     }
     setSortBy(type);
+    setSelectedSort(type);
   };
 
   const handleChoose = () => {
@@ -241,21 +245,32 @@ const RadishCollection = () => {
           <Container>
             <Subtitle>무 컬렉션</Subtitle>
             <SortButtonContainer>
-              <SortButton onClick={() => handleSort("date")}>날짜순</SortButton>
+              <SortButton
+                onClick={() => handleSort("date")}
+                isselected={selectedSort === "date"}
+              >
+                날짜순
+              </SortButton>
               <LineImg src={Line} alt="Line" />
-              <SortButton onClick={() => handleSort("radishRank")}>
+              <SortButton
+                onClick={() => handleSort("radishRank")}
+                isselected={selectedSort === "radishRank"}
+              >
                 랭킹순
               </SortButton>
             </SortButtonContainer>
-            <ChooseButton onClick={handleChoose} isactive={isChooseActive}>
+            <ChooseButton
+              onClick={handleChoose}
+              isactive={isChooseActive.toString()}
+            >
               선택
             </ChooseButton>
             <CardContainer>
               {characters.map((char) => (
                 <CharacterCard
                   key={char.radishId}
-                  isselectable={isChooseActive}
-                  isSelected={selectedCharacter === char.radishId}
+                  isselectable={isChooseActive ? "true" : "false"}
+                  isselected={selectedCharacter === char.radishId}
                   onClick={() => handleCardClick(char.radishId)}
                 >
                   <CharacterImage />

@@ -150,7 +150,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-function TotalGraph({ data, peerData }) {
+function TotalGraph({ data = { items: [] }, peerData = { items: [] } }) {
   const [visibleRange, setVisibleRange] = useState([0, 4]);
   const [yAxisDomain, setYAxisDomain] = useState([0, 0]);
   const [showPeerData, setShowPeerData] = useState(false);
@@ -252,6 +252,7 @@ function TotalGraph({ data, peerData }) {
               tickFormatter={formatToKoreanWon}
               width={60}
               tick={{ fontSize: 10 }}
+              allowDecimals={false} // Explicitly provide all necessary props to avoid relying on defaults
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend wrapperStyle={{ paddingLeft: 30 }} />

@@ -12,6 +12,7 @@ const Container = styled.div`
 `;
 
 const InputText = styled.input`
+  background-color: white;
   border: 1px solid #348833;
   border-radius: 10px;
   font-family: "Inter-Regular", Helvetica;
@@ -21,14 +22,14 @@ const InputText = styled.input`
   width: 80%;
   margin: 8px 0;
   padding: 12px;
-  outline-color: #E0EED2;
+  outline-color: #e0eed2;
 `;
 
 const ChangeButton = styled.button`
   height: 44px;
   width: 40%;
   border-radius: 10px;
-  background-color: #E0EED2;
+  background-color: #e0eed2;
   color: #348833;
   font-size: 13px;
   font-weight: bold;
