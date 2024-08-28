@@ -71,4 +71,8 @@ public class MemberLoan {
 		this.startMonth = startMonth;
 		this.startDay = startDay;
 	}
+
+	public void setRemainingBalance(Long remainingBalance) {
+		this.remainingBalance = remainingBalance;
+	}
 }

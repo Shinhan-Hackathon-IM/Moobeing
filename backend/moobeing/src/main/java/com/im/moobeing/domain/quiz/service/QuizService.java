@@ -1,8 +1,23 @@
 package com.im.moobeing.domain.quiz.service;
 
+import java.util.List;
+import java.util.Random;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.im.moobeing.domain.expense.dto.response.ExpenseCategoryResponse;
 import com.im.moobeing.domain.expense.service.ExpenseService;
+import com.im.moobeing.domain.member.entity.Member;
 import com.im.moobeing.domain.member.service.MemberService;
+import com.im.moobeing.domain.quiz.dto.request.QuizAnswerRequest;
+import com.im.moobeing.domain.quiz.dto.response.QuizAnswerResponse;
+import com.im.moobeing.domain.quiz.dto.response.QuizColdResponse;
+import com.im.moobeing.domain.quiz.dto.response.QuizDetailResponse;
+import com.im.moobeing.domain.quiz.dto.response.QuizResponse;
 import com.im.moobeing.domain.quiz.entity.Quiz;
 import com.im.moobeing.domain.quiz.entity.QuizInputAnswer;
 import com.im.moobeing.domain.quiz.entity.QuizStatus;
@@ -10,22 +25,8 @@ import com.im.moobeing.domain.quiz.repository.QuizRepository;
 import com.im.moobeing.global.error.ErrorCode;
 import com.im.moobeing.global.error.exception.AuthenticationException;
 import com.im.moobeing.global.error.exception.EntityNotFoundException;
-import java.util.List;
 
-import java.util.Random;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-
-import com.im.moobeing.domain.member.entity.Member;
-import com.im.moobeing.domain.quiz.dto.request.QuizAnswerRequest;
-import com.im.moobeing.domain.quiz.dto.response.QuizAnswerResponse;
-import com.im.moobeing.domain.quiz.dto.response.QuizColdResponse;
-import com.im.moobeing.domain.quiz.dto.response.QuizDetailResponse;
-import com.im.moobeing.domain.quiz.dto.response.QuizResponse;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

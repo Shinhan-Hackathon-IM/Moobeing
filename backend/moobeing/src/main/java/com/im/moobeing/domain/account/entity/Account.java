@@ -32,4 +32,8 @@ public class Account {
 		this.memberId = memberId;
 		this.accountBalance = accountBalance;
 	}
+
+	public void setAccountBalance(Long accountBalance) {
+		this.accountBalance = accountBalance;
+	}
 }
