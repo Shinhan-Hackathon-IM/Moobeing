@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import styled, { keyframes } from "styled-components";
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import LoanHistory from "../components/Home/LoanHistory";
 import LoanPayment from "../components/Home/LoanPayment";
 import QuizPopup from "../components/Home/QuizPopup";
