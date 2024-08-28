@@ -2,12 +2,14 @@ import styled from "styled-components";
 import Logo from "../assets/logo/HorizontalLogo.png";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { postLogin } from "../apis/UserApi";
 
 const ScreenWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
+  height: 100vh;
   margin-top: 30vh;
   position: relative;
 `;
@@ -28,14 +30,14 @@ const InputText = styled.input`
   width: 80%;
   margin: 8px 0;
   padding: 12px;
-  outline-color: #E0EED2;
+  outline-color: #e0eed2;
 `;
 
 const LoginButton = styled.button`
   height: 44px;
   width: 40%;
   border-radius: 10px;
-  background-color: #E0EED2;
+  background-color: #e0eed2;
   color: #348833;
   font-size: 13px;
   font-weight: bold;
@@ -49,7 +51,7 @@ const LoginButton = styled.button`
 `;
 
 const PasswordLostContainer = styled.div`
-  width: 85%;
+  width: 80%;
   display: flex;
   justify-content: flex-end;
   margin-top: 10px;
@@ -69,7 +71,7 @@ const SignUpText = styled.p`
   font-weight: 400;
   text-align: center;
   position: absolute;
-  bottom: 20px;
+  bottom: 5vh;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -109,7 +111,21 @@ const Login = () => {
 
     console.log("Login data:", loginData);
 
-    // 여기에 post 함수 넣으면 됨
+    try {
+      const response = postLogin(email, password);
+
+      if (response.status === 200) {
+        console.log("로그인 성공:", response.data);
+        // 로그인 성공 시 추가 로직 (예: 홈 페이지로 리다이렉트)
+        navigate("/home");
+      } else {
+        console.log("로그인 실패:", response.status);
+        alert("로그인 실패: " + response.data.message); // 오류 메시지 표시
+      }
+    } catch (error) {
+      console.error("로그인 중 오류 발생:", error);
+      alert("로그인 중 오류가 발생했습니다."); // 오류 메시지 표시
+    }
   };
 
   return (

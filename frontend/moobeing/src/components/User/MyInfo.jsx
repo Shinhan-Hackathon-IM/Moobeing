@@ -1,5 +1,8 @@
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import useUserStore from "../../store/UserStore";
+import { getUserInfo } from "../../apis/UserApi";
+import { useEffect } from "react";
 
 const Container = styled.div`
   display: flex;
@@ -80,6 +83,26 @@ const LogoutButton = styled.div`
 `;
 
 const MyInfo = ({ onPasswordChangeClick }) => {
+  // Zustand 스토어에서 사용자 정보 가져오기
+  const userInfo = useUserStore((state) => state.userInfo);
+  // Zustand 스토어에서 setUserInfo 함수 가져오기
+  const setUserInfo = useUserStore((state) => state.setUserInfo);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userData = await getUserInfo(); // 사용자 정보 가져오기
+        setUserInfo(userData); // Zustand 스토어에 저장
+      } catch (error) {
+        console.error("데이터 가져오기 실패:", error);
+      }
+    };
+
+    fetchData();
+  }, [setUserInfo]);
+
+  console.log(userInfo);
+
   // 더미 데이터 생성
   const userData = {
     email: "ssafy11@shinhan.com",

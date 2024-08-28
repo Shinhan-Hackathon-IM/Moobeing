@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { postSignUp, postEmailCheck } from "../apis/UserApi";
 
 const PageWrapper = styled.div`
   display: flex;
@@ -13,7 +14,7 @@ const PageWrapper = styled.div`
 const FixedTitle = styled.div`
   color: #24272d;
   font-size: 28px;
-  font-weight: 400;
+  font-weight: 700;
   text-align: center;
   margin-bottom: 20px;
   position: fixed;
@@ -86,7 +87,6 @@ const InputField = styled.input`
   box-sizing: border-box;
   letter-spacing: 1px;
 `;
-
 
 const HumanInputField = styled.input`
   width: 40px;
@@ -182,6 +182,7 @@ const SignUp = () => {
   const [name, setName] = useState("");
   const [humanNumber, setHumanNumber] = useState({ part1: "", part2: "" });
   const [email, setEmail] = useState("");
+  const [isEmailAvailable, setIsEmailAvailable] = useState(null); // 이메일 사용 가능 여부 상태 추가
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMismatch, setPasswordMismatch] = useState(false);
@@ -203,34 +204,66 @@ const SignUp = () => {
 
   const handleHumanNumberPart1Change = (e) => {
     const value = e.target.value.slice(0, 6); // 6글자로 제한
-    setHumanNumber({ ...humanNumber, part1: value });
+    if (/^\d*$/.test(value)) {
+      // 숫자만 허용
+      setHumanNumber({ ...humanNumber, part1: value });
+    } else {
+      alert("주민번호는 숫자만 입력할 수 있습니다.");
+    }
   };
 
   const handleHumanNumberPart2Change = (e) => {
     const value = e.target.value.slice(0, 1); // 1글자로 제한
-    setHumanNumber({ ...humanNumber, part2: value });
+    if (/^\d*$/.test(value)) {
+      // 숫자만 허용
+      setHumanNumber({ ...humanNumber, part2: value });
+    } else {
+      alert("주민번호는 숫자만 입력할 수 있습니다.");
+    }
   };
 
-  const handleSignUp = () => {
+  const handleEmailCheck = async () => {
+    try {
+      const response = await postEmailCheck(email);
+      setIsEmailAvailable(response.possibility);
+      if (response.possibility) {
+        alert("이메일을 사용할 수 있습니다.");
+        handleNextStep(4);
+      } else {
+        alert("이미 사용 중인 이메일입니다.");
+      }
+    } catch (error) {
+      console.error("이메일 중복 체크 실패:", error);
+      alert("이메일 중복 체크 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handleSignUp = async () => {
+    // 주민번호를 문자열로 저장
     const formattedHumanNumber = `${humanNumber.part1}${humanNumber.part2}`;
+
     const signUpData = {
       email,
       password,
       name,
-      humanNumber: parseInt(formattedHumanNumber, 10),
+      humanNumber: formattedHumanNumber, // 형식화된 주민번호를 숫자로 변환
     };
 
-    console.log(signUpData); // For debugging purposes, to see the structure of data before sending the POST request.
+    console.log(signUpData); // 디버깅용: 데이터가 올바르게 형성되었는지 확인
 
-    // Here you would perform the POST request to your server API.
-    // For example:
-    // fetch('YOUR_API_ENDPOINT', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(signUpData),
-    // }).then(response => response.json()).then(data => console.log(data)).catch(error => console.error(error));
+    try {
+      const response = await postSignUp(
+        email,
+        password,
+        name,
+        formattedHumanNumber
+      );
+      console.log("회원가입 성공:", response);
+      // 회원가입 성공 후 추가적인 로직 (예: 로그인 페이지로 리다이렉트)
+    } catch (error) {
+      console.error("회원가입 실패:", error);
+      // 오류 처리 로직 (예: 사용자에게 오류 메시지 표시)
+    }
   };
 
   return (
@@ -285,7 +318,7 @@ const SignUp = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={(e) => handleEnterKeyPress(e, 4)}
                 />
-                <ConfirmButton onClick={() => handleNextStep(4)}>
+                <ConfirmButton onClick={handleEmailCheck}>
                   <ConfirmButtonText>중복확인</ConfirmButtonText>
                 </ConfirmButton>
               </InputGroupEmail>
