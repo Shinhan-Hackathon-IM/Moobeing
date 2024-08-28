@@ -1,18 +1,27 @@
 package com.im.moobeing.domain.member.controller;
 
-import com.im.moobeing.domain.member.dto.request.*;
-import com.im.moobeing.domain.member.entity.Member;
-import com.im.moobeing.domain.member.service.MemberService;
-import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.im.moobeing.domain.member.dto.request.MemberChangeRequest;
+import com.im.moobeing.domain.member.dto.request.MemberCheckEmailRequest;
+import com.im.moobeing.domain.member.dto.request.MemberCreateRequest;
+import com.im.moobeing.domain.member.dto.request.MemberLoginRequest;
+import com.im.moobeing.domain.member.dto.request.MemberPwChangeRequest;
+import com.im.moobeing.domain.member.dto.request.MemberRadishSelectRequest;
+import com.im.moobeing.domain.member.entity.Member;
+import com.im.moobeing.domain.member.service.MemberService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/user")
@@ -30,23 +39,9 @@ public class MemberController {
 
     @Operation(summary = "로그인", description = "로그인 합니다.")
     @PostMapping("/login")
-    public ResponseEntity<?> loginMember(@RequestBody MemberLoginRequest memberLoginRequest, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> loginMember(@RequestBody MemberLoginRequest memberLoginRequest) {
         Member member = memberService.loginMember(memberLoginRequest);
-
-        HttpSession session = request.getSession();
         session.setAttribute("memberId", member.getId());
-
-        // SameSite=None 설정된 쿠키를 추가
-        Cookie sessionCookie = new Cookie("JSESSIONID", session.getId());
-        sessionCookie.setPath("/");
-        sessionCookie.setHttpOnly(true);
-        sessionCookie.setSecure(true);
-        sessionCookie.setMaxAge(-1); // 세션 쿠키로 설정
-        sessionCookie.setDomain(request.getServerName());
-        sessionCookie.setSecure(Boolean.parseBoolean("None"));
-
-        response.addCookie(sessionCookie);
-
         return ResponseEntity.status(HttpStatus.OK).body(memberService.selectedRadishMember(member));
     }
 
