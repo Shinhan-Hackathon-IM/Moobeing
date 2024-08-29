@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 const Title = styled.div`
   background-color: #f5fded;
-  height: 20vh; /* 높이를 크게 설정 */
+  height: 20vh; /* Increased height */
   width: 90%;
   margin-top: 3vh;
   border-radius: 20px;
@@ -12,8 +12,18 @@ const Title = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20px; /* 내부 여백 추가 */
+  padding: 20px; /* Added padding */
   box-sizing: border-box;
+`;
+
+const AccentText = styled.span`
+  font-weight: 700;
+  font-size: 23px;
+`;
+
+const TitleText = styled.div`
+  font-size: 20px;
+  text-align: center;
 `;
 
 const LoanSum = styled.div`
@@ -41,10 +51,9 @@ const AnalyzeButton = styled.button`
   border: none;
   padding: 5px 8px;
   border-radius: 10px;
-  font-weight: 700;
 `;
 
-const SubHeader = ({ month, onAnalyzeClick }) => {
+const SubHeader = ({ month = "이월", onAnalyzeClick, totalExpense = 0 }) => {
   const [buttonText, setButtonText] = useState("분석하기");
 
   const handleButtonClick = () => {
@@ -57,13 +66,14 @@ const SubHeader = ({ month, onAnalyzeClick }) => {
   return (
     <>
       <Title>
-        <h1>
-          제갈싸피님의 <br />
-          {month} 지출내역
-        </h1>
+        <TitleText>
+          <AccentText>제갈싸피님</AccentText>
+          의<br />
+          <AccentText>{month}</AccentText> 지출내역
+        </TitleText>
       </Title>
       <LoanSum>
-        <SpendSum>총지출: 811,000</SpendSum>
+        <SpendSum>총 지출: {totalExpense.toLocaleString()}원</SpendSum>
         <AnalyzeButton onClick={handleButtonClick}>{buttonText}</AnalyzeButton>
       </LoanSum>
     </>
@@ -71,8 +81,14 @@ const SubHeader = ({ month, onAnalyzeClick }) => {
 };
 
 SubHeader.propTypes = {
-  month: PropTypes.string.isRequired,
+  month: PropTypes.string,
   onAnalyzeClick: PropTypes.func.isRequired,
+  totalExpense: PropTypes.number,
+};
+
+SubHeader.defaultProps = {
+  month: "1월",
+  totalExpense: 0,
 };
 
 export default SubHeader;

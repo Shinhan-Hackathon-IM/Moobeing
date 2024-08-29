@@ -112,7 +112,7 @@ function LoanHistory() {
       try {
         const response = await getLoanSort("amount"); // API 호출
         setLoans(response.getMemberLoanDtoList); // 받아온 대출 정보 설정
-        setTotalLoanAmount(response.totalLoanAmount); // 총 대출 금액 설정
+        setTotalLoanAmount(response.totalLoanAmount || 0); // 총 대출 금액 설정
       } catch (error) {
         console.error("대출 정보 불러오기 실패:", error);
       }
@@ -165,7 +165,7 @@ function LoanHistory() {
         </SortButtonContainer>
       </SubHeader>
       <TotalLoan>
-        {totalLoanAmount.toLocaleString()} 원
+        {totalLoanAmount?.toLocaleString()} 원
         <NavigateButton onClick={navigateToTotalJourney}>
           <NavigateImage src={goToJourney} alt="여정지도" />
         </NavigateButton>

@@ -1,20 +1,20 @@
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import foodIcon from '../../assets/SpendIcons/foodIcon.png';
-import healthIcon from '../../assets/SpendIcons/healthIcon.png';
-import leisureIcon from '../../assets/SpendIcons/leisureIcon.png';
-import loanIcon from '../../assets/SpendIcons/loanIcon.png';
-import pleasureIcon from '../../assets/SpendIcons/pleasureIcon.png';
-import trafficIcon from '../../assets/SpendIcons/trafficIcon.png';
+import foodIcon from "../../assets/SpendIcons/foodIcon.png";
+import healthIcon from "../../assets/SpendIcons/healthIcon.png";
+import leisureIcon from "../../assets/SpendIcons/leisureIcon.png";
+import loanIcon from "../../assets/SpendIcons/loanIcon.png";
+import pleasureIcon from "../../assets/SpendIcons/pleasureIcon.png";
+import trafficIcon from "../../assets/SpendIcons/trafficIcon.png";
 
 // Icon mapping object
 const iconMapping = {
-  "식비": foodIcon,
-  "건강": healthIcon,
-  "문화": leisureIcon,
-  "대출": loanIcon,
-  "유흥": pleasureIcon,
-  "교통": trafficIcon
+  식비: foodIcon,
+  건강: healthIcon,
+  문화: leisureIcon,
+  대출: loanIcon,
+  유흥: pleasureIcon,
+  교통: trafficIcon,
 };
 
 const Category = styled.div`
@@ -42,8 +42,8 @@ const CategoryItem = styled.div`
 `;
 
 const ItemInfo = styled.span`
-  display: flex; 
-  align-items: center; 
+  display: flex;
+  align-items: center;
 `;
 
 const Icon = styled.img`
@@ -54,18 +54,34 @@ const Icon = styled.img`
   border-radius: 10px;
 `;
 
-const PaymentCategory = ({ data }) => {
+const LabelAccent = styled.span`
+  font-weight: 700;
+  margin-right: 8px;
+`;
+
+const PaymentCategory = ({ data = [] }) => {
   return (
     <Category>
-      {data.map((item) => (
-        <CategoryItem key={item.id}>
-          <ItemInfo>
-            <Icon src={iconMapping[item.label]} alt={`${item.label} icon`} />
-            {item.label} {item.value}%
-          </ItemInfo>
-          <span>{item.value * 1000}원</span>
-        </CategoryItem>
-      ))}
+      {data.map((item, index) => {
+        const iconSrc = iconMapping[item.label] || ""; // Fallback to empty string if icon not found
+        const label = item.label || "기타"; // Default label to "기타" if undefined
+        const percent = item.percent || 0; // Default percent to 0 if undefined
+        const amount = item.amount || 0; // Default amount to 0 if undefined
+
+        return (
+          <CategoryItem key={item.id || index}>
+            <ItemInfo>
+              {iconSrc ? (
+                <Icon src={iconSrc} alt={`${label} icon`} />
+              ) : (
+                <Icon src={foodIcon} alt="Default icon" /> // Show a default icon if not found
+              )}
+              <LabelAccent>{label}</LabelAccent> {percent.toFixed(2)}%
+            </ItemInfo>
+            <span>{amount.toLocaleString()}원</span>
+          </CategoryItem>
+        );
+      })}
     </Category>
   );
 };
@@ -73,10 +89,10 @@ const PaymentCategory = ({ data }) => {
 PaymentCategory.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       label: PropTypes.string.isRequired,
-      value: PropTypes.number.isRequired,
-      color: PropTypes.string,
+      percent: PropTypes.number.isRequired,
+      amount: PropTypes.number.isRequired,
     })
   ).isRequired,
 };

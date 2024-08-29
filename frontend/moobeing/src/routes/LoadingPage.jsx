@@ -18,7 +18,7 @@ const StyledLoading = styled.div`
     letter-spacing: 0;
     line-height: normal;
     text-align: center;
-    font-family: 'S-CoreDream';
+    font-family: "S-CoreDream";
   }
 
   & .element {

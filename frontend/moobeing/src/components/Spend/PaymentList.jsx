@@ -5,59 +5,64 @@ import leftButton from "../../assets/button/leftButton.svg";
 import rightButton from "../../assets/button/rightButton.svg";
 import leftButtonBlack from "../../assets/button/leftButtonBlack.svg";
 import rightButtonBlack from "../../assets/button/rightButtonBlack.svg";
+import foodIcon from "../../assets/SpendIcons/foodIcon.png";
+import healthIcon from "../../assets/SpendIcons/healthIcon.png";
+import leisureIcon from "../../assets/SpendIcons/leisureIcon.png";
+import loanIcon from "../../assets/SpendIcons/loanIcon.png";
+import pleasureIcon from "../../assets/SpendIcons/pleasureIcon.png";
+import trafficIcon from "../../assets/SpendIcons/trafficIcon.png";
+import basicRad from "../../assets/radishes/basicRad.svg";
 
-const BankLogo = styled.img`
-  width: 50px;
-  height: 50px;
-  margin-right: 20px;
-`;
+const iconMapping = {
+  식비: foodIcon,
+  건강: healthIcon,
+  문화: leisureIcon,
+  대출: loanIcon,
+  유흥: pleasureIcon,
+  교통: trafficIcon,
+};
 
-const PaymentInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`;
-
-const PaymentName = styled.div`
-  display: flex;
-  flex-direction: row;
+const Icon = styled.img`
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
 `;
 
 const PaymentItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px 0px;
+  padding: 15px 0;
   border-bottom: 1px solid #ddd;
   cursor: pointer;
-`;
-
-const InterestRate = styled.div`
-  margin-left: auto;
-  font-size: 10px;
-  font-weight: bold;
-  background-color: #e0eed2;
-  padding: 5px 8px;
-  border-radius: 10px;
-  color: white;
 `;
 
 const PaymentListContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
   width: 97%;
   height: 260px;
   overflow: hidden;
   margin: 20px 0;
   padding-left: 10px;
+  position: relative;
 `;
 
 const PaymentListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
+  width: 100%;
+  flex-grow: 1;
+`;
+
+const ScrollButtonContainer = styled.div`
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
 `;
 
@@ -82,6 +87,39 @@ const PageInfo = styled.div`
   margin: 0 10px;
 `;
 
+const PaymentInfo = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const Price = styled.div`
+  font-size: 15px;
+  font-weight: 600;
+`;
+
+const NoPaymentsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+`;
+
+const NoPaymentsImage = styled.img`
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+`;
+
+const NoPaymentsText = styled.div`
+  font-size: 16px;
+  color: #555;
+`;
+
 function PaymentList({ payments }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const loansPerPage = 3;
@@ -90,14 +128,14 @@ function PaymentList({ payments }) {
   const handleScrollNext = () => {
     setCurrentIndex((prevIndex) => {
       const nextIndex = prevIndex + loansPerPage;
-      return nextIndex >= payments.length ? 0 : nextIndex; // Loop back to the first page
+      return nextIndex >= payments.length ? prevIndex : nextIndex;
     });
   };
 
   const handleScrollPrev = () => {
     setCurrentIndex((prevIndex) => {
       const prevIndexNew = prevIndex - loansPerPage;
-      return prevIndexNew < 0 ? payments.length - loansPerPage : prevIndexNew; // Loop back to the last page
+      return prevIndexNew < 0 ? 0 : prevIndexNew;
     });
   };
 
@@ -110,39 +148,50 @@ function PaymentList({ payments }) {
   return (
     <>
       <PaymentListContainer>
-        <PaymentListWrapper>
-          {visiblePayments.map((payment, index) => (
-            <PaymentItem key={index}>
-              <BankLogo
-                src={`/images/${payment.bank_name}_logo.png`}
-                alt={payment.bank_name}
-              />
-              <PaymentInfo>
-                <PaymentName>
-                  <div>{payment.loanTypeName}</div>
-                </PaymentName>
-                <div>{payment.loanBalance}</div>
-              </PaymentInfo>
-              <InterestRate>{payment.interestRate}</InterestRate>
-            </PaymentItem>
-          ))}
-        </PaymentListWrapper>
+        {payments.length === 0 ? (
+          <NoPaymentsContainer>
+            <NoPaymentsImage src={basicRad} alt="No payments" />
+            <NoPaymentsText>소비 내역이 없습니다.</NoPaymentsText>
+          </NoPaymentsContainer>
+        ) : (
+          <PaymentListWrapper>
+            {visiblePayments.map((payment, index) => {
+              const iconSrc = iconMapping[payment.categoryName] || basicRad; // Fallback to basicRad if icon not found
+              const title = payment.title || "Unknown"; // Default to "Unknown" if title is undefined
+              const price = payment.price || 0; // Default to 0 if price is undefined
+
+              return (
+                <PaymentItem key={index}>
+                  <Icon src={iconSrc} alt={payment.categoryName} />
+                  <PaymentInfo>
+                    {title.length > 7 ? `${title.slice(0, 7)} ...` : title}
+                    <Price>{price.toLocaleString()}원</Price>
+                  </PaymentInfo>
+                </PaymentItem>
+              );
+            })}
+          </PaymentListWrapper>
+        )}
+        <ScrollButtonContainer>
+          <ScrollButton>
+            <NavigationImage
+              src={currentPage > 1 ? leftButtonBlack : leftButton}
+              alt="이전"
+              onClick={handleScrollPrev}
+            />
+          </ScrollButton>
+          <PageInfo>
+            {currentPage}/{totalPages}
+          </PageInfo>
+          <ScrollButton>
+            <NavigationImage
+              src={currentPage < totalPages ? rightButtonBlack : rightButton}
+              alt="다음"
+              onClick={handleScrollNext}
+            />
+          </ScrollButton>
+        </ScrollButtonContainer>
       </PaymentListContainer>
-      <ScrollButton>
-        <NavigationImage
-          src={currentPage > 1 ? leftButtonBlack : leftButton}
-          alt="이전"
-          onClick={handleScrollPrev}
-        />
-        <PageInfo>
-          {currentPage}/{totalPages}
-        </PageInfo>
-        <NavigationImage
-          src={currentPage < totalPages ? rightButtonBlack : rightButton}
-          alt="다음"
-          onClick={handleScrollNext}
-        />
-      </ScrollButton>
     </>
   );
 }
@@ -150,10 +199,9 @@ function PaymentList({ payments }) {
 PaymentList.propTypes = {
   payments: PropTypes.arrayOf(
     PropTypes.shape({
-      bank_name: PropTypes.string.isRequired,
-      loanBalance: PropTypes.string.isRequired,
-      loanTypeName: PropTypes.string.isRequired,
-      interestRate: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      categoryName: PropTypes.string.isRequired,
+      price: PropTypes.number.isRequired,
     })
   ).isRequired,
 };

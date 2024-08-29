@@ -12,79 +12,61 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   box-sizing: border-box;
-  padding: 20px;
+  padding: 10% 7% 3% 7%;
 `;
 
-const SubHeader = styled.div`
-  width: 100%;
+const TitleContent = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 5%;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
-const DateTitle = styled.div`
-  margin: 0;
+const SelectDate = styled.div`
   font-weight: 700;
-  font-size: 20px;
-  margin-bottom: 5px;
-`;
-const SubTitle = styled.div`
-  margin: 0;
-  font-size: 20px;
+  margin-left: 8px;
+  font-size: 18px;
 `;
 
-const TotalLoan = styled.div`
-  margin-top: 0;
-  font-weight: 700;
-  margin-left: 5px;
+const LoanSort = styled.button`
+  font-size: 10px;
+  background-color: #e0eed2;
+  border: none;
+  border-radius: 10px;
+  padding: 5px 7px;
+  cursor: pointer;
 `;
 
-const memberLoans = [
-  {
-    bank_name: "신한은행",
-    loanBalance: "12345원",
-    loanTypeName: "참대출",
-    interestRate: "3.1%",
-  },
-  {
-    bank_name: "신한은행",
-    loanBalance: "123453원",
-    loanTypeName: "참대출",
-    interestRate: "2.1%",
-  },
-  {
-    bank_name: "신한은행",
-    loanBalance: "123451234원",
-    loanTypeName: "참대출",
-    interestRate: "1.1%",
-  },
-  {
-    bank_name: "신한은행",
-    loanBalance: "22345원",
-    loanTypeName: "참대출",
-    interestRate: "6.1%",
-  },
-];
+const PaymentHistory = ({ date, history }) => {
+  const [filteredHistory, setFilteredHistory] = useState(history);
+  const [showLoansOnly, setShowLoansOnly] = useState(false);
 
-const PaymentHistory = ({ date }) => {
-  const [payments, setPayments] = useState(memberLoans);
+  const handleFilterClick = () => {
+    setShowLoansOnly((prev) => !prev);
+    if (!showLoansOnly) {
+      setFilteredHistory(
+        history.filter((item) => item.categoryName === "대출")
+      );
+    } else {
+      setFilteredHistory(history);
+    }
+  };
 
   return (
     <Container>
-      <SubHeader>
-        <DateTitle>{date}</DateTitle>
-        <SubTitle>대출 상환 내역</SubTitle>
-      </SubHeader>
-      <TotalLoan>총 상환액: 124,556,663 원</TotalLoan>
-      <PaymentList payments={payments} />
+      <TitleContent>
+        <SelectDate>선택 날짜: {date}</SelectDate>
+        <LoanSort onClick={handleFilterClick}>
+          {showLoansOnly ? "전체 보기" : "대출만 보기"}
+        </LoanSort>
+      </TitleContent>
+      <PaymentList payments={filteredHistory} />
     </Container>
   );
 };
 
 PaymentHistory.propTypes = {
   date: PropTypes.string.isRequired,
+  history: PropTypes.array.isRequired,
 };
 
 export default PaymentHistory;
