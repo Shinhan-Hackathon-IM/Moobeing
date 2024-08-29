@@ -1,29 +1,40 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { getQuizResult } from "../apis/QuizApi";
+import { useLocation, useNavigate } from "react-router-dom";
 import RightResult from "../components/Quiz/RightResult";
 import WrongResult from "../components/Quiz/WrongResult";
+import styled from "styled-components";
+
+const PageContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e0eed2;
+`;
 
 function QuizResult() {
-  const [result, setResult] = useState(null);
-  const { quizId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const result = location.state;
 
-  useEffect(() => {
-    async function fetchResult() {
-      if (!quizId) return;
-      try {
-        const data = await getQuizResult(quizId);
-        setResult(data);
-      } catch (error) {
-        console.error("퀴즈 결과 가져오기 실패:", error);
-      }
-    }
-    fetchResult();
-  }, [quizId]);
+  // If there's no result in the state, redirect to the quiz page
+  if (!result) {
+    useEffect(() => {
+      navigate("/quiz");
+    }, [navigate]);
+    return null;
+  }
 
-  if (result === null) return <div>Loading...</div>;
-
-  return <div>{result.is_correct ? <RightResult /> : <WrongResult />}</div>;
+  return (
+    <PageContainer>
+      {result.correct ? (
+        <RightResult message={result.message} answer={result.answer} />
+      ) : (
+        <WrongResult message={result.message} answer={result.answer} />
+      )}
+    </PageContainer>
+  );
 }
 
 export default QuizResult;

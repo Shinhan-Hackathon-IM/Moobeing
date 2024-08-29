@@ -92,7 +92,7 @@ function Router() {
           element={userInfo ? <Quiz /> : <Navigate to="/login" />}
         />
         <Route
-          path="/quiz/result/:quizId/"
+          path="/quiz/result/:quizId"
           element={userInfo ? <QuizResult /> : <Navigate to="/login" />}
         />
         <Route
