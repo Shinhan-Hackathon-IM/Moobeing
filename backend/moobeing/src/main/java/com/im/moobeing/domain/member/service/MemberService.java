@@ -1,7 +1,24 @@
 package com.im.moobeing.domain.member.service;
 
-import com.im.moobeing.domain.member.dto.request.*;
-import com.im.moobeing.domain.member.dto.response.*;
+import java.util.List;
+import java.util.Random;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.im.moobeing.domain.member.dto.request.MemberChangeRequest;
+import com.im.moobeing.domain.member.dto.request.MemberCheckEmailRequest;
+import com.im.moobeing.domain.member.dto.request.MemberCreateRequest;
+import com.im.moobeing.domain.member.dto.request.MemberLoginRequest;
+import com.im.moobeing.domain.member.dto.request.MemberPwChangeRequest;
+import com.im.moobeing.domain.member.dto.request.MemberRadishSelectRequest;
+import com.im.moobeing.domain.member.dto.response.AddMemberRadishResponse;
+import com.im.moobeing.domain.member.dto.response.MemberCheckEmailResponse;
+import com.im.moobeing.domain.member.dto.response.MemberCreateResponse;
+import com.im.moobeing.domain.member.dto.response.MemberGetResponse;
+import com.im.moobeing.domain.member.dto.response.MemberLoginResponse;
+import com.im.moobeing.domain.member.dto.response.MemberRadishResponse;
+import com.im.moobeing.domain.member.dto.response.MemberRadishSelectResponse;
 import com.im.moobeing.domain.member.entity.Member;
 import com.im.moobeing.domain.member.entity.MemberRadish;
 import com.im.moobeing.domain.member.repository.MemberRepository;
@@ -11,12 +28,8 @@ import com.im.moobeing.global.client.ShinhanClient;
 import com.im.moobeing.global.config.ApiKeyConfig;
 import com.im.moobeing.global.error.ErrorCode;
 import com.im.moobeing.global.error.exception.AuthenticationException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Random;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional(readOnly = true)
@@ -171,6 +184,7 @@ public class MemberService {
         return MemberRadishSelectResponse.of(radish.getRadishName(), radish.getRadishRank(), radish.getRadishImageUrl());
     }
 
+    @Transactional
     public AddMemberRadishResponse addMemberBaby(Member member) {
         // 랜덤 Radish ID 선택
         Long babyMooRadishId = 3L;

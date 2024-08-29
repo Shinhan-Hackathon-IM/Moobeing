@@ -12,6 +12,7 @@ public class MemberRadishDTO {
     private String radishName;
     private String radishRank;
     private Long radishNumber;
+    private String radishImageUrl;
 
     public static MemberRadishDTO of(MemberRadish memberRadish) {
         Radish radish = memberRadish.getRadish();
@@ -20,6 +21,7 @@ public class MemberRadishDTO {
                 .radishName(radish.getRadishName())
                 .radishRank(radish.getRadishRank())
                 .radishNumber(memberRadish.getRadishNumber())
+            .radishImageUrl(radish.getRadishImageUrl())
                 .build();
     }
 }

@@ -124,3 +124,12 @@ INSERT IGNORE INTO expense (expense_id, member_id, expense_category_id, title, p
 INSERT IGNORE INTO quiz (quiz_id, created_date, modified_date, answer, ended_at, example, is_correct, status, member_id)
 VALUES
 (1, NOW(), NOW(), 200000, DATE_ADD(NOW(), INTERVAL 1 HOUR), 150000, 0, 'NOT_STARTED', 1);
+
+-- 11. test@gmail.com 회원에게 1번 무를 추가
+INSERT IGNORE INTO member_radish (member_radish_id, member_id, radish_id, radish_number, created_date, modified_date)
+VALUES
+(1, (SELECT member_id FROM member WHERE email = 'test@gmail.com'),
+1, -- 1번 무를 의미
+1, -- 기본 무의 개수
+NOW(),
+NOW());
