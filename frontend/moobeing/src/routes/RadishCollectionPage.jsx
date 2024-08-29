@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Footer from "../components/Fixed/Footer";
 import Header from "../components/Fixed/Header";
 import Line from "../assets/button/Line.svg";
+import { getUserRadishCollection, selectRadish } from "../apis/RadishApi";
+import useUserStore from "../store/UserStore";
+import checkBox from "../assets/checkBox.svg";
 
 const PageWrapper = styled.div`
   display: flex;
@@ -94,10 +97,9 @@ const CharacterCard = styled.div`
   `}
 `;
 
-const CharacterImage = styled.div`
+const CharacterImage = styled.img`
   width: 100px;
   height: 100px;
-  background-color: #ddd;
 `;
 
 const CharacterName = styled.span`
@@ -152,73 +154,43 @@ const LineImg = styled.img`
   margin-top: 2px;
 `;
 
+const CheckBoxOverlay = styled.img`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 20px;
+  height: 20px;
+`;
+
 const RadishCollection = () => {
   const [sortBy, setSortBy] = useState("date");
   const [isChooseActive, setIsChooseActive] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [selectedSort, setSelectedSort] = useState("date");
-  const [characters, setCharacters] = useState([
-    {
-      radishId: 5,
-      radishName: "무신사",
-      radishImageUrl: "string",
-      radishRank: "A",
-      radishNumber: 2,
-    },
-    {
-      radishId: 1,
-      radishName: "마마무",
-      radishImageUrl: "string",
-      radishRank: "A",
-      radishNumber: 1,
-    },
-    {
-      radishId: 6,
-      radishName: "애기무",
-      radishImageUrl: "string",
-      radishRank: "B",
-      radishNumber: 1,
-    },
-    {
-      radishId: 4,
-      radishName: "무지개",
-      radishImageUrl: "string",
-      radishRank: "S",
-      radishNumber: 1,
-    },
-    {
-      radishId: 7,
-      radishName: "그냥무",
-      radishImageUrl: "string",
-      radishRank: "A",
-      radishNumber: 1,
-    },
-    {
-      radishId: 9,
-      radishName: "저냥무",
-      radishImageUrl: "string",
-      radishRank: "A",
-      radishNumber: 1,
-    },
-    {
-      radishId: 8,
-      radishName: "피곤해무",
-      radishImageUrl: "string",
-      radishRank: "S",
-      radishNumber: 1,
-    },
-  ]);
+  const [characters, setCharacters] = useState([]);
+  const { userInfo, setUserInfo } = useUserStore();
 
-  const [originalCharacters] = useState(characters);
+  useEffect(() => {
+    const fetchRadishCollection = async () => {
+      try {
+        const response = await getUserRadishCollection();
+        setCharacters(response.memberRadishes);
+      } catch (error) {
+        console.error("Failed to fetch radish collection:", error);
+      }
+    };
+
+    fetchRadishCollection();
+  }, []);
 
   const handleSort = (type) => {
     if (type === "date") {
-      setCharacters([...originalCharacters]);
+      setCharacters([...characters]);
     } else if (type === "radishRank") {
       const sortedCharacters = [...characters].sort((a, b) => {
         if (a.radishRank < b.radishRank) return -1;
         if (a.radishRank > b.radishRank) return 1;
-        return originalCharacters.indexOf(a) - originalCharacters.indexOf(b);
+        return 0;
       });
       setCharacters(sortedCharacters);
     }
@@ -231,9 +203,27 @@ const RadishCollection = () => {
     setSelectedCharacter(null);
   };
 
-  const handleCardClick = (id) => {
+  const handleCardClick = (char) => {
     if (isChooseActive) {
-      setSelectedCharacter(selectedCharacter === id ? null : id);
+      setSelectedCharacter(selectedCharacter === char.radishId ? null : char);
+    }
+  };
+
+  const handleDecision = async () => {
+    if (selectedCharacter) {
+      try {
+        await selectRadish(selectedCharacter.radishName);
+        setUserInfo({
+          ...userInfo,
+          radishName: selectedCharacter.radishName,
+          radishRank: selectedCharacter.radishRank,
+          radishImageUrl: selectedCharacter.radishImageUrl,
+        });
+        setIsChooseActive(false);
+        setSelectedCharacter(null);
+      } catch (error) {
+        console.error("Failed to select radish:", error);
+      }
     }
   };
 
@@ -270,14 +260,20 @@ const RadishCollection = () => {
                 <CharacterCard
                   key={char.radishId}
                   isselectable={isChooseActive ? "true" : "false"}
-                  isselected={selectedCharacter === char.radishId}
-                  onClick={() => handleCardClick(char.radishId)}
+                  isselected={selectedCharacter?.radishId === char.radishId}
+                  onClick={() => handleCardClick(char)}
                 >
-                  <CharacterImage />
+                  <CharacterImage src={char.radishImageUrl} />
                   <CharacterName rank={char.radishRank}>
                     {char.radishName}
                   </CharacterName>
-                  <CharacterCount>{char.radishRank}</CharacterCount>
+                  <CharacterCount>{char.radishNumber}x</CharacterCount>
+                  {((!isChooseActive &&
+                    char.radishName === userInfo.radishName) ||
+                    (isChooseActive &&
+                      selectedCharacter?.radishId === char.radishId)) && (
+                    <CheckBoxOverlay src={checkBox} alt="Selected" />
+                  )}
                 </CharacterCard>
               ))}
             </CardContainer>
@@ -287,7 +283,7 @@ const RadishCollection = () => {
       <Footer />
       {selectedCharacter !== null && (
         <DecisionButtonContainer>
-          <DecisionButton>결정</DecisionButton>
+          <DecisionButton onClick={handleDecision}>결정</DecisionButton>
         </DecisionButtonContainer>
       )}
     </PageWrapper>
