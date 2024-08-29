@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { postSignUp, postEmailCheck } from "../apis/UserApi";
+import { useNavigate } from "react-router-dom";
 
 const PageWrapper = styled.div`
   display: flex;
@@ -18,7 +19,7 @@ const FixedTitle = styled.div`
   text-align: center;
   margin-bottom: 20px;
   position: fixed;
-  top: 24vh;
+  top: 15vh;
   width: 100%;
   z-index: 1;
 `;
@@ -178,6 +179,7 @@ const SignUpButton = styled.button`
 `;
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
   const [humanNumber, setHumanNumber] = useState({ part1: "", part2: "" });
@@ -259,7 +261,7 @@ const SignUp = () => {
         formattedHumanNumber
       );
       console.log("회원가입 성공:", response);
-      // 회원가입 성공 후 추가적인 로직 (예: 로그인 페이지로 리다이렉트)
+      navigate("/");
     } catch (error) {
       console.error("회원가입 실패:", error);
       // 오류 처리 로직 (예: 사용자에게 오류 메시지 표시)

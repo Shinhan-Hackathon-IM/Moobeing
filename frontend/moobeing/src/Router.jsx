@@ -33,15 +33,6 @@ function Router() {
       // 여기서 사용자 인증 및 정보를 가져오는 로직을 수행
       // 예를 들어, 토큰 유효성 검사 또는 사용자 정보 가져오기
 
-      // 임의의 사용자 정보를 설정합니다.
-      setUserInfo({
-        name: "Test User",
-        radishName: "basicRad",
-        radishRank: "B",
-        radishImageUrl:
-          "https://github.com/user-attachments/assets/19eff918-f0cd-4f7c-b56b-ddf5069749b9",
-      });
-
       setTimeout(() => {
         setLoading(false); // 로딩 상태 업데이트 (로그인 확인 로직이 필요)
       }, 1000);

@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { darken } from "polished"; // polished에서 darken 가져오기
 import radish from "../../assets/radishes/basicRad.svg";
+import { getCreditRate } from "../../apis/UserApi";
 
 // 신용등급별 색상
 const GraphColors = {
@@ -9,6 +11,15 @@ const GraphColors = {
   C: "#DDD1A6",
   D: "#DDBDA6",
   E: "#DDA6A6",
+};
+
+// 신용등급별 다음 등급 맵핑
+const NextGrade = {
+  A: null, // 다음 등급 없음
+  B: "A",
+  C: "B",
+  D: "C",
+  E: "D",
 };
 
 const Container = styled.div`
@@ -42,10 +53,10 @@ const CreditLevel = styled.div`
     GraphColors[grade]}; /* 배경색을 등급별로 설정 */
   font-size: 1rem;
   font-weight: bold;
-  padding-left: 8px;
   border-radius: 15px; /* 모서리를 약간 둥글게 */
   width: 25px;
   height: 25px;
+  text-align: center;
 `;
 
 const GraphContainer = styled.div`
@@ -61,7 +72,7 @@ const GraphContainer = styled.div`
 
 const GraphFill = styled.div.attrs(({ fillpercent }) => ({
   style: {
-    width: `${fillpercent}%`, // Use inline styles to apply the fill width
+    width: `calc(${fillpercent}% - 10px)`,
   },
 }))`
   background-color: ${({ grade }) =>
@@ -78,36 +89,84 @@ const GraphFill = styled.div.attrs(({ fillpercent }) => ({
 const Radish = styled.img`
   height: 60px; /* 그래프 밖으로 삐져나오도록 큰 크기 설정 */
   position: absolute;
-  top: -20px; /* 그래프 위쪽으로 조금 삐져나오도록 조정 */
+  top: -23px; /* 그래프 위쪽으로 조금 삐져나오도록 조정 */
   transition: left 2s ease;
-  transform: translateX(20px); /* 오른쪽으로 약간 이동 */
+  transform: translateX(35px); /* 오른쪽으로 약간 이동 */
 `;
 
-const Text = styled.div`
+const CreditText = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 15px;
   font-size: 1rem;
+  font-weight: 600;
 `;
 
 function CreditScore() {
-  const creditLevel = "E"; // 신용등급
-  const fillpercent = 50; // 그래프에서 얼마나 채울지 (신용점수에 따라 조정)
+  const [creditInfo, setCreditInfo] = useState({
+    ratingName: "A",
+    ratingPercent: 100,
+  });
+  const [error, setError] = useState(null); // 에러 상태 추가
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getCreditRate();
+
+        const ratingPercent = data.ratingPercent;
+        const ratingName = data.ratingName || "E";
+
+        setCreditInfo({
+          ratingName,
+          ratingPercent,
+        });
+      } catch (error) {
+        setError(
+          "신용 정보를 불러오는 데 실패했습니다. 나중에 다시 시도해 주세요."
+        );
+        setCreditInfo({
+          ratingName: "E",
+          ratingPercent: 0,
+        });
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  console.log("Credit Info:", creditInfo);
+
+  // 다음 등급 달성시 까지
+  const remainingPercent = 100 - creditInfo.ratingPercent;
+
+  // 다음 등급 결정
+  const nextGrade = NextGrade[creditInfo.ratingName];
+
+  // text 어떻게 띄울건지
+  const displayText =
+    creditInfo.ratingName === "A" && creditInfo.ratingPercent >= 100
+      ? "최고 등급 달성"
+      : `${nextGrade}등급까지 ${remainingPercent.toFixed(0)}점`;
 
   return (
     <Container>
       <SubHeader>
         <SubTitle>나의 신용등급</SubTitle>
-        {/* 신용등급에 맞게 CreditLevel의 배경색을 설정하기 위해 grade 속성 추가 */}
-        <CreditLevel grade={creditLevel}>{creditLevel}</CreditLevel>
+        <CreditLevel grade={creditInfo.ratingName}>
+          {creditInfo.ratingName}
+        </CreditLevel>
       </SubHeader>
-      <GraphContainer grade={creditLevel}>
-        <GraphFill grade={creditLevel} fillpercent={fillpercent}>
+      <GraphContainer grade={creditInfo.ratingName}>
+        <GraphFill
+          grade={creditInfo.ratingName}
+          fillpercent={creditInfo.ratingPercent}
+        >
           <Radish src={radish} alt="Radish" />
         </GraphFill>
       </GraphContainer>
-      <Text>A등급까지 435점</Text>
+      <CreditText>{displayText}</CreditText>
     </Container>
   );
 }
