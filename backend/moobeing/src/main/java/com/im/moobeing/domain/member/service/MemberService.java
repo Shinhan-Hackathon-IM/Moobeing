@@ -135,31 +135,34 @@ public class MemberService {
 
         // 해당 radishId에 대한 Radish 엔티티를 찾습니다.
         Radish radish = radishRepository.findById(randomRadishId)
-                .orElseThrow(() -> new IllegalArgumentException("Radish not found with id: " + randomRadishId));
+            .orElseThrow(() -> new IllegalArgumentException("Radish not found with id: " + randomRadishId));
 
         // MemberRadish 생성 및 추가
         MemberRadish existingMemberRadish = member.getMemberRadishes().stream()
-                .filter(memberRadish -> memberRadish.getRadish().getId().equals(randomRadishId))
-                .findFirst()
-                .orElse(null);
+            .filter(memberRadish -> memberRadish.getRadish().getId().equals(randomRadishId))
+            .findFirst()
+            .orElse(null);
 
         if (existingMemberRadish != null) {
-            existingMemberRadish.addRadishNumber();
-            memberRadishRepository.save(existingMemberRadish);
+            MemberRadish memberRadishToUpdate = memberRadishRepository.findById(existingMemberRadish.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Radish not found with id: " + existingMemberRadish.getId()));
+            memberRadishToUpdate.addRadishNumber();
         } else {
             MemberRadish newMemberRadish = MemberRadish.builder()
-                    .member(member)
-                    .radish(radish)
-                    .radishNumber(1L)
-                    .build();
+                .member(member)
+                .radish(radish)
+                .radishNumber(1L)
+                .build();
             member.addMemberRadish(newMemberRadish);
-            memberRepository.save(member);
-            memberRadishRepository.save(newMemberRadish);
+            memberRadishRepository.save(newMemberRadish); // 이 줄만 저장하도록 변경
         }
 
-        return AddMemberRadishResponse.of(member,radish.getRadishName(),radish.getRadishRank(),
+        // memberRepository.save(member); // 이 줄은 제거
+
+        return AddMemberRadishResponse.of(member, radish.getRadishName(), radish.getRadishRank(),
             radish.getRadishImageUrl(), radish.getRadishMessage());
     }
+
 
     @Transactional
     public void changeMemberPw(Member member, MemberPwChangeRequest memberPwChangeRequest) {
@@ -204,8 +207,9 @@ public class MemberService {
             .orElse(null);
 
         if (existingMemberRadish != null) {
-            existingMemberRadish.addRadishNumber();
-            memberRadishRepository.save(existingMemberRadish);
+            MemberRadish memberRadishToUpdate = memberRadishRepository.findById(existingMemberRadish.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Radish not found with id: " + existingMemberRadish.getId()));
+            memberRadishToUpdate.addRadishNumber();
         } else {
             MemberRadish newMemberRadish = MemberRadish.builder()
                 .member(member)
@@ -213,11 +217,12 @@ public class MemberService {
                 .radishNumber(1L)
                 .build();
             member.addMemberRadish(newMemberRadish);
-            memberRepository.save(member);
-            memberRadishRepository.save(newMemberRadish);
+            memberRadishRepository.save(newMemberRadish); // 이 줄만 저장하도록 변경
         }
 
-        return AddMemberRadishResponse.of(member,radish.getRadishName(),radish.getRadishRank(),
+        // memberRepository.save(member); // 이 줄은 제거
+
+        return AddMemberRadishResponse.of(member, radish.getRadishName(), radish.getRadishRank(),
             radish.getRadishImageUrl(), radish.getRadishMessage());
     }
 
