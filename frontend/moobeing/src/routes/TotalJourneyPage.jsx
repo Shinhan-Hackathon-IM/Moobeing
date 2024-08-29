@@ -54,7 +54,7 @@ const RadishWrapper = styled.div`
 `;
 
 const TotalJourney = () => {
-  const paidLoanNum = 3;
+  const paidLoanNum = 5;
   const totalLoanNum = 5;
   const data = {
     paging: {

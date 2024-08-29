@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled, { keyframes, css } from "styled-components";
+import { useLocation, useNavigate } from "react-router-dom"; // useNavigate 가져오기
 import confetti from "canvas-confetti";
 import soil from "../assets/pot/soill.png";
-import basicRad from "../assets/radishes/basicRad.svg";
+import basicRad from "../assets/radishes/babyRad.svg";
 import arrow from "../assets/quiz/upArrow.svg";
 import RadishCard from "../components/PullRadish/RadishCard";
+import { getRandomRadish, getBabyRadish } from "../apis/RadishApi";
 
 const Container = styled.div`
   position: relative;
@@ -108,20 +110,6 @@ const ArrowIcon = styled.img`
   height: 40px;
 `;
 
-const fadeIn = keyframes`
-  from { opacity: 0; transform: translate(-50%, -40%); }
-  to { opacity: 1; transform: translate(-50%, -50%); }
-`;
-
-const CardWrapper = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-  animation: ${fadeIn} 0.8s ease-out;
-`;
-
 const ConfettiCanvas = styled.canvas`
   position: fixed;
   top: 0;
@@ -132,12 +120,76 @@ const ConfettiCanvas = styled.canvas`
   z-index: 1000;
 `;
 
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translate(-50%, -40%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+`;
+
+const CardWrapper = styled.div`
+  position: absolute;
+  top: 47%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  animation: ${fadeIn} 0.8s ease-out;
+`;
+
+const CollectionButton = styled.button`
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  opacity: 0;
+  animation: ${fadeIn} 0.8s ease-out 0.5s forwards;
+`;
+
 function GetRadish() {
+  const [radishInfo, setRadishInfo] = useState(null);
   const [pullCount, setPullCount] = useState(0);
   const [isShaking, setIsShaking] = useState(false);
   const [bottom, setBottom] = useState(0);
   const [showCard, setShowCard] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showCollectionButton, setShowCollectionButton] = useState(false);
   const confettiCanvasRef = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    async function fetchRadish() {
+      try {
+        let data;
+        if (location.state && location.state.source === "quiz") {
+          data = await getBabyRadish();
+        } else if (location.state && location.state.source === "loan") {
+          data = await getRandomRadish();
+        } else {
+          // Handle unexpected case
+          console.error("Unexpected navigation source");
+          navigate("/"); // Redirect to home or show an error
+          return;
+        }
+
+        if (data) {
+          setRadishInfo(data);
+        } else {
+          console.log("무가 없어요");
+        }
+      } catch (error) {
+        console.error("무 뽑기 실패", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchRadish();
+  }, [location.state, navigate]);
 
   const handlePullRadish = () => {
     if (pullCount < 6) {
@@ -173,31 +225,55 @@ function GetRadish() {
       setTimeout(() => {
         setShowCard(true);
         fireConfetti();
+        setTimeout(() => {
+          setShowCollectionButton(true);
+        }, 500);
       }, 500);
     }
   }, [pullCount]);
 
+  const handleCollectionClick = () => {
+    navigate("/radish-collection");
+  };
+
   return (
     <PageWrapper>
       <Container $blur={showCard}>
-        <BasicRadish
-          src={basicRad}
-          alt="Radish"
-          $bottom={bottom}
-          $shaking={isShaking}
-        />
+        {!isLoading && radishInfo && (
+          <BasicRadish
+            src={radishInfo.radishImageUrl || basicRad}
+            alt="Radish"
+            $bottom={bottom}
+            $shaking={isShaking}
+          />
+        )}
         <Soil src={soil} alt="Soil" />
-        <Text>무를 뽑아주세요</Text>
+        <Text>{isLoading ? "무가 심어지는 중..." : "무를 뽑아주세요"}</Text>
         <ButtonWrapper>
-          <Button onClick={handlePullRadish} disabled={pullCount === 5}>
+          <Button
+            onClick={handlePullRadish}
+            disabled={pullCount === 5 || isLoading}
+          >
             <ArrowIcon src={arrow} alt="Arrow Icon" />
           </Button>
         </ButtonWrapper>
       </Container>
       {showCard && (
-        <CardWrapper>
-          <RadishCard />
-        </CardWrapper>
+        <>
+          <CardWrapper>
+            <RadishCard
+              name={radishInfo.radishName}
+              rank={radishInfo.radishRank}
+              description={radishInfo.radishMessage}
+              imageUrl={radishInfo.radishImageUrl}
+            />
+          </CardWrapper>
+          {showCollectionButton && (
+            <CollectionButton onClick={handleCollectionClick}>
+              무들 보러가기
+            </CollectionButton>
+          )}
+        </>
       )}
       <ConfettiCanvas ref={confettiCanvasRef} />
     </PageWrapper>

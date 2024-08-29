@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import potDefault from "../../assets/pot/potDefault.svg";
 import pot2nd from "../../assets/pot/pot2nd.svg";
 import pot3rd from "../../assets/pot/pot3rd.svg";
@@ -40,6 +41,7 @@ const PullRadishButton = styled.button`
 `;
 
 function HiddenRadish({ PaidLoanNum, TotalLoanNum }) {
+  const navigate = useNavigate();
   const getPotImage = () => {
     const images = [potDefault, pot2nd, pot3rd, pot4th, pot5th, pot6th];
 
@@ -73,10 +75,15 @@ function HiddenRadish({ PaidLoanNum, TotalLoanNum }) {
 
   const isComplete = PaidLoanNum === TotalLoanNum;
 
+  const handleGetRadish = () => {
+    navigate("/get-radish", { state: { source: "loan" } });
+  };
   return (
     <RadishContainer>
       <PotRadish src={getPotImage()} alt="Radish pot" />
-      {isComplete && <PullRadishButton>무뽑기</PullRadishButton>}
+      {isComplete && (
+        <PullRadishButton onClick={handleGetRadish}>무뽑기</PullRadishButton>
+      )}
     </RadishContainer>
   );
 }
