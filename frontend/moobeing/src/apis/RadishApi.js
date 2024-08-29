@@ -31,23 +31,24 @@ export const selectRadish = async (radishName) => {
 };
 
 // 3. 맴버 무 뽑기
-export const getQuizResult = async () => {
+export const getRandomRadish = async () => {
   try {
     const response = await api.post("/radish");
+    console.log("무뽑는 axios 함수가 잘잘잘 호출되었습니다.", response.data);
     return response.data;
   } catch (error) {
-    console.error("정답 결과 가져오기 실패:", error);
+    console.error("랜덤 무 뽑기 실패:", error);
     throw error;
   }
 };
 
 // 4. 사용자 애기 무 추가
-export const checkUnsolvedQuiz = async () => {
+export const getBabyRadish = async () => {
   try {
     const response = await api.post("/baby");
     return response.data;
   } catch (error) {
-    console.error("미해결 퀴즈 확인 실패:", error);
+    console.error("애기 무 뽑기 실패:", error);
     throw error;
   }
 };

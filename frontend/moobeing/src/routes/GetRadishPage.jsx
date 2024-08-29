@@ -5,6 +5,7 @@ import soil from "../assets/pot/soill.png";
 import basicRad from "../assets/radishes/basicRad.svg";
 import arrow from "../assets/quiz/upArrow.svg";
 import RadishCard from "../components/PullRadish/RadishCard";
+import { getRandomRadish } from "../apis/RadishApi";
 
 const Container = styled.div`
   position: relative;
@@ -133,11 +134,33 @@ const ConfettiCanvas = styled.canvas`
 `;
 
 function GetRadish() {
+  const [radishInfo, setRadishInfo] = useState(null);
   const [pullCount, setPullCount] = useState(0);
   const [isShaking, setIsShaking] = useState(false);
   const [bottom, setBottom] = useState(0);
   const [showCard, setShowCard] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const confettiCanvasRef = useRef(null);
+
+  useEffect(() => {
+    async function fetchRadish() {
+      try {
+        const data = await getRandomRadish();
+        console.log("axios 를 통해서 데이터를 잘 받아왔숨", data);
+        if (data) {
+          setRadishInfo(data);
+          console.log(" 변수에 받아온 데이터를 할당당후루후루 하였습니다");
+        } else {
+          console.log("무가 없어요");
+        }
+      } catch (error) {
+        console.error("랜덤 무 뽑기 실패", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchRadish();
+  }, []);
 
   const handlePullRadish = () => {
     if (pullCount < 6) {
@@ -180,16 +203,21 @@ function GetRadish() {
   return (
     <PageWrapper>
       <Container $blur={showCard}>
-        <BasicRadish
-          src={basicRad}
-          alt="Radish"
-          $bottom={bottom}
-          $shaking={isShaking}
-        />
+        {!isLoading && radishInfo && (
+          <BasicRadish
+            src={radishInfo.radishImageUrl || basicRad}
+            alt="Radish"
+            $bottom={bottom}
+            $shaking={isShaking}
+          />
+        )}
         <Soil src={soil} alt="Soil" />
-        <Text>무를 뽑아주세요</Text>
+        <Text>{isLoading ? "무가 심어지는 중..." : "무를 뽑아주세요"}</Text>
         <ButtonWrapper>
-          <Button onClick={handlePullRadish} disabled={pullCount === 5}>
+          <Button
+            onClick={handlePullRadish}
+            disabled={pullCount === 5 || isLoading}
+          >
             <ArrowIcon src={arrow} alt="Arrow Icon" />
           </Button>
         </ButtonWrapper>
