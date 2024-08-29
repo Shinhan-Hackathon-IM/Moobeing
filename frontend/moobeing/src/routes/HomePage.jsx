@@ -45,6 +45,7 @@ const Container = styled.div`
   width: 100%;
   overflow-y: auto;
   box-sizing: border-box;
+  padding-bottom: 70px;
 `;
 
 const QuizWrapper = styled.div`
