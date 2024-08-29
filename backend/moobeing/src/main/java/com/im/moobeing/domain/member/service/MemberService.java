@@ -145,6 +145,7 @@ public class MemberService {
 
         if (existingMemberRadish != null) {
             existingMemberRadish.addRadishNumber();
+            memberRadishRepository.save(existingMemberRadish);
         } else {
             MemberRadish newMemberRadish = MemberRadish.builder()
                     .member(member)
@@ -153,8 +154,8 @@ public class MemberService {
                     .build();
             member.addMemberRadish(newMemberRadish);
             memberRepository.save(member);
+            memberRadishRepository.save(newMemberRadish);
         }
-        memberRadishRepository.save(existingMemberRadish);
 
         return AddMemberRadishResponse.of(member,radish.getRadishName(),radish.getRadishRank(),
             radish.getRadishImageUrl(), radish.getRadishMessage());
@@ -204,6 +205,7 @@ public class MemberService {
 
         if (existingMemberRadish != null) {
             existingMemberRadish.addRadishNumber();
+            memberRadishRepository.save(existingMemberRadish);
         } else {
             MemberRadish newMemberRadish = MemberRadish.builder()
                 .member(member)
@@ -212,8 +214,8 @@ public class MemberService {
                 .build();
             member.addMemberRadish(newMemberRadish);
             memberRepository.save(member);
+            memberRadishRepository.save(newMemberRadish);
         }
-        memberRadishRepository.save(existingMemberRadish);
 
         return AddMemberRadishResponse.of(member,radish.getRadishName(),radish.getRadishRank(),
             radish.getRadishImageUrl(), radish.getRadishMessage());
