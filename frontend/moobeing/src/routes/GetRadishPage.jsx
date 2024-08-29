@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled, { keyframes, css } from "styled-components";
-import { useNavigate } from "react-router-dom"; // useNavigate 가져오기
+import { useLocation, useNavigate } from "react-router-dom"; // useNavigate 가져오기
 import confetti from "canvas-confetti";
 import soil from "../assets/pot/soill.png";
-import basicRad from "../assets/radishes/basicRad.svg";
+import basicRad from "../assets/radishes/babyRad.svg";
 import arrow from "../assets/quiz/upArrow.svg";
 import RadishCard from "../components/PullRadish/RadishCard";
-import { getRandomRadish } from "../apis/RadishApi";
+import { getRandomRadish, getBabyRadish } from "../apis/RadishApi";
 
 const Container = styled.div`
   position: relative;
@@ -160,26 +160,36 @@ function GetRadish() {
   const [showCollectionButton, setShowCollectionButton] = useState(false);
   const confettiCanvasRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     async function fetchRadish() {
       try {
-        const data = await getRandomRadish();
-        console.log("axios 를 통해서 데이터를 잘 받아왔숨", data);
+        let data;
+        if (location.state && location.state.source === "quiz") {
+          data = await getBabyRadish();
+        } else if (location.state && location.state.source === "loan") {
+          data = await getRandomRadish();
+        } else {
+          // Handle unexpected case
+          console.error("Unexpected navigation source");
+          navigate("/"); // Redirect to home or show an error
+          return;
+        }
+
         if (data) {
           setRadishInfo(data);
-          console.log(" 변수에 받아온 데이터를 할당당후루후루 하였습니다");
         } else {
           console.log("무가 없어요");
         }
       } catch (error) {
-        console.error("랜덤 무 뽑기 실패", error);
+        console.error("무 뽑기 실패", error);
       } finally {
         setIsLoading(false);
       }
     }
     fetchRadish();
-  }, []);
+  }, [location.state, navigate]);
 
   const handlePullRadish = () => {
     if (pullCount < 6) {

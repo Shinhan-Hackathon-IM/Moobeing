@@ -143,7 +143,7 @@ function RightResult({ message, answer }) {
   const navigate = useNavigate();
 
   const handleGetRadish = () => {
-    navigate("/get-radish");
+    navigate("/get-radish", { state: { source: "quiz" } });
   };
 
   return (
