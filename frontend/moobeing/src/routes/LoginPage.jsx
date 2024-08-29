@@ -14,6 +14,13 @@ const ScreenWrapper = styled.div`
   position: relative;
 `;
 
+const FormWrapper = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+`;
+
 const LogoImage = styled.img`
   height: 64px;
   object-fit: cover;
@@ -103,7 +110,8 @@ const Login = () => {
     navigate("/signup");
   };
 
-  const handleLogin = () => {
+  const handleLogin = async (e) => {
+    e.preventDefault(); // Prevent default form submission
     const loginData = {
       email: email,
       password: password,
@@ -112,41 +120,55 @@ const Login = () => {
     console.log("Login data:", loginData);
 
     try {
-      const response = postLogin(email, password);
+      const response = await postLogin(email, password);
 
-      if (response.status === 200) {
-        console.log("로그인 성공:", response.data);
-        // 로그인 성공 시 추가 로직 (예: 홈 페이지로 리다이렉트)
-        navigate("/home");
+      if (response && response.name) {
+        console.log("로그인 성공:", response);
+        navigate("/");
       } else {
+        // 오류 처리: response.data와 response.data.message의 존재 여부를 확인
+        const errorMessage =
+          response.data && response.data.message
+            ? response.data.message
+            : "로그인 실패";
         console.log("로그인 실패:", response.status);
-        alert("로그인 실패: " + response.data.message); // 오류 메시지 표시
+        alert("로그인 실패: " + errorMessage); // 오류 메시지 표시
       }
     } catch (error) {
       console.error("로그인 중 오류 발생:", error);
-      alert("로그인 중 오류가 발생했습니다."); // 오류 메시지 표시
+      // 오류 객체의 response 속성과 그 내부 속성을 안전하게 접근
+      const errorMessage =
+        error.response && error.response.data && error.response.data.message
+          ? error.response.data.message
+          : "로그인 중 오류가 발생했습니다.";
+      alert(errorMessage); // 오류 메시지 표시
     }
   };
 
   return (
     <ScreenWrapper>
       <LogoImage alt="Logo" src={Logo} />
-      <InputText
-        type="email"
-        placeholder="이메일"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)} // state 바꾸기
-      />
-      <InputText
-        type="password"
-        placeholder="비밀번호"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)} // state 바꾸기
-      />
-      <PasswordLostContainer>
-        <PasswordLost>비밀번호를 잊으셨나요?</PasswordLost>
-      </PasswordLostContainer>
-      <LoginButton onClick={handleLogin}>로그인</LoginButton>
+      <FormWrapper onSubmit={handleLogin}>
+        {/* Wrapping input fields and button in styled form */}
+        <InputText
+          type="email"
+          placeholder="이메일"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)} // state 바꾸기
+          autoComplete="email"
+        />
+        <InputText
+          type="password"
+          placeholder="비밀번호"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)} // state 바꾸기
+          autoComplete="current-password"
+        />
+        <PasswordLostContainer>
+          <PasswordLost>비밀번호를 잊으셨나요?</PasswordLost>
+        </PasswordLostContainer>
+        <LoginButton type="submit">로그인</LoginButton>
+      </FormWrapper>
       <SignUpText>
         <Span>계정이 없으신가요?</Span>
         <SignupButton onClick={handleSignupClick}>가입하기</SignupButton>

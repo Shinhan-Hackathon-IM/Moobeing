@@ -8,9 +8,9 @@ import leftButtonBlack from "../../assets/button/leftButtonBlack.svg";
 import rightButtonBlack from "../../assets/button/rightButtonBlack.svg";
 
 const BankLogo = styled.img`
-  width: 50px;
-  height: 50px;
-  margin-right: 20px;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
 `;
 
 const LoanInfo = styled.div`
@@ -22,6 +22,7 @@ const LoanInfo = styled.div`
 const LoanName = styled.div`
   display: flex;
   flex-direction: row;
+  font-size: 13px;
 `;
 
 const LoanItem = styled.div`
@@ -34,8 +35,7 @@ const LoanItem = styled.div`
 `;
 
 const NavigateButton = styled.button`
-  margin-top: 4px;
-  margin-bottom: 2px;
+  margin: 2px 4px;
   cursor: pointer;
   background-color: transparent;
   border: none;
@@ -95,6 +95,7 @@ const PageInfo = styled.div`
   font-size: 14px;
   font-weight: bold;
   margin: 0 10px;
+  color: #858585;
 `;
 
 function LoanList({ loans }) {
@@ -106,14 +107,14 @@ function LoanList({ loans }) {
   const handleScrollNext = () => {
     setCurrentIndex((prevIndex) => {
       const nextIndex = prevIndex + loansPerPage;
-      return nextIndex >= loans.length ? 0 : nextIndex; // Loop back to the first page
+      return nextIndex >= loans.length ? 0 : nextIndex;
     });
   };
 
   const handleScrollPrev = () => {
     setCurrentIndex((prevIndex) => {
       const prevIndexNew = prevIndex - loansPerPage;
-      return prevIndexNew < 0 ? loans.length - loansPerPage : prevIndexNew; // Loop back to the last page
+      return prevIndexNew < 0 ? loans.length - loansPerPage : prevIndexNew;
     });
   };
 
@@ -133,17 +134,17 @@ function LoanList({ loans }) {
               key={index}
               onClick={() => handleLoanItemClick(loan.user_deposit_id)}
             >
-              <BankLogo src={loan.bank_logo_url} alt={loan.bank_name} />
+              <BankLogo src={loan.bankImageUrl} alt="로고" />
               <LoanInfo>
                 <LoanName>
-                  <div>{loan.loan_type}</div>
+                  <div>{loan.loanProductName}</div>
                   <NavigateButton>
                     <NavigateImage src={goToJourney} alt="여정지도" />
                   </NavigateButton>
                 </LoanName>
-                <div>{loan.loan_amount.toLocaleString()} 원</div>
+                <div>{loan.remainingBalance.toLocaleString()} 원</div>
               </LoanInfo>
-              <InterestRate>{loan.interest_rate.toFixed(2)}%</InterestRate>
+              <InterestRate>{loan.interestRate.toFixed(2)}%</InterestRate>
             </LoanItem>
           ))}
         </LoanListWrapper>
@@ -155,7 +156,7 @@ function LoanList({ loans }) {
           onClick={handleScrollPrev}
         />
         <PageInfo>
-          {currentPage}/{totalPages}
+          {currentPage} / {totalPages}
         </PageInfo>
         <DownImage
           src={currentPage < totalPages ? rightButtonBlack : rightButton}

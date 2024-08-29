@@ -1,5 +1,7 @@
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { getLoanSum } from "../../apis/LoanApi";
 
 const Container = styled.div`
   background-color: #f5fded;
@@ -55,7 +57,7 @@ const PayButton = styled.button`
   padding: 10px 15px;
   background-color: #c0dda6;
   color: white;
-  border-radius: 20px;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
   font-size: 15px;
@@ -77,6 +79,25 @@ const PayButton = styled.button`
 `;
 
 function LoanPayment() {
+  const [loanSum, setLoanSum] = useState({ sumLoanValue: 0 }); // 기본값을 0으로 설정
+  const [error, setError] = useState(null); // 에러 상태 추가
+
+  useEffect(() => {
+    const fetchLoanSum = async () => {
+      try {
+        const data = await getLoanSum(); // API 호출
+        setLoanSum(data);
+      } catch (error) {
+        setError(
+          "대출 정보를 불러오는 데 실패했습니다. 나중에 다시 시도해 주세요."
+        ); // 사용자에게 보여줄 에러 메시지 설정
+        setLoanSum({ sumLoanValue: 0 }); // 에러 발생 시 기본값 0으로 설정
+      }
+    };
+
+    fetchLoanSum();
+  }, []);
+
   const navigate = useNavigate();
 
   const handleRepayment = () => {
@@ -88,7 +109,7 @@ function LoanPayment() {
       <SubHeader>
         <SubTitle>이번 달 상환 예정 금액</SubTitle>
       </SubHeader>
-      <LoanBalance>235,568,683,229 원</LoanBalance>
+      <LoanBalance>{loanSum.sumLoanValue.toLocaleString()} 원</LoanBalance>
       <LoanBalanceContainer>
         <PayButton onClick={handleRepayment}>상환하러 가기</PayButton>
       </LoanBalanceContainer>

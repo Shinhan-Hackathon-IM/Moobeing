@@ -3,9 +3,7 @@ import useUserStore from "../store/UserStore";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  withCredentials: true,
 });
 
 // 회원가입
@@ -36,7 +34,6 @@ export const postLogin = async (email, password) => {
     });
 
     setUserInfo(response.data); // 로그인 성공 시 사용자 정보를 Zustand 스토어에 저장
-
     return response.data;
   } catch (error) {
     console.error("로그인 실패:", error);
