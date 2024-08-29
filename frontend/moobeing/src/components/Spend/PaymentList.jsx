@@ -122,7 +122,7 @@ const NoPaymentsText = styled.div`
 
 function PaymentList({ payments }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const loansPerPage = 3;
+  const loansPerPage = 4;
   const totalPages = Math.ceil(payments.length / loansPerPage);
 
   const handleScrollNext = () => {
@@ -155,13 +155,15 @@ function PaymentList({ payments }) {
           </NoPaymentsContainer>
         ) : (
           <PaymentListWrapper>
-            {visiblePayments.map((payment, index) => {
-              const iconSrc = iconMapping[payment.categoryName] || basicRad; // Fallback to basicRad if icon not found
-              const title = payment.title || "Unknown"; // Default to "Unknown" if title is undefined
-              const price = payment.price || 0; // Default to 0 if price is undefined
+            {visiblePayments.map((payment) => {
+              const iconSrc = iconMapping[payment.categoryName] || basicRad;
+              const title = payment.title || "Unknown";
+              const price = payment.price || 0;
 
               return (
-                <PaymentItem key={index}>
+                <PaymentItem key={payment.id}>
+                  {" "}
+                  {/* payment.id를 고유한 키로 사용 */}
                   <Icon src={iconSrc} alt={payment.categoryName} />
                   <PaymentInfo>
                     {title.length > 7 ? `${title.slice(0, 7)} ...` : title}
@@ -173,21 +175,19 @@ function PaymentList({ payments }) {
           </PaymentListWrapper>
         )}
         <ScrollButtonContainer>
-          <ScrollButton>
+          <ScrollButton onClick={handleScrollPrev}>
             <NavigationImage
               src={currentPage > 1 ? leftButtonBlack : leftButton}
               alt="이전"
-              onClick={handleScrollPrev}
             />
           </ScrollButton>
           <PageInfo>
             {currentPage}/{totalPages}
           </PageInfo>
-          <ScrollButton>
+          <ScrollButton onClick={handleScrollNext}>
             <NavigationImage
               src={currentPage < totalPages ? rightButtonBlack : rightButton}
               alt="다음"
-              onClick={handleScrollNext}
             />
           </ScrollButton>
         </ScrollButtonContainer>

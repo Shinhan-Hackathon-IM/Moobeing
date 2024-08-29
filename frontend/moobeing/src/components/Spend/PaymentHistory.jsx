@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import PaymentList from "./PaymentList";
@@ -37,18 +37,22 @@ const LoanSort = styled.button`
 `;
 
 const PaymentHistory = ({ date, history }) => {
-  const [filteredHistory, setFilteredHistory] = useState(history);
+  const [filteredHistory, setFilteredHistory] = useState(history); // 기본적으로 전체 데이터를 설정
   const [showLoansOnly, setShowLoansOnly] = useState(false);
 
-  const handleFilterClick = () => {
-    setShowLoansOnly((prev) => !prev);
-    if (!showLoansOnly) {
+  useEffect(() => {
+    // showLoansOnly 상태에 따라 필터링 적용
+    if (showLoansOnly) {
       setFilteredHistory(
         history.filter((item) => item.categoryName === "대출")
       );
     } else {
       setFilteredHistory(history);
     }
+  }, [history, showLoansOnly]); // history와 showLoansOnly가 변경될 때마다 실행
+
+  const handleFilterClick = () => {
+    setShowLoansOnly((prev) => !prev); // 버튼 클릭 시 필터 상태를 토글
   };
 
   return (
