@@ -12,9 +12,14 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ExpenseDateResponse {
 	private LocalDate date;
+	private Long totalSpend;
 	private List<ExpenseHistoryResponse> history;
 
-	public static ExpenseDateResponse of(LocalDate date, List<ExpenseHistoryResponse> history) {
-		return new ExpenseDateResponse(date, history);
+	public static ExpenseDateResponse of(LocalDate date, Long totalSpend, List<ExpenseHistoryResponse> history) {
+		return new ExpenseDateResponse(date, totalSpend, history);
+	}
+
+	public void setTotalSpend(long totalSpend) {
+		this.totalSpend = totalSpend;
 	}
 }

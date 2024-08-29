@@ -1,8 +1,20 @@
 package com.im.moobeing.domain.loan.service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.im.moobeing.domain.loan.dto.GetAllLoanMapDto;
 import com.im.moobeing.domain.loan.dto.GetMemberLoanDto;
-import com.im.moobeing.domain.loan.dto.response.*;
+import com.im.moobeing.domain.loan.dto.response.GetAllLoanMapResponse;
+import com.im.moobeing.domain.loan.dto.response.GetLoanMapResponse;
+import com.im.moobeing.domain.loan.dto.response.GetMemberLoanResponse;
+import com.im.moobeing.domain.loan.dto.response.GetMonthlyLoanResponse;
+import com.im.moobeing.domain.loan.dto.response.GetPercentLoanResponse;
+import com.im.moobeing.domain.loan.dto.response.GetSumLoanResponse;
 import com.im.moobeing.domain.loan.entity.AverageLoanRepaymentRecord;
 import com.im.moobeing.domain.loan.entity.LoanProduct;
 import com.im.moobeing.domain.loan.entity.LoanRepaymentRecord;
@@ -12,13 +24,8 @@ import com.im.moobeing.domain.loan.repository.LoanProductRepository;
 import com.im.moobeing.domain.loan.repository.LoanRepaymentRecordRepository;
 import com.im.moobeing.domain.loan.repository.MemberLoanRepository;
 import com.im.moobeing.domain.member.entity.Member;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional(readOnly = true)
@@ -91,14 +98,11 @@ public class LoanService {
 	public GetAllLoanMapResponse getAllLoanMap(Member member) {
 		// 1. 주어진 Member에 대한 모든 MemberLoan을 가져옴
 		List<MemberLoan> memberLoanList = memberLoanRepository.findAllByMemberId(member.getId());
-
 		int minYear = 10000;
 		int minMonth = 40;
 		int maxYear = 0;
 		int maxMonth = 0;
-
 		long totalLoanBalance = 0;
-
 		// 2. memberLoanList에서 가장 빠른 year, month와 가장 늦은 year, month를 찾는다.
 		for (MemberLoan loan : memberLoanList) {
 			if (maxYear < loan.getStartYear()) {
@@ -114,48 +118,45 @@ public class LoanService {
 				minMonth = Math.min(loan.getStartMonth(), minMonth);
 			}
 		}
-
 		int startYear = minYear;
 		int startMonth = minMonth;
+		final int tmpYear = startYear;
+		final int tmpMonth = startMonth;
 
-		final int currentYear = startYear;
-		final int currentMonth = startMonth;
+		// 목표 연도와 월을 설정 (2024년 8월)
+		final int targetYear = 2024;
+		final int targetMonth = 8;
 
 		List<LoanRepaymentRecord> loanRepaymentRecordList = new ArrayList<>();
-
 		for (MemberLoan loan : memberLoanList) {
 			loanRepaymentRecordList.addAll(loanRepaymentRecordRepository.findAllByMemberLoanId(loan.getId()));
 		}
-
 		List<GetAllLoanMapDto> getAllLoanMapDtoList = new ArrayList<>();
-
-		// 3. 첫 대출 시점부터 매월 기록을 추가
-		while (startYear < maxYear || (startYear == maxYear && startMonth <= maxMonth)) {
+		// 3. 첫 대출 시점부터 2024년 8월까지 매월 기록을 추가
+		while (startYear < targetYear || (startYear == targetYear && startMonth <= targetMonth)) {
 			// 해당 월에 상환 기록이 있는지 확인
+			final int currentYear = startYear;
+			final int currentMonth = startMonth;
 			LoanRepaymentRecord recordForMonth = loanRepaymentRecordList.stream()
-					.filter(record -> record.getYear() == currentYear && record.getMonth() == currentMonth)
-					.findFirst()
-					.orElse(null);
-
+				.filter(record -> record.getYear() == currentYear && record.getMonth() == currentMonth)
+				.findFirst()
+				.orElse(null);
 			// 대출 시작 시점에 맞춰 InitialBalance를 추가
 			for (MemberLoan loan : memberLoanList) {
 				if (loan.getStartYear() == startYear && loan.getStartMonth() == startMonth) {
 					totalLoanBalance += loan.getInitialBalance();
 				}
 			}
-
 			// 상환 기록이 있다면, 잔액 갱신
 			if (recordForMonth != null) {
 				totalLoanBalance -= recordForMonth.getRepaymentBalance();
 			}
-
 			// 현재의 year, month, loanBalance 값을 리스트에 추가
 			getAllLoanMapDtoList.add(GetAllLoanMapDto.builder()
-					.year(startYear)
-					.month(startMonth)
-					.loanBalance(totalLoanBalance)
-					.build());
-
+				.year(startYear)
+				.month(startMonth)
+				.loanBalance(totalLoanBalance)
+				.build());
 			// 다음 달로 넘어가기 위한 계산
 			if (startMonth == 12) {
 				startMonth = 1;
@@ -164,12 +165,9 @@ public class LoanService {
 				startMonth++;
 			}
 		}
-
 		// 필요한 응답 객체를 생성하고 반환
 		return GetAllLoanMapResponse.of(getAllLoanMapDtoList);
 	}
-
-
 
 
 	public GetSumLoanResponse getSumLoan(Member member) {

@@ -1,5 +1,14 @@
 package com.im.moobeing.domain.expense.service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import com.im.moobeing.domain.expense.dto.GetCategoryListDto;
 import com.im.moobeing.domain.expense.dto.GetDrawPiChartDto;
 import com.im.moobeing.domain.expense.dto.request.ExpenseCreateRequest;
@@ -19,16 +28,9 @@ import com.im.moobeing.domain.loan.repository.MemberLoanRepository;
 import com.im.moobeing.domain.member.entity.Member;
 import com.im.moobeing.global.error.ErrorCode;
 import com.im.moobeing.global.error.exception.BadRequestException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -65,15 +67,20 @@ public class ExpenseService {
 		List<Expense> expenses = expenseRepository.findAllByMemberAndYearAndMonth(member, year, month);
 
 		Map<LocalDate, List<ExpenseHistoryResponse>> groupedByDate = expenses.stream()
-				.filter(expense -> !Objects.isNull(expense.getExpenseDate())) // expenseDate가 nullable
-				.collect(Collectors.groupingBy(
-						expense -> expense.getExpenseDate().toLocalDate(),
-						Collectors.mapping(ExpenseHistoryResponse::of, Collectors.toList())
-				));
+			.filter(expense -> !Objects.isNull(expense.getExpenseDate())) // expenseDate가 nullable
+			.collect(Collectors.groupingBy(
+				expense -> expense.getExpenseDate().toLocalDate(),
+				Collectors.mapping(ExpenseHistoryResponse::of, Collectors.toList())
+			));
 
 		List<ExpenseDateResponse> expenseDateResponses = groupedByDate.entrySet().stream()
-				.map(entry -> ExpenseDateResponse.of(entry.getKey(), entry.getValue()))
-				.collect(Collectors.toList());
+			.map(entry -> {
+				LocalDate date = entry.getKey();
+				List<ExpenseHistoryResponse> history = entry.getValue();
+				Long totalSpend = history.stream().mapToLong(ExpenseHistoryResponse::getPrice).sum();
+				return ExpenseDateResponse.of(date, totalSpend, history);
+			})
+			.collect(Collectors.toList());
 
 		List<MemberLoan> memberLoans = memberLoanRepository.findAllByMemberId(member.getId());
 
@@ -83,23 +90,25 @@ public class ExpenseService {
 			loanRepaymentRecords.addAll(loanRepaymentRecordRepository.findAllByMemberLoanId(memberLoan.getId()));
 		}
 
-		//todo 여기서 date에 맞는 것과 history에 맞는 것들을 추가해야함. 한바퀴 돌면서 해당 일에 맞는 것들을 찾는다.
 		for (ExpenseDateResponse expenseDateResponse : expenseDateResponses) {
 			for (LoanRepaymentRecord loanRepaymentRecord : loanRepaymentRecords) {
 				if (expenseDateResponse.getDate().getDayOfMonth() == loanRepaymentRecord.getDay() &&
 					expenseDateResponse.getDate().getMonthValue() == loanRepaymentRecord.getMonth() &&
 					expenseDateResponse.getDate().getYear() == loanRepaymentRecord.getYear()){
 					MemberLoan memberLoan = memberLoanRepository.findById(loanRepaymentRecord.getMemberLoanId())
-						.orElseThrow(()->new RuntimeException("todo"));
+						.orElseThrow(() -> new RuntimeException("todo"));
 					String title = memberLoan.getLoanProductName() + " 상환";
 					int price = Math.toIntExact(loanRepaymentRecord.getRepaymentBalance());
-					expenseDateResponse.getHistory().add(ExpenseHistoryResponse.from(title,"대출", price));
+					expenseDateResponse.getHistory().add(ExpenseHistoryResponse.from(title, "대출", price));
+					// 대출 상환 금액을 totalSpend에 더해줌
+					expenseDateResponse.setTotalSpend(expenseDateResponse.getTotalSpend() + price);
 				}
 			}
 		}
 
 		return expenseDateResponses;
 	}
+
 
 	private void validateDate(Integer year, Integer month) {
 		if (Objects.isNull(year) || Objects.isNull(month) || month < 1 || month > 12) {
