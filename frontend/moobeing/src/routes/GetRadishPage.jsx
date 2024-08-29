@@ -3,7 +3,7 @@ import styled, { keyframes, css } from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom"; // useNavigate 가져오기
 import confetti from "canvas-confetti";
 import soil from "../assets/pot/soill.png";
-import basicRad from "../assets/radishes/basicRad.svg";
+import basicRad from "../assets/radishes/babyRad.svg";
 import arrow from "../assets/quiz/upArrow.svg";
 import RadishCard from "../components/PullRadish/RadishCard";
 import { getRandomRadish, getBabyRadish } from "../apis/RadishApi";
