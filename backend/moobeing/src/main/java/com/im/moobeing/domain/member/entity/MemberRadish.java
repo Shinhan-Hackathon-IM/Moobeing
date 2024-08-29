@@ -38,4 +38,7 @@ public class MemberRadish extends BaseTimeEntity {
     public void addRadishNumber() {
         this.radishNumber++;
     }
+
+    public void minus5() { this.radishNumber = this.radishNumber-5;
+    }
 }

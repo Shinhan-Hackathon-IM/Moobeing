@@ -1,24 +1,7 @@
 package com.im.moobeing.domain.member.service;
 
-import java.util.List;
-import java.util.Random;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.im.moobeing.domain.member.dto.request.MemberChangeRequest;
-import com.im.moobeing.domain.member.dto.request.MemberCheckEmailRequest;
-import com.im.moobeing.domain.member.dto.request.MemberCreateRequest;
-import com.im.moobeing.domain.member.dto.request.MemberLoginRequest;
-import com.im.moobeing.domain.member.dto.request.MemberPwChangeRequest;
-import com.im.moobeing.domain.member.dto.request.MemberRadishSelectRequest;
-import com.im.moobeing.domain.member.dto.response.AddMemberRadishResponse;
-import com.im.moobeing.domain.member.dto.response.MemberCheckEmailResponse;
-import com.im.moobeing.domain.member.dto.response.MemberCreateResponse;
-import com.im.moobeing.domain.member.dto.response.MemberGetResponse;
-import com.im.moobeing.domain.member.dto.response.MemberLoginResponse;
-import com.im.moobeing.domain.member.dto.response.MemberRadishResponse;
-import com.im.moobeing.domain.member.dto.response.MemberRadishSelectResponse;
+import com.im.moobeing.domain.member.dto.request.*;
+import com.im.moobeing.domain.member.dto.response.*;
 import com.im.moobeing.domain.member.entity.Member;
 import com.im.moobeing.domain.member.entity.MemberRadish;
 import com.im.moobeing.domain.member.repository.MemberRadishRepository;
@@ -29,8 +12,12 @@ import com.im.moobeing.global.client.ShinhanClient;
 import com.im.moobeing.global.config.ApiKeyConfig;
 import com.im.moobeing.global.error.ErrorCode;
 import com.im.moobeing.global.error.exception.AuthenticationException;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Random;
 
 @Service
 @Transactional(readOnly = true)
@@ -233,5 +220,28 @@ public class MemberService {
      */
     public List<Member> getAllMembers() {
         return memberRepository.findAll();
+    }
+
+    @Transactional
+    public AddMemberRadishResponse mergeMemberBaby(Member member) {
+        // 랜덤 Radish ID 선택
+        Long babyMooRadishId = 3L;
+
+        // 해당 radishId에 대한 Radish 엔티티를 찾습니다.
+        Radish radish = radishRepository.findById(babyMooRadishId)
+                .orElseThrow(() -> new IllegalArgumentException("Radish not found with id: " + babyMooRadishId));
+
+        // member와 radish를 기준으로 memberRadish 엔티티를 찾습니다.
+        MemberRadish memberRadish = memberRadishRepository.findByMemberIdAndRadishId(member.getId(), radish.getId());
+
+        if (memberRadish.getRadishNumber() > 5) {
+            // radishNumber가 5 초과일 경우 5를 감소시킵니다.
+            memberRadish.minus5();
+        } else {
+            // radishNumber가 5 이하일 경우 memberRadish 엔티티를 삭제합니다.
+            memberRadishRepository.delete(memberRadish);
+        }
+
+        return addMemberRadish(member);
     }
 }

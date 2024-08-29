@@ -94,4 +94,10 @@ public class MemberController {
     public ResponseEntity<?> selectMemberRadish(@AuthenticationPrincipal Member member, @RequestBody MemberRadishSelectRequest memberRadishSelectRequest) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.selectMemberRadish(member, memberRadishSelectRequest));
     }
+
+    @Operation(summary = "애기 무 5개 합치기", description = "애기무 5개 합치기")
+    @PostMapping("/baby-merge")
+    public ResponseEntity<?> mergeMemberBaby(@AuthenticationPrincipal Member member) {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.mergeMemberBaby(member));
+    }
 }
