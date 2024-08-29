@@ -46,27 +46,27 @@ public class CreditService {
 
         long neededAmount;
         String ratingName;
-        Double ratingPercent;
+        int ratingPercent;
 
         // 조건에 따른 result 값 계산
         if (totalAssetValue >= 100_000_000) {
             neededAmount = 0; // 1억 이상이면 0
-            ratingPercent = 100.0;
+            ratingPercent = 100;
             ratingName = "A";
         } else if (totalAssetValue >= 80_000_000) {
             neededAmount = totalAssetValue - 80_000_000; // 8천만 이상이면 1억 - 이 값
-            ratingPercent = (double) neededAmount / 20_000_000;
+            ratingPercent = (int)(neededAmount / 20_000_000);
             ratingName = "B";
         } else if (totalAssetValue >= 50_000_000) {
             neededAmount = totalAssetValue - 50_000_000; // 5천만 이상이면 8천만 - 이 값
-            ratingPercent = (double) neededAmount / 30_000_000;
+            ratingPercent = (int)(neededAmount / 30_000_000);
             ratingName = "C";
         } else if (totalAssetValue >= 30_000_000) {
             neededAmount = totalAssetValue - 30_000_000; // 3천만 이상이면 5천만 - 이 값
-            ratingPercent = (double) neededAmount / 20_000_000;
+            ratingPercent = (int)(neededAmount / 20_000_000);
             ratingName = "D";
         } else {
-            ratingPercent = (double) totalAssetValue / 30_000_000;
+            ratingPercent = (int)(totalAssetValue / 30_000_000);
             ratingName = "E";
         }
 

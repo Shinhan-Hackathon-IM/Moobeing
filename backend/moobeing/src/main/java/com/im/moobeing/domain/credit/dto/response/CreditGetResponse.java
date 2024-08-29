@@ -7,9 +7,9 @@ import lombok.Getter;
 @Builder
 public class CreditGetResponse {
     private String ratingName;
-    private Double ratingPercent;
+    private int ratingPercent;
 
-    public static CreditGetResponse of(String ratingName, Double ratingPercent) {
+    public static CreditGetResponse of(String ratingName, int ratingPercent) {
         return CreditGetResponse.builder()
                 .ratingName(ratingName)
                 .ratingPercent(ratingPercent)
