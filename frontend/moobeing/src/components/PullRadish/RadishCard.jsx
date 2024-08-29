@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import basicRad from "../../assets/radishes/basicRad.svg";
+import nameTag from "../../assets/nameTag.svg";
 
 const Card = styled.div`
   width: 300px;
@@ -9,6 +10,11 @@ const Card = styled.div`
   border-radius: 20px;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* 세로 중앙 정렬 */
+  padding: 10px; /* 내부 패딩 추가 */
 
   &::before {
     content: "";
@@ -26,10 +32,33 @@ const Card = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
+const NameTagContainer = styled.div`
+  position: absolute;
+  top: -22px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+  z-index: 1;
+`;
+
+const NameTagImage = styled.img`
+  width: 100px;
+  height: 90px;
+`;
+
+const RankText = styled.span`
+  position: absolute;
+  left: 15px;
+  top: 29px;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+`;
 const ImageContainer = styled.div`
   width: 78%;
   height: 200px;
-  margin: 30px auto;
+  /* margin: 30px auto; */
   background-color: #effedf;
   border-radius: 20px;
   position: relative;
@@ -59,7 +88,7 @@ const CharacterImage = styled.img`
 
 const CharacterName = styled.h2`
   text-align: center;
-  margin: 10px 0;
+  margin-top: 10px;
 `;
 
 const StarContainer = styled.div`
@@ -68,10 +97,6 @@ const StarContainer = styled.div`
   margin: 10px 0;
 `;
 
-const Button = styled.div`
-  color: white;
-  left: 50%;
-`;
 const Star = ({ filled }) => (
   <svg
     width="24"
@@ -91,26 +116,49 @@ const Star = ({ filled }) => (
 );
 
 const Description = styled.p`
-  padding: 0 20px;
+  width: 60%;
+  /* padding: 0 20px; */
   text-align: center;
 `;
 
+const getRankStars = (rank) => {
+  switch (rank) {
+    case "S":
+      return 3;
+    case "A":
+      return 2;
+    case "B":
+      return 1;
+    default:
+      return 0;
+  }
+};
+
 const CharacterCard = ({ name, rank, description, imageUrl }) => {
+  const rankStars = getRankStars(rank);
+
   return (
     <>
       <Card>
+        <NameTagContainer>
+          <NameTagImage src={nameTag} alt="Name Tag" />
+          <RankText>{rank}등급</RankText>
+        </NameTagContainer>
         <ImageContainer>
           <CharacterImage src={imageUrl} alt={name} />
         </ImageContainer>
         <CharacterName>{name}</CharacterName>
         <StarContainer>
           {[...Array(3)].map((_, i) => (
-            <Star key={i} filled={i < rank} />
+            <Star key={i} filled={i < rankStars} />
           ))}
         </StarContainer>
         <Description>{description}</Description>
+        {/* <Description>
+          부끄러움이 상당히 많은 무. 밖에 잘 나가지 않지만 친구들이 부르면 또
+          좋아한다.
+        </Description> */}
       </Card>
-      <Button>무들 보러가기</Button>
     </>
   );
 };
