@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import Header from "../components/Fixed/Header";
 import Footer from "../components/Fixed/Footer";
 import DropDownArrow from "../assets/dropdown/DropdownArrow.png";
+import { getAccountInfo } from "../apis/SpendApi";
 
 const Container = styled.div`
   display: flex;
@@ -197,6 +198,8 @@ const PayButton = styled.button`
 
 const Repayment = () => {
   const { selectedLoanId } = useParams();
+  // 계좌 정보를 저장할 상태를 정의합니다.
+  const [accounts, setAccounts] = useState([]);
 
   const loans = [
     { id: 1, name: "참대출" },
@@ -204,11 +207,31 @@ const Repayment = () => {
     { id: 3, name: "우리 대출" },
   ];
 
-  const accounts = [
-    { id: 1, name: "계좌1 (1234-5678-90)" },
-    { id: 2, name: "계좌2 (9876-5432-10)" },
-    { id: 3, name: "계좌3 (2468-1357-90)" },
-  ];
+  // 컴포넌트가 마운트될 때 API로부터 데이터를 가져옵니다.
+  useEffect(() => {
+    // 비동기 함수로 데이터를 가져옵니다.
+    const fetchAccounts = async () => {
+      try {
+        // API로부터 데이터를 가져옵니다.
+        const response = await getAccountInfo();
+
+        // 가져온 데이터를 원하는 형태로 가공합니다.
+        const fetchedAccounts = response.getAccountDtoList.map(
+          (account, index) => ({
+            id: index + 1, // 고유 id를 부여합니다. (기존 데이터와의 호환을 위해 추가)
+            name: `계좌${index + 1} (${account.accountNum})`, // 계좌 이름 형식에 맞추어 데이터 포맷팅
+          })
+        );
+
+        // 상태를 업데이트합니다.
+        setAccounts(fetchedAccounts);
+      } catch (error) {
+        console.error("계좌 정보를 가져오는 중 오류가 발생했습니다:", error);
+      }
+    };
+
+    fetchAccounts();
+  }, []); // 빈 배열을 두 번째 인자로 전달하여 컴포넌트가 마운트될 때 한 번만 실행되도록 합니다.
 
   const [selectedLoan, setSelectedLoan] = useState(
     loans.find((loan) => loan.id === parseInt(selectedLoanId, 10))?.id || ""

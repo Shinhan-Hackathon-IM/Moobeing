@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import {
   LineChart,
@@ -11,11 +11,11 @@ import {
   Legend,
 } from "recharts";
 import leftButton from "../../assets/button/leftButtonWhite.svg";
-import rigthButton from "../../assets/button/rightButtonWhite.svg";
+import rightButton from "../../assets/button/rightButtonWhite.svg";
 
 const GraphContainer = styled.div`
   background-color: #f5fded;
-  height: 550px;
+  height: 560px;
   width: 90%;
   margin-bottom: 5%;
   display: flex;
@@ -30,7 +30,8 @@ const GraphContainer = styled.div`
 
 const ChartContainer = styled.div`
   width: 87%;
-  height: 400px;
+  height: 390px;
+  padding-bottom: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -52,7 +53,7 @@ const ButtonContainer = styled.div`
   width: 97%;
   display: flex;
   justify-content: space-between;
-  pointer-events: none; /* 버튼 외 영역은 클릭 이벤트 무시 */
+  pointer-events: none;
 `;
 
 const Button = styled.button`
@@ -66,7 +67,7 @@ const Button = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: auto; /* 버튼은 클릭 가능하게 */
+  pointer-events: auto;
   transition: background-color 0.3s;
 
   &:hover {
@@ -117,6 +118,11 @@ const ToggleCircle = styled.div`
   font-weight: 700;
 `;
 
+const YearDisplay = styled.h2`
+  margin-top: 0;
+  margin-bottom: 2vh;
+`;
+
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     const formatToKoreanWon = (value) => {
@@ -150,52 +156,59 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-function TotalGraph({ data = { items: [] }, peerData = { items: [] } }) {
+function TotalGraph({ data = [], peerData = [] }) {
   const [visibleRange, setVisibleRange] = useState([0, 4]);
   const [yAxisDomain, setYAxisDomain] = useState([0, 0]);
-  const [showPeerData, setShowPeerData] = useState(false);
+  const [showPeerData, setShowPeerData] = useState(null);
+  const [currentYear, setCurrentYear] = useState(null);
+
+  // 첫번째 인덱스 찾기
+  const firstDataIndex = data.findIndex((item) => item.loanBalance !== null);
+
+  // 전체 range 정하기
+  useEffect(() => {
+    if (firstDataIndex !== -1) {
+      setVisibleRange([firstDataIndex, firstDataIndex + 4]);
+      setCurrentYear(data[firstDataIndex].year);
+    }
+  }, [data]);
+
+  const visibleData = data.slice(visibleRange[0], visibleRange[1]);
+  const visiblePeerData = peerData.slice(visibleRange[0], visibleRange[1]);
 
   useEffect(() => {
     updateYAxisDomain();
   }, [data, peerData, visibleRange, showPeerData]);
 
   const updateYAxisDomain = () => {
-    if (data && data.items && data.items.length > visibleRange[0]) {
-      const visibleData = data.items.slice(visibleRange[0], visibleRange[1]);
-      let maxAmount = Math.max(
-        ...visibleData.map((item) => item.replayment_amount)
+    const visibleData = data.slice(visibleRange[0], visibleRange[1]);
+    let maxAmount = Math.max(...visibleData.map((item) => item.loanBalance));
+    let minAmount = Math.min(...visibleData.map((item) => item.loanBalance));
+
+    if (showPeerData && peerData.length > 0) {
+      const visiblePeerData = peerData.slice(visibleRange[0], visibleRange[1]);
+      maxAmount = Math.max(
+        maxAmount,
+        ...visiblePeerData.map((item) => item.loanBalance)
       );
-      let minAmount = Math.min(
-        ...visibleData.map((item) => item.replayment_amount)
+      minAmount = Math.min(
+        minAmount,
+        ...visiblePeerData.map((item) => item.loanBalance)
       );
-
-      if (showPeerData && peerData && peerData.items) {
-        const visiblePeerData = peerData.items.slice(
-          visibleRange[0],
-          visibleRange[1]
-        );
-        maxAmount = Math.max(
-          maxAmount,
-          ...visiblePeerData.map((item) => item.replayment_amount)
-        );
-        minAmount = Math.min(
-          minAmount,
-          ...visiblePeerData.map((item) => item.replayment_amount)
-        );
-      }
-
-      const difference = maxAmount - minAmount;
-      const paddedMin = Math.max(0, minAmount - difference * 0.1);
-      const paddedMax = maxAmount + difference * 0.1;
-
-      setYAxisDomain([paddedMin, paddedMax]);
     }
+
+    const difference = maxAmount - minAmount;
+    const paddedMin = Math.max(0, minAmount - difference * 0.1);
+    const paddedMax = maxAmount + difference * 0.1;
+
+    setYAxisDomain([paddedMin, paddedMax]);
   };
 
   const handleScroll = (direction) => {
     setVisibleRange((prevRange) => {
       const newStart = Math.max(0, prevRange[0] + direction * 3);
-      const newEnd = Math.min(data.items.length, newStart + 4);
+      const newEnd = Math.min(data.length, newStart + 4);
+
       return [newStart, newEnd];
     });
   };
@@ -210,19 +223,13 @@ function TotalGraph({ data = { items: [] }, peerData = { items: [] } }) {
     }
   };
 
-  if (!data || !data.items || data.items.length === 0) {
+  if (!data || data.length === 0) {
     return (
       <GraphContainer>
         <h1>데이터가 없습니다.</h1>
       </GraphContainer>
     );
   }
-
-  const visibleData = data.items.slice(visibleRange[0], visibleRange[1]);
-  const visiblePeerData =
-    peerData && peerData.items
-      ? peerData.items.slice(visibleRange[0], visibleRange[1])
-      : [];
 
   return (
     <GraphContainer>
@@ -234,6 +241,7 @@ function TotalGraph({ data = { items: [] }, peerData = { items: [] } }) {
         </ToggleButton>
       </ToggleWrapper>
       <TitleOfChart>전체여정</TitleOfChart>
+      <YearDisplay>{currentYear}년</YearDisplay>
       <ChartContainer>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
@@ -243,22 +251,23 @@ function TotalGraph({ data = { items: [] }, peerData = { items: [] } }) {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="month"
-              type="number"
-              domain={["dataMin", "dataMax"]}
-              ticks={visibleData.map((d) => d.month)}
+              tickFormatter={(value) => `${value}월`}
+              tick={{ fontSize: 12 }}
             />
             <YAxis
               domain={yAxisDomain}
               tickFormatter={formatToKoreanWon}
               width={60}
               tick={{ fontSize: 10 }}
-              allowDecimals={false} // Explicitly provide all necessary props to avoid relying on defaults
+              allowDecimals={false}
             />
             <Tooltip content={<CustomTooltip />} />
-            <Legend wrapperStyle={{ paddingLeft: 30 }} />
+            <Legend
+              wrapperStyle={{ fontSize: 12, paddingTop: 20, paddingLeft: 50 }}
+            />
             <Line
               type="monotone"
-              dataKey="replayment_amount"
+              dataKey="loanBalance"
               name="내 상환액"
               stroke="#8884d8"
               strokeWidth={2}
@@ -268,12 +277,13 @@ function TotalGraph({ data = { items: [] }, peerData = { items: [] } }) {
               animationBegin={0}
               animationDuration={500}
               animationEasing="ease-in-out"
+              connectNulls={true}
             />
             {showPeerData && (
               <Line
                 type="monotone"
                 data={visiblePeerData}
-                dataKey="replayment_amount"
+                dataKey="loanBalance"
                 name="또래 평균 상환액"
                 stroke="#82ca9d"
                 strokeWidth={2}
@@ -283,6 +293,7 @@ function TotalGraph({ data = { items: [] }, peerData = { items: [] } }) {
                 animationBegin={0}
                 animationDuration={500}
                 animationEasing="ease-in-out"
+                connectNulls={true}
               />
             )}
           </LineChart>
@@ -292,16 +303,14 @@ function TotalGraph({ data = { items: [] }, peerData = { items: [] } }) {
         <Button
           onClick={() => handleScroll(-1)}
           disabled={visibleRange[0] === 0}
-          style={{ left: "10px" }}
         >
           <img src={leftButton} alt="이전" />
         </Button>
         <Button
           onClick={() => handleScroll(1)}
-          disabled={visibleRange[1] >= data.items.length}
-          style={{ right: "10px" }}
+          disabled={visibleRange[1] >= data.length}
         >
-          <img src={rigthButton} alt="다음" />
+          <img src={rightButton} alt="다음" />
         </Button>
       </ButtonContainer>
     </GraphContainer>

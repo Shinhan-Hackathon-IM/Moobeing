@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { darken } from "polished"; // polished에서 darken 가져오기
 import radish from "../../assets/radishes/basicRad.svg";
 import { getCreditRate } from "../../apis/UserApi";
+import useUserStore from "../../store/UserStore";
 
 // 신용등급별 색상
 const GraphColors = {
@@ -104,9 +105,14 @@ const CreditText = styled.div`
 `;
 
 function CreditScore() {
+  const { userInfo, creditRate } = useUserStore((state) => ({
+    userInfo: state.userInfo,
+    creditRate: state.creditRate,
+  }));
+
   const [creditInfo, setCreditInfo] = useState({
-    ratingName: "A",
-    ratingPercent: 100,
+    ratingName: creditRate ? creditRate.ratingName : "A",
+    ratingPercent: creditRate ? creditRate.ratingPercent : 100,
   });
   const [error, setError] = useState(null); // 에러 상태 추가
 
@@ -136,8 +142,6 @@ function CreditScore() {
     fetchData();
   }, []);
 
-  console.log("Credit Info:", creditInfo);
-
   // 다음 등급 달성시 까지
   const remainingPercent = 100 - creditInfo.ratingPercent;
 
@@ -149,6 +153,9 @@ function CreditScore() {
     creditInfo.ratingName === "A" && creditInfo.ratingPercent >= 100
       ? "최고 등급 달성"
       : `${nextGrade}등급까지 ${remainingPercent.toFixed(0)}점`;
+
+  // 기본 img 정해두고 정보 들어오면 그걸로
+  const radishImage = userInfo?.radishImageUrl || radish;
 
   return (
     <Container>
@@ -163,7 +170,7 @@ function CreditScore() {
           grade={creditInfo.ratingName}
           fillpercent={creditInfo.ratingPercent}
         >
-          <Radish src={radish} alt="Radish" />
+          <Radish src={userInfo.radishImageUrl} alt="Radish" />
         </GraphFill>
       </GraphContainer>
       <CreditText>{displayText}</CreditText>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import useUserStore from "../../store/UserStore";
 
 const Title = styled.div`
   background-color: #f5fded;
@@ -54,6 +55,7 @@ const AnalyzeButton = styled.button`
 `;
 
 const SubHeader = ({ month = "이월", onAnalyzeClick, totalExpense = 0 }) => {
+  const userInfo = useUserStore((state) => state.userInfo);
   const [buttonText, setButtonText] = useState("분석하기");
 
   const handleButtonClick = () => {
@@ -67,7 +69,7 @@ const SubHeader = ({ month = "이월", onAnalyzeClick, totalExpense = 0 }) => {
     <>
       <Title>
         <TitleText>
-          <AccentText>제갈싸피님</AccentText>
+          <AccentText>{userInfo.name}님</AccentText>
           의<br />
           <AccentText>{month}</AccentText> 지출내역
         </TitleText>
