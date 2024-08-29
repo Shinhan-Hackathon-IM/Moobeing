@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import LoanList from "./LoanList";
 import goToJourney from "../../assets/button/goToJourney.svg";
+import { getLoanSort } from "../../apis/LoanApi";
+import basicRad from "../../assets/radishes/basicRad.svg"; // basicRad 이미지 임포트
 
 const Container = styled.div`
   background-color: #f5fded;
@@ -14,7 +16,7 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  padding: 8% 8% 5% 8%;
+  padding: 8% 5% 5% 8%;
   box-sizing: border-box;
   margin-top: 5%;
 `;
@@ -43,7 +45,7 @@ const SortButton = styled.p`
   cursor: pointer;
   background-color: ${(props) =>
     props.isactive === "true" ? "#348833" : "#e0eed2"};
-  color: ${(props) => (props.isactive === "true" ? "#ffffff" : "#000000")};
+  color: ${(props) => (props.isactive === "true" ? "#ffffff" : "#24272D")};
   border-radius: 10px;
 `;
 
@@ -79,6 +81,26 @@ const LoanListContainer = styled.div`
   flex-grow: 1;
 `;
 
+const NoLoansContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+`;
+
+const NoLoansImage = styled.img`
+  width: 70px; /* 이미지 크기 조정 */
+  height: auto;
+  margin: 10px 0px;
+`;
+
+const NoLoanText = styled.p`
+  font-size: 12px;
+  color: #24272d;
+  margin: 0;
+`;
+
 function LoanHistory() {
   const [loans, setLoans] = useState([]);
   const [totalLoanAmount, setTotalLoanAmount] = useState(0);
@@ -86,80 +108,37 @@ function LoanHistory() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Simulating API call to fetch loan data
     const fetchData = async () => {
-      // Replace this with actual API call
-      const response = {
-        total_loan_amount: 3120100212,
-        currency: "KRW",
-        loan_details: [
-          {
-            user_deposit_id: 1,
-            loan_type: "참대출",
-            loan_amount: 1141824,
-            bank_name: "Bank1",
-            interest_rate: 23.342,
-            bank_logo_url: "https://example.com/logos/bank1.png",
-          },
-          {
-            user_deposit_id: 2,
-            loan_type: "대출 그만 대출",
-            loan_amount: 21241824,
-            bank_name: "Bank1",
-            interest_rate: 34.343,
-            bank_logo_url: "https://example.com/logos/bank1.png",
-          },
-          {
-            user_deposit_id: 3,
-            loan_type: "자고 싶다 대출",
-            loan_amount: 3141824,
-            interest_rate: 12.342,
-            bank_name: "Bank1",
-            bank_logo_url: "https://example.com/logos/bank1.png",
-          },
-          {
-            user_deposit_id: 4,
-            loan_type: "자고 싶다 대출",
-            loan_amount: 3141824,
-            interest_rate: 12.342,
-            bank_name: "Bank1",
-            bank_logo_url: "https://example.com/logos/bank1.png",
-          },
-          {
-            user_deposit_id: 5,
-            loan_type: "자고 싶다 대출",
-            loan_amount: 3141824,
-            interest_rate: 12.342,
-            bank_name: "Bank1",
-            bank_logo_url: "https://example.com/logos/bank1.png",
-          },
-        ],
-        filters: {
-          sort_by: ["interest_rate", "loan_amount"],
-        },
-      };
-
-      setLoans(response.loan_details);
-      setTotalLoanAmount(response.total_loan_amount);
+      try {
+        const response = await getLoanSort("amount"); // API 호출
+        setLoans(response.getMemberLoanDtoList); // 받아온 대출 정보 설정
+        setTotalLoanAmount(response.totalLoanAmount); // 총 대출 금액 설정
+      } catch (error) {
+        console.error("대출 정보 불러오기 실패:", error);
+      }
     };
 
     fetchData();
   }, []);
 
-  const sortByInterestRate = () => {
-    const sortedLoans = [...loans].sort(
-      (a, b) => b.interest_rate - a.interest_rate
-    );
-    setLoans(sortedLoans);
-    setActiveSort("interest");
+  const sortByInterestRate = async () => {
+    try {
+      const response = await getLoanSort("rate");
+      setLoans(response.getMemberLoanDtoList);
+      setActiveSort("interest");
+    } catch (error) {
+      console.error("금리순 정렬 실패:", error);
+    }
   };
 
-  const sortByLoanMoney = () => {
-    const sortedLoans = [...loans].sort(
-      (a, b) => b.loan_amount - a.loan_amount
-    );
-    setLoans(sortedLoans);
-    setActiveSort("amount");
+  const sortByLoanMoney = async () => {
+    try {
+      const response = await getLoanSort("amount");
+      setLoans(response.getMemberLoanDtoList);
+      setActiveSort("amount");
+    } catch (error) {
+      console.error("금액순 정렬 실패:", error);
+    }
   };
 
   const navigateToTotalJourney = () => {
@@ -192,7 +171,14 @@ function LoanHistory() {
         </NavigateButton>
       </TotalLoan>
       <LoanListContainer>
-        <LoanList loans={loans} />
+        {loans.length > 0 ? (
+          <LoanList loans={loans} />
+        ) : (
+          <NoLoansContainer>
+            <NoLoansImage src={basicRad} alt="대출 없음" />
+            <NoLoanText>대출 내역이 없습니다.</NoLoanText>
+          </NoLoansContainer>
+        )}
       </LoanListContainer>
     </Container>
   );
