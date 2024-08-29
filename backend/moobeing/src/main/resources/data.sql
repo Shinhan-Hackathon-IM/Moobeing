@@ -3,19 +3,20 @@ INSERT IGNORE INTO member (member_id, email, password, total_points, total_loan,
 VALUES (1, 'test@gmail.com', 'test', 0, 0, 'Test User', 'M', '000101', 'user_key_123', 1);
 
 -- 2. 대출 상품 더미 데이터 12개 생성
-INSERT IGNORE INTO loan_product (loan_product_id, loan_name, bank_image_url, bank_name, loan_period, interest_rate, description) VALUES
-(1, '우리은행 주택담보대출', 'https://github.com/user-attachments/assets/0fe19810-9646-4beb-bfc3-e3e15b69f6c1', '우리은행', 240, 2.5, '우리은행의 주택담보대출 상품입니다.'),
-(2, '신한은행 직장인대출', 'https://github.com/user-attachments/assets/fa2aedb1-6886-4982-84f3-6e773fed7792', '신한은행', 60, 3.2, '신한은행의 직장인을 위한 대출 상품입니다.'),
-(3, 'IBK기업은행 중소기업대출', 'https://github.com/user-attachments/assets/a723840f-838b-4160-9e96-18daf28fe7ba', 'IBK기업은행', 120, 3.8, 'IBK기업은행의 중소기업을 위한 대출 상품입니다.'),
-(4, 'KB국민은행 전세자금대출', 'https://github.com/user-attachments/assets/16e42300-e535-46c6-b184-2e8f1f891dc0', 'KB국민은행', 36, 2.7, 'KB국민은행의 전세자금대출 상품입니다.'),
-(5, '하나은행 생활안정대출', 'https://github.com/user-attachments/assets/c1f2b5aa-0bb9-46c6-ab08-cafcd29dba73', '하나은행', 48, 4.0, '하나은행의 생활안정을 위한 대출 상품입니다.'),
-(6, '카카오뱅크 비상금대출', 'https://github.com/user-attachments/assets/ef5ec69e-abe0-4fae-85e9-8b3bf541e607', '카카오뱅크', 12, 3.0, '카카오뱅크의 비상시에 사용할 수 있는 소액 대출 상품입니다.'),
-(7, '우리은행 자영업자대출', 'https://github.com/user-attachments/assets/0fe19810-9646-4beb-bfc3-e3e15b69f6c1', '우리은행', 72, 4.2, '우리은행의 자영업자를 위한 대출 상품입니다.'),
-(8, '신한은행 신용대출', 'https://github.com/user-attachments/assets/fa2aedb1-6886-4982-84f3-6e773fed7792', '신한은행', 36, 3.5, '신한은행의 신용대출 상품입니다.'),
-(9, 'IBK기업은행 창업대출', 'https://github.com/user-attachments/assets/a723840f-838b-4160-9e96-18daf28fe7ba', 'IBK기업은행', 84, 4.1, 'IBK기업은행의 창업 지원을 위한 대출 상품입니다.'),
-(10, 'KB국민은행 자동차구입대출', 'https://github.com/user-attachments/assets/16e42300-e535-46c6-b184-2e8f1f891dc0', 'KB국민은행', 60, 3.9, 'KB국민은행의 자동차 구입을 위한 대출 상품입니다.'),
-(11, '하나은행 교육비대출', 'https://github.com/user-attachments/assets/c1f2b5aa-0bb9-46c6-ab08-cafcd29dba73', '하나은행', 48, 2.9, '하나은행의 교육비 지원을 위한 대출 상품입니다.'),
-(12, '카카오뱅크 청년대출', 'https://github.com/user-attachments/assets/ef5ec69e-abe0-4fae-85e9-8b3bf541e607', '카카오뱅크', 120, 2.3, '카카오뱅크의 청년을 위한 장기 대출 상품입니다.');
+INSERT IGNORE INTO loan_product (loan_product_id, loan_name, bank_image_url, bank_name, loan_period, interest_rate, description, account_Type_Unique_No) VALUES
+(1, '우리은행 주택담보대출', 'https://github.com/user-attachments/assets/0fe19810-9646-4beb-bfc3-e3e15b69f6c1', '우리은행', 240, 2.5, '우리은행의 주택담보대출 상품입니다.', '020-4-f37c1da89b1a42'),
+(2, '신한은행 직장인대출', 'https://github.com/user-attachments/assets/fa2aedb1-6886-4982-84f3-6e773fed7792', '신한은행', 60, 3.2, '신한은행의 직장인을 위한 대출 상품입니다.', '088-4-9eb46cbba08c4f'),
+(3, 'IBK기업은행 중소기업대출', 'https://github.com/user-attachments/assets/a723840f-838b-4160-9e96-18daf28fe7ba', 'IBK기업은행', 120, 3.8, 'IBK기업은행의 중소기업을 위한 대출 상품입니다.', '003-4-562719cbf95f4e'),
+(4, 'KB국민은행 전세자금대출', 'https://github.com/user-attachments/assets/16e42300-e535-46c6-b184-2e8f1f891dc0', 'KB국민은행', 36, 2.7, 'KB국민은행의 전세자금대출 상품입니다.', '004-4-903c918814034d'),
+(5, '하나은행 생활안정대출', 'https://github.com/user-attachments/assets/c1f2b5aa-0bb9-46c6-ab08-cafcd29dba73', '하나은행', 48, 4.0, '하나은행의 생활안정을 위한 대출 상품입니다.', '081-4-551fa9b08bd245'),
+(6, '카카오뱅크 비상금대출', 'https://github.com/user-attachments/assets/ef5ec69e-abe0-4fae-85e9-8b3bf541e607', '카카오뱅크', 12, 3.0, '카카오뱅크의 비상시에 사용할 수 있는 소액 대출 상품입니다.', '090-4-171759d655f24e'),
+(7, '우리은행 자영업자대출', 'https://github.com/user-attachments/assets/0fe19810-9646-4beb-bfc3-e3e15b69f6c1', '우리은행', 72, 4.2, '우리은행의 자영업자를 위한 대출 상품입니다.', '020-4-cfcb57125c744e'),
+(8, '신한은행 신용대출', 'https://github.com/user-attachments/assets/fa2aedb1-6886-4982-84f3-6e773fed7792', '신한은행', 36, 3.5, '신한은행의 신용대출 상품입니다.', '088-4-84a366ee2b8f45'),
+(9, 'IBK기업은행 창업대출', 'https://github.com/user-attachments/assets/a723840f-838b-4160-9e96-18daf28fe7ba', 'IBK기업은행', 84, 4.1, 'IBK기업은행의 창업 지원을 위한 대출 상품입니다.', '003-4-4c9e9eba846742'),
+(10, 'KB국민은행 자동차구입대출', 'https://github.com/user-attachments/assets/16e42300-e535-46c6-b184-2e8f1f891dc0', 'KB국민은행', 60, 3.9, 'KB국민은행의 자동차 구입을 위한 대출 상품입니다.', '004-4-ace8e885f7444f'),
+(11, '하나은행 교육비대출', 'https://github.com/user-attachments/assets/c1f2b5aa-0bb9-46c6-ab08-cafcd29dba73', '하나은행', 48, 2.9, '하나은행의 교육비 지원을 위한 대출 상품입니다.', '081-4-fc8922f620b34a'),
+(12, '카카오뱅크 청년대출', 'https://github.com/user-attachments/assets/ef5ec69e-abe0-4fae-85e9-8b3bf541e607', '카카오뱅크', 120, 2.3, '카카오뱅크의 청년을 위한 장기 대출 상품입니다.', '090-4-76fcef0271db4b'),
+(13, '한국은행 대출 상품', 'https://yt3.googleusercontent.com/ytc/AIdro_lc28DA1UOb1EMSbKIs5Xuv5-3x06aKoXBzTosRNvZUyYg=s900-c-k-c0x00ffffff-no-rj', '한국은행', 7, 10.0, '한국은행 신용 대출 상품입니다.', '001-4-2f8aa483083b40');
 
 -- 3. test@gmail.com으로 대출 상품 5개 가입시키기
 INSERT IGNORE INTO member_loan (member_loan_id, member_id, loan_product_name, status, initial_balance, remaining_balance, repayment_deadline, withdrawal_account_no, start_year, start_month, start_day) VALUES
@@ -124,3 +125,15 @@ INSERT IGNORE INTO expense (expense_id, member_id, expense_category_id, title, p
 INSERT IGNORE INTO quiz (quiz_id, created_date, modified_date, answer, ended_at, example, is_correct, status, member_id)
 VALUES
 (1, NOW(), NOW(), 200000, DATE_ADD(NOW(), INTERVAL 1 HOUR), 150000, 0, 'NOT_STARTED', 1);
+
+
+-- 12. Account Product 테이블에 상품 데이터 삽입
+INSERT IGNORE INTO Account_Product (id, bank_Code, account_Name, account_Description, account_Type_Unique_No)
+VALUES
+(1, '001', '한국은행 수시입출금 상품', '자유로운 수시입출금', '001-1-51798480913047'),
+(2, '003', 'IBK기업은행 자유입출금통장', 'IBK기업은행의 개인 및 소상공인을 위한 자유입출금 계좌입니다.', '003-1-c13adbc5193e4e'),
+(3, '004', 'KB국민은행 자유입출금통장', 'KB국민은행의 인기 있는 자유입출금 계좌로, 다양한 금융 서비스를 편리하게 이용할 수 있습니다.', '004-1-3e3de8b682fb43'),
+(4, '020', '우리은행 자유입출금계좌', '우리은행의 기본 자유입출금 계좌로, 입출금이 자유롭고 다양한 혜택을 제공합니다.', '020-1-ed57896c14f04d'),
+(5, '081', '하나은행 자유입출금계좌', '하나은행의 자유입출금 계좌로, 입출금이 자유롭고 다양한 금융 서비스를 제공합니다.', '081-1-8b171a6b846c4e'),
+(6, '088', '신한은행 자유통장', '신한은행의 자유로운 입출금 계좌로, 편리한 금융 생활을 위한 필수 계좌입니다.', '088-1-ba3e624fcec04c'),
+(7, '090', '카카오뱅크 자유입출금계좌', '카카오뱅크의 자유입출금 계좌로, 모바일에서 간편하게 관리할 수 있는 현대적인 계좌입니다.', '090-1-5673fb2930a740');

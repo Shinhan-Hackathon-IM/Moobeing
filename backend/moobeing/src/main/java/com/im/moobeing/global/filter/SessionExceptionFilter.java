@@ -20,12 +20,13 @@ public class SessionExceptionFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (Exception e) {
+            e.printStackTrace();
             setErrorResponse(response, ErrorCode.AU_SESSION_EXPIRED);
         }
     }
 
     private void setErrorResponse(HttpServletResponse response, ErrorCode errorCode) {
-        log.error("filter에서 에러 체크");
+        log.error("filter에서 에러 체크" + errorCode.getMessage());
 
         ObjectMapper objectMapper = new ObjectMapper();
         response.setStatus(errorCode.getStatus().value());

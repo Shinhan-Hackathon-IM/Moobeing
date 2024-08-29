@@ -15,6 +15,8 @@ public class ApiKeyConfig {
     @Getter
     @Value("${SHINHAN_APIKEY}")
     private String apiKey;
+    public static final String accountProductCode = "001-1-51798480913047";
+    public static final String loanProductCode = "001-4-2f8aa483083b40";
 
     private String lastDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
     private AtomicInteger sequence = new AtomicInteger(0);

@@ -7,6 +7,23 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
+import com.im.moobeing.domain.loan.dto.request.LoanCreateRequest;
+import com.im.moobeing.domain.loan.entity.*;
+import com.im.moobeing.domain.loan.repository.*;
+import com.im.moobeing.global.client.ShinhanClient;
+import com.im.moobeing.global.client.dto.request.GetCreateLoanAccountRequest;
+import com.im.moobeing.global.client.dto.request.GetCreateLoanApplicationRequest;
+import com.im.moobeing.global.client.dto.response.GetCreateLoanAccountResponse;
+import com.im.moobeing.global.client.dto.response.GetCreateLoanApplicationResponse;
+import com.im.moobeing.global.config.ApiKeyConfig;
+import com.im.moobeing.global.error.ErrorCode;
+import com.im.moobeing.global.error.exception.BadRequestException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.im.moobeing.domain.loan.dto.GetAllLoanMapDto;
 import com.im.moobeing.domain.loan.dto.GetMemberLoanDto;
 import com.im.moobeing.domain.loan.dto.response.GetAllLoanMapResponse;
@@ -15,18 +32,16 @@ import com.im.moobeing.domain.loan.dto.response.GetMemberLoanResponse;
 import com.im.moobeing.domain.loan.dto.response.GetMonthlyLoanResponse;
 import com.im.moobeing.domain.loan.dto.response.GetPercentLoanResponse;
 import com.im.moobeing.domain.loan.dto.response.GetSumLoanResponse;
-import com.im.moobeing.domain.loan.entity.AverageLoanRepaymentRecord;
-import com.im.moobeing.domain.loan.entity.LoanProduct;
-import com.im.moobeing.domain.loan.entity.LoanRepaymentRecord;
-import com.im.moobeing.domain.loan.entity.MemberLoan;
-import com.im.moobeing.domain.loan.repository.AverageLoanRepaymentRecordRepository;
-import com.im.moobeing.domain.loan.repository.LoanProductRepository;
-import com.im.moobeing.domain.loan.repository.LoanRepaymentRecordRepository;
-import com.im.moobeing.domain.loan.repository.MemberLoanRepository;
 import com.im.moobeing.domain.member.entity.Member;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -36,6 +51,8 @@ public class LoanService {
 	private final LoanProductRepository loanProductRepository;
 	private final AverageLoanRepaymentRecordRepository averageLoanRepaymentRecordRepository;
 	private final MemberLoanRepository memberLoanRepository;
+	private final ShinhanClient shinhanClient;
+	private final ApiKeyConfig apiKeyConfig;
 
 	private static final int CURRENT_YEAR = 2024;
 
@@ -248,5 +265,66 @@ public class LoanService {
 
 		// remainingPercent를 반환
 		return GetPercentLoanResponse.of(remainingPercent);
+	}
+
+	public List<LoanProduct> getAllLoan() {
+		return loanProductRepository.findAll();
+	}
+
+	@Transactional(readOnly = false)
+    public MemberLoan createLoan(Member member, LoanCreateRequest createRequest) {
+		LoanProduct loanProduct = loanProductRepository.findById(createRequest.getLoanId())
+				.orElseThrow(()->new BadRequestException(ErrorCode.LN_ALREADY_EXISTS_PRODUCT));
+
+		boolean isDuplicated = memberLoanRepository.findAllByMemberId(member.getId())
+				.stream()
+				.anyMatch(ml -> ml.getLoanProductName().equals(loanProduct.getLoanName()));
+
+		if (isDuplicated) throw new BadRequestException(ErrorCode.LN_ALREADY_EXISTS_PRODUCT);
+
+		evaluateLoan(member, loanProduct);
+        var request = new GetCreateLoanAccountRequest(
+				apiKeyConfig,
+				member.getUserKey(),
+				String.valueOf(createRequest.getLoanBalance()),
+				createRequest.getAccountNo(),
+				loanProduct.getAccountTypeUniqueNo()
+		);
+
+		var	rec = shinhanClient.getCreateLoanAccount(request).getRec();
+
+		if (!rec.getStatus().equals("개설")) {
+			throw new BadRequestException(ErrorCode.LN_ALREADY_EXISTS_PRODUCT);
+		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+		MemberLoan memberLoan = MemberLoan.builder()
+				.memberId(member.getId())
+				.loanProductName(rec.getAccountName())
+				.status(rec.getStatus())
+				.initialBalance(Long.valueOf(rec.getLoanBalance()))
+				.remainingBalance(Long.parseLong(rec.getLoanBalance()))
+				.repaymentDeadline(LocalDate.parse(rec.getMaturityDate(), formatter))
+				.withdrawalAccountNo(rec.getWithdrawalAccountNo())
+				.startYear(Integer.parseInt(rec.getLoanDate().substring(0, 4))) // "2024"
+				.startMonth(Integer.parseInt(rec.getLoanDate().substring(4, 6))) // "08"
+				.startDay(Integer.parseInt(rec.getLoanDate().substring(6, 8))) // "27"
+				.build();
+
+		return memberLoanRepository.save(memberLoan);
+    }
+
+	public void evaluateLoan(Member member, LoanProduct loanProduct) {
+		var request = new GetCreateLoanApplicationRequest(apiKeyConfig, member.getUserKey(), loanProduct.getAccountTypeUniqueNo());
+		GetCreateLoanApplicationResponse response;
+		try {
+			 response = shinhanClient.getCreateLoanApplication(request);
+		} catch (Exception e) {
+			return;
+		}
+
+		if (!response.getRec().getStatus().equals("승인")) {
+			throw new BadRequestException(ErrorCode.LN_CREDIT_SCORE_TOO_LOW);
+		}
 	}
 }

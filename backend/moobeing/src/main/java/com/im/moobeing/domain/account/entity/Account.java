@@ -33,6 +33,10 @@ public class Account {
 		this.accountBalance = accountBalance;
 	}
 
+	public void updateBalance(Long diff) {
+		this.accountBalance += diff;
+	}
+
 	public void setAccountBalance(Long accountBalance) {
 		this.accountBalance = accountBalance;
 	}
