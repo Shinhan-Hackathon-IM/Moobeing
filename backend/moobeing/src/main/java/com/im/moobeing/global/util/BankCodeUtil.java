@@ -24,6 +24,7 @@ public class BankCodeUtil {
     @PostConstruct
     public void init() {
         var response = shinhanClient.getInquireBankCodes(new GetInquireBankCodesRequest(apiKeyConfig));
+        log.error("bankCodeStatusCode : " + response.getHeader().getResponseCode());
         response.getRec().forEach(rec -> {
             String bankCode = rec.getBankCode();
             String bankName = rec.getBankName();

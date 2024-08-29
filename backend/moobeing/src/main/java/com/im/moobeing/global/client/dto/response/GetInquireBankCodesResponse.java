@@ -8,6 +8,8 @@ import java.util.List;
 
 @Getter
 public class GetInquireBankCodesResponse {
+    @JsonProperty("Header")
+    private CommonResponseHeader header;
     @JsonProperty("REC")  // JSON으로 직렬화될 때 "REC"로 이름이 설정됩니다.
     private List<REC> rec;
 
