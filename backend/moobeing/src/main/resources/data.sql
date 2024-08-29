@@ -44,7 +44,7 @@ INSERT IGNORE INTO average_loan_repayment_record (average_loan_repayment_record_
 INSERT IGNORE INTO radish (radish_id, radish_name, radish_image_url, radish_rank, created_date, modified_date, radish_message) VALUES
 (1, '무', 'https://github.com/user-attachments/assets/19eff918-f0cd-4f7c-b56b-ddf5069749b9', 'A', '2024-08-23 12:00:00', '2024-08-23 12:00:00', '무빙 회사에 재직 중인 무다. 일도 잘하고 성격도 좋아 모두가 좋아하는 멋진 상사다.'),
 (2, '아련하무', 'https://github.com/user-attachments/assets/989d6ac6-39d1-4f24-85aa-ac2c6deedc4c', 'A', '2024-08-23 12:05:00', '2024-08-23 12:05:00', '무들 사이에서 미모로 유명하다. 성격도 착해서 남녀노소 모두에게 인기가 많다.'),
-(3, '응애무', 'https://github.com/user-attachments/assets/67db296c-70b7-422c-bc1f-8fab92414dc6', 'B', '2024-08-23 12:10:00', '2024-08-23 12:10:00', '아직 걸음마를 떼지 못한 아기 무다. 5개를 모아 무를 성장시켜보자.'),
+(3, '응애무', 'https://github.com/user-attachments/assets/33f17ce2-5155-4d8a-8b63-0526e4c241a3', 'B', '2024-08-23 12:10:00', '2024-08-23 12:10:00', '아직 걸음마를 떼지 못한 아기 무다. 5개를 모아 무를 성장시켜보자.'),
 (4, '발그레무', 'https://github.com/user-attachments/assets/29766555-5bb9-4848-88c3-79039ecaa61a', 'A', '2024-08-23 12:15:00', '2024-08-23 12:15:00', '부끄럼이 많아 항상 얼굴에 홍조가 있다. 심하게 부끄러울 때는 온몸이 붉게 물든다.'),
 (5, '물구나무', 'https://github.com/user-attachments/assets/55610e6e-e7a0-41f9-b81a-d41ce79bdbe8', 'S', '2024-08-23 12:20:00', '2024-08-23 12:20:00', '거꾸로 다니는 것이 특징. 항상 머리가 거꾸로 쏠려 있어 고혈압으로 고생 중이다.'),
 (6, '머리숱많아무', 'https://github.com/user-attachments/assets/474185cd-9469-4394-a0b9-48fd189b66d4', 'A', '2024-08-23 12:25:00', '2024-08-23 12:25:00', '아름다운 머릿결을 가진 무이다. 지나갈 때마다 상쾌한 샴푸 냄새가 난다.'),
