@@ -1,20 +1,8 @@
 package com.im.moobeing.domain.loan.service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.im.moobeing.domain.loan.dto.GetAllLoanMapDto;
 import com.im.moobeing.domain.loan.dto.GetMemberLoanDto;
-import com.im.moobeing.domain.loan.dto.response.GetAllLoanMapResponse;
-import com.im.moobeing.domain.loan.dto.response.GetLoanMapResponse;
-import com.im.moobeing.domain.loan.dto.response.GetMemberLoanResponse;
-import com.im.moobeing.domain.loan.dto.response.GetMonthlyLoanResponse;
-import com.im.moobeing.domain.loan.dto.response.GetPercentLoanResponse;
-import com.im.moobeing.domain.loan.dto.response.GetSumLoanResponse;
+import com.im.moobeing.domain.loan.dto.response.*;
 import com.im.moobeing.domain.loan.entity.AverageLoanRepaymentRecord;
 import com.im.moobeing.domain.loan.entity.LoanProduct;
 import com.im.moobeing.domain.loan.entity.LoanRepaymentRecord;
@@ -24,8 +12,11 @@ import com.im.moobeing.domain.loan.repository.LoanProductRepository;
 import com.im.moobeing.domain.loan.repository.LoanRepaymentRecordRepository;
 import com.im.moobeing.domain.loan.repository.MemberLoanRepository;
 import com.im.moobeing.domain.member.entity.Member;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -248,5 +239,49 @@ public class LoanService {
 
 		// remainingPercent를 반환
 		return GetPercentLoanResponse.of(remainingPercent);
+	}
+
+	public GetAllLoanMapResponse getAllBuddyLoanMap(Member member) {
+		List<MemberLoan> memberLoanList = memberLoanRepository.findAllByMemberId(member.getId());
+
+		List<GetAllLoanMapDto> getAllLoanMapDtoList = new ArrayList<>();
+
+		for (MemberLoan memberLoan : memberLoanList) {
+			List<AverageLoanRepaymentRecord> averageLoanRepaymentRecordList = averageLoanRepaymentRecordRepository.findByAgeAndLoanName(Integer.parseInt(member.getBirthday().substring(0, 2)), memberLoan.getLoanProductName());
+
+			int memberStartLoanYear = memberLoan.getStartYear();
+			int memberStartLoanMonth = memberLoan.getStartMonth();
+
+			for (AverageLoanRepaymentRecord averageLoanRepaymentRecord : averageLoanRepaymentRecordList) {
+				getAllLoanMapDtoList.add(GetAllLoanMapDto.of(memberStartLoanYear, memberStartLoanMonth++, averageLoanRepaymentRecord.getRepaymentBalance()));
+				if (memberStartLoanMonth > 12) {
+					memberStartLoanMonth = 1;
+					memberStartLoanYear++;
+				}
+			}
+		}
+
+		// 중복되는 year와 month를 그룹화하고 balance를 합산
+		Map<Integer, Map<Integer, Long>> groupedByYearAndMonth = new HashMap<>();
+
+		for (GetAllLoanMapDto dto : getAllLoanMapDtoList) {
+			groupedByYearAndMonth
+					.computeIfAbsent(dto.getYear(), k -> new HashMap<>())
+					.merge(dto.getMonth(), dto.getLoanBalance(), Long::sum);
+		}
+
+		// 그룹화된 데이터를 다시 List<GetAllLoanMapDto>로 변환
+		List<GetAllLoanMapDto> mergedLoanMapDtoList = new ArrayList<>();
+		for (Map.Entry<Integer, Map<Integer, Long>> yearEntry : groupedByYearAndMonth.entrySet()) {
+			int year = yearEntry.getKey();
+			for (Map.Entry<Integer, Long> monthEntry : yearEntry.getValue().entrySet()) {
+				int month = monthEntry.getKey();
+				Long balance = monthEntry.getValue();
+				mergedLoanMapDtoList.add(GetAllLoanMapDto.of(year, month, balance));
+			}
+		}
+
+		// 이후에 mergedLoanMapDtoList를 반환하거나, GetAllLoanMapResponse로 변환하여 반환
+		return GetAllLoanMapResponse.of(mergedLoanMapDtoList);
 	}
 }
