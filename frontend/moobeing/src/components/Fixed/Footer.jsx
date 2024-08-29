@@ -9,7 +9,7 @@ const StyledFooter = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-around; /* 아이템들이 균등하게 배치되도록 설정 */
-  height: 60px; /* Footer의 기본 높이 설정 */
+  height: 70px; /* Footer의 기본 높이 설정 */
   width: 100%; /* 화면 전체 너비를 차지 */
   position: fixed;
   bottom: 0;
@@ -42,7 +42,7 @@ const StyledFooter = styled.div`
   }
 
   @media (max-width: 768px) {
-    height: 50px; /* 모바일에서 Footer 높이 조정 */
+    height: 70px; /* 모바일에서 Footer 높이 조정 */
 
     .footer-item {
       padding: 8px 0;
@@ -59,10 +59,8 @@ const StyledFooter = styled.div`
   }
 
   @media (min-width: 769px) {
-    max-width: 100vw; /* 웹일 때 가로 길이를 화면 전체로 설정 */
+    max-width: 767px; /* 웹일 때 가로 길이를 화면 전체로 설정 */
     width: 100%;
-    left: 0;
-    right: 0;
 
     .footer-item {
       max-width: 120px; /* 각 아이템이 너무 넓어지지 않도록 최대 너비 설정 */
