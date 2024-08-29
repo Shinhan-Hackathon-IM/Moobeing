@@ -63,3 +63,14 @@ export const getLoanBuddy = async () => {
     throw error;
   }
 };
+
+// 몇 퍼센트 상환했는지 알아보는 API
+export const getLoanPercent = async () => {
+  try {
+    const response = await api.get("/loan/percent");
+    return response.data;
+  } catch (error) {
+    console.error("몇 퍼센트 상환인지 불러오기 실패:", error);
+    throw error;
+  }
+};
