@@ -21,6 +21,7 @@ import com.im.moobeing.domain.member.dto.response.MemberRadishResponse;
 import com.im.moobeing.domain.member.dto.response.MemberRadishSelectResponse;
 import com.im.moobeing.domain.member.entity.Member;
 import com.im.moobeing.domain.member.entity.MemberRadish;
+import com.im.moobeing.domain.member.repository.MemberRadishRepository;
 import com.im.moobeing.domain.member.repository.MemberRepository;
 import com.im.moobeing.domain.radish.entity.Radish;
 import com.im.moobeing.domain.radish.repository.RadishRepository;
@@ -40,6 +41,7 @@ public class MemberService {
     private final RadishRepository radishRepository;
     private final ShinhanClient shinhanClient;
     private final ApiKeyConfig apiKeyConfig;
+    private final MemberRadishRepository memberRadishRepository;
 
     @Transactional
     public MemberCreateResponse createMember(MemberCreateRequest memberCreateRequest) {
@@ -152,6 +154,7 @@ public class MemberService {
             member.addMemberRadish(newMemberRadish);
             memberRepository.save(member);
         }
+        memberRadishRepository.save(existingMemberRadish);
 
         return AddMemberRadishResponse.of(member,radish.getRadishName(),radish.getRadishRank(),
             radish.getRadishImageUrl(), radish.getRadishMessage());
@@ -210,6 +213,7 @@ public class MemberService {
             member.addMemberRadish(newMemberRadish);
             memberRepository.save(member);
         }
+        memberRadishRepository.save(existingMemberRadish);
 
         return AddMemberRadishResponse.of(member,radish.getRadishName(),radish.getRadishRank(),
             radish.getRadishImageUrl(), radish.getRadishMessage());
