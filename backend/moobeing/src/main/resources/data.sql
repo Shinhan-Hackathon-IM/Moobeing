@@ -43,7 +43,7 @@ INSERT IGNORE INTO average_loan_repayment_record (average_loan_repayment_record_
 -- 5. radish 테이블에 데이터 삽입 (이미 존재할 경우 삽입 무시)
 INSERT IGNORE INTO radish (radish_id, radish_name, radish_image_url, radish_rank, created_date, modified_date) VALUES
 (1, '무', 'https://github.com/user-attachments/assets/19eff918-f0cd-4f7c-b56b-ddf5069749b9', 'B', '2024-08-23 12:00:00', '2024-08-23 12:00:00'),
-(2, '무산소', 'https://github.com/user-attachments/assets/989d6ac6-39d1-4f24-85aa-ac2c6deedc4c', 'B', '2024-08-23 12:05:00', '2024-08-23 12:05:00'),
+(2, '아련하무', 'https://github.com/user-attachments/assets/989d6ac6-39d1-4f24-85aa-ac2c6deedc4c', 'B', '2024-08-23 12:05:00', '2024-08-23 12:05:00'),
 (3, '응애무', 'https://github.com/user-attachments/assets/67db296c-70b7-422c-bc1f-8fab92414dc6', 'B', '2024-08-23 12:10:00', '2024-08-23 12:10:00'),
 (4, '발그레무', 'https://github.com/user-attachments/assets/29766555-5bb9-4848-88c3-79039ecaa61a', 'B', '2024-08-23 12:15:00', '2024-08-23 12:15:00'),
 (5, '물구나무', 'https://github.com/user-attachments/assets/55610e6e-e7a0-41f9-b81a-d41ce79bdbe8', 'B', '2024-08-23 12:20:00', '2024-08-23 12:20:00'),
@@ -51,7 +51,7 @@ INSERT IGNORE INTO radish (radish_id, radish_name, radish_image_url, radish_rank
 (7, '무신사', 'https://github.com/user-attachments/assets/5a28373c-c434-4d2b-8df9-27dc48c6df05', 'B', '2024-08-23 12:30:00', '2024-08-23 12:30:00'),
 (8, '무지개', 'https://github.com/user-attachments/assets/28b348f4-cd9e-4a65-9390-49bec79af10f', 'B', '2024-08-23 12:40:00', '2024-08-23 12:40:00'),
 (9, '무급휴가', 'https://github.com/user-attachments/assets/0bd57d4a-f59f-4cdc-ba71-5ce07a37bf9e', 'B', '2024-08-23 12:50:00', '2024-08-23 12:50:00'),
-(10, '아련하무', 'https://github.com/user-attachments/assets/eb74b691-4b58-4532-bf7d-087bc944a844', 'B', '2024-08-23 12:55:00', '2024-08-23 12:55:00');
+(10, '무산소', 'https://github.com/user-attachments/assets/eb74b691-4b58-4532-bf7d-087bc944a844', 'B', '2024-08-23 12:55:00', '2024-08-23 12:55:00');
 
 -- 6. test@gmail.com 회원의 대출 상환 기록 더미 데이터 생성
 -- Loan Product 1 상환 기록 (월 상환 금액: 27,778원)
