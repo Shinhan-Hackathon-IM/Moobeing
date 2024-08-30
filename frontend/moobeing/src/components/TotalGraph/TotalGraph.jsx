@@ -129,13 +129,20 @@ const DataCollectContainer = styled.div`
 `;
 
 const DataCollectButton = styled.button`
-  background-color: #e0eed2;
+  margin: 0;
+  font-size: 14px;
+  width: 95px;
+  padding: 9px 10px;
+  cursor: pointer;
   border: none;
+  background-color: ${(props) => (props.isYearly ? "#348833" : "#e0eed2")};
+  color: ${(props) => (props.isYearly ? "#ffffff" : "#24272D")};
   border-radius: 10px;
-  padding: 8px 0px;
-  font-weight: 300;
-  width: 50px;
-  font-size: 15px;
+
+  @media (min-width: 600px) {
+    font-size: 14px;
+    padding: 8px;
+  }
 `;
 
 const CustomDropdownContainer = styled.div`
@@ -201,7 +208,7 @@ const CustomDropdownItem = styled.li`
   `}
 `;
 
-const CustomDropdown = ({ options, selectedOption, onChange }) => {
+const CustomDropdown = ({ options, selectedOption, onChange, visibleData }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOptionClick = (value) => {
@@ -209,10 +216,14 @@ const CustomDropdown = ({ options, selectedOption, onChange }) => {
     setIsOpen(false);
   };
 
+  // 현재 보여지는 연도 계산
+  const currentVisibleYear =
+    visibleData.length > 0 ? visibleData[0].year : selectedOption;
+
   return (
     <CustomDropdownContainer>
       <CustomDropdownHeader onClick={() => setIsOpen(!isOpen)}>
-        {selectedOption ? `${selectedOption}년` : "연도를 선택하세요"}
+        {currentVisibleYear ? `${currentVisibleYear}년` : "연도를 선택하세요"}
       </CustomDropdownHeader>
       {isOpen && (
         <CustomDropdownList>
@@ -231,7 +242,7 @@ const CustomDropdown = ({ options, selectedOption, onChange }) => {
   );
 };
 
-const CustomTooltip = ({ active, payload, label }) => {
+const CustomTooltip = ({ active, payload, label, isYearly }) => {
   if (active && payload && payload.length) {
     const formatToKoreanWon = (value) => {
       if (value >= 100000000) {
@@ -250,9 +261,10 @@ const CustomTooltip = ({ active, payload, label }) => {
           padding: "3px 10px",
           border: "1px solid #ccc",
           borderRadius: "10px",
+          textAlign: "center",
         }}
       >
-        <p>{`${label}월`}</p>
+        <p>{isYearly ? `${label}년` : `${label}월`}</p>
         {payload.map((entry, index) => (
           <p key={index} style={{ color: entry.color }}>
             {`${entry.name}: ${formatToKoreanWon(entry.value)}`}
@@ -264,46 +276,45 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-function TotalGraph({ data = [], peerData = [] }) {
+function TotalGraph({ data = [], peerData = [], yearData = [] }) {
   const [visibleRange, setVisibleRange] = useState([0, 4]);
   const [yAxisDomain, setYAxisDomain] = useState([0, 0]);
   const [showPeerData, setShowPeerData] = useState(false);
   const [currentYear, setCurrentYear] = useState(null);
-  const [isYearly, setIsYearly] = useState(true); // 초기 상태는 '연도별'
+  const [isYearly, setIsYearly] = useState(false);
 
-  // 사용 가능한 모든 연도를 추출
   const availableYears = [...new Set(data.map((item) => item.year))];
-
-  // 버튼 클릭 시 호출될 함수
-  const handleButtonClick = () => {
-    setIsYearly(!isYearly); // 상태를 토글하여 '연도별'과 '월별'을 전환
-  };
 
   useEffect(() => {
     if (data.length > 0) {
       setVisibleRange([0, 4]);
-      setCurrentYear(data[0].year); // 초기 연도를 첫 데이터의 연도로 설정
+      setCurrentYear(data[0].year);
     }
   }, [data]);
 
   useEffect(() => {
     updateYAxisDomain();
-  }, [data, peerData, visibleRange, showPeerData]);
+  }, [data, peerData, visibleRange, showPeerData, isYearly]);
 
   const updateYAxisDomain = () => {
-    const visibleData = getVisibleData(data, visibleRange);
-    let maxAmount = Math.max(...visibleData.map((item) => item.loanBalance));
-    let minAmount = Math.min(...visibleData.map((item) => item.loanBalance));
+    const targetData = isYearly ? yearData : data;
+    const visibleData = getVisibleData(targetData, visibleRange);
+    let maxAmount = Math.max(
+      ...visibleData.map((item) => item.loanBalance || 0)
+    );
+    let minAmount = Math.min(
+      ...visibleData.map((item) => item.loanBalance || 0)
+    );
 
-    if (showPeerData && peerData.length > 0) {
+    if (showPeerData && peerData.length > 0 && !isYearly) {
       const visiblePeerData = getVisibleData(peerData, visibleRange);
       maxAmount = Math.max(
         maxAmount,
-        ...visiblePeerData.map((item) => item.loanBalance)
+        ...visiblePeerData.map((item) => item.loanBalance || 0)
       );
       minAmount = Math.min(
         minAmount,
-        ...visiblePeerData.map((item) => item.loanBalance)
+        ...visiblePeerData.map((item) => item.loanBalance || 0)
       );
     }
 
@@ -311,61 +322,50 @@ function TotalGraph({ data = [], peerData = [] }) {
     const paddedMin = Math.max(0, minAmount - difference * 0.1);
     const paddedMax = maxAmount + difference * 0.1;
 
-    // Only set state if it is different from the current state
     if (paddedMin !== yAxisDomain[0] || paddedMax !== yAxisDomain[1]) {
       setYAxisDomain([paddedMin, paddedMax]);
     }
   };
 
-  // 스크롤 버튼 클릭 시 보이는 데이터 범위를 조정하는 함수
   const handleScroll = (direction) => {
     setVisibleRange((prevRange) => {
+      const maxLength = isYearly ? yearData.length : data.length;
       const newStart = Math.max(0, prevRange[0] + direction * 3);
-      const newEnd = Math.min(data.length, newStart + 4); // 마지막 범위를 넘어가지 않도록 조정
+      const newEnd = Math.min(maxLength, newStart + 4);
+
+      if (newEnd >= maxLength) {
+        return [maxLength - 4, maxLength];
+      }
+
       return [newStart, newEnd];
     });
   };
 
-  const handleYearChange = (event) => {
-    const selectedYear = parseInt(event.target.value);
+  const handleYearChange = (selectedYear) => {
     setCurrentYear(selectedYear);
-    // 선택된 연도의 1월 데이터로 이동
     const newIndex = data.findIndex(
       (item) => item.year === selectedYear && item.month === 1
     );
-    setVisibleRange([newIndex, newIndex + 4]); // 선택된 연도의 1월로 이동하여 4개월 보여줌
-  };
 
-  // 빈 데이터를 포함하여 항상 4개의 데이터를 반환하는 함수
-  const getVisibleData = (data, range) => {
-    const startMonth = (range[0] % 12) + 1; // 시작 월 계산
-    const result = [];
-
-    for (let i = 0; i < 4; i++) {
-      const month = ((startMonth + i - 1) % 12) + 1; // 각 월을 순환하여 계산
-      const item = data.find(
-        (d) => d.year === currentYear && d.month === month
-      );
-
-      if (item) {
-        result.push(item); // 해당 월의 데이터가 존재하면 추가
-      } else {
-        result.push({
-          year: currentYear,
-          month: month,
-          loanBalance: null, // 데이터가 없을 때 null을 사용하여 그래프가 끊기도록 함
-          // 필요 시 다른 필드 추가
-        });
-      }
+    if (newIndex !== -1) {
+      setVisibleRange([newIndex, newIndex + 4]);
     }
-
-    return result;
   };
 
-  const visibleData = getVisibleData(data, visibleRange);
+  const getVisibleData = (data, range) => {
+    const maxLength = data.length;
+    if (range[1] > maxLength) {
+      return [
+        ...data.slice(range[0], maxLength),
+        ...Array(range[1] - maxLength).fill({ loanBalance: null }),
+      ];
+    }
+    return data.slice(range[0], range[1]);
+  };
+
+  const visibleData = getVisibleData(isYearly ? yearData : data, visibleRange);
   const visiblePeerData = getVisibleData(peerData, visibleRange);
 
-  // 값을 한국 원화 형식으로 변환하는 함수
   const formatToKoreanWon = (value) => {
     if (value >= 100000000) {
       return `${Math.floor(value / 100000000)}억`;
@@ -376,7 +376,6 @@ function TotalGraph({ data = [], peerData = [] }) {
     }
   };
 
-  // 데이터가 없는 경우 표시할 메시지
   if (!data || data.length === 0) {
     return (
       <GraphContainer>
@@ -387,22 +386,31 @@ function TotalGraph({ data = [], peerData = [] }) {
 
   return (
     <GraphContainer>
-      <ToggleWrapper onClick={() => setShowPeerData(!showPeerData)}>
-        <ToggleButton active={showPeerData}>
-          <ToggleCircle active={showPeerData}>
-            {showPeerData ? "끄기" : "또래"}
-          </ToggleCircle>
-        </ToggleButton>
-      </ToggleWrapper>
+      {!isYearly && (
+        <ToggleWrapper onClick={() => setShowPeerData(!showPeerData)}>
+          <ToggleButton active={showPeerData}>
+            <ToggleCircle active={showPeerData}>
+              {showPeerData ? "끄기" : "또래"}
+            </ToggleCircle>
+          </ToggleButton>
+        </ToggleWrapper>
+      )}
       <TitleOfChart>전체여정</TitleOfChart>
       <DataCollectContainer>
         <CustomDropdown
           options={availableYears}
           selectedOption={currentYear}
           onChange={handleYearChange}
+          visibleData={visibleData}
         />
-        <DataCollectButton onClick={handleButtonClick}>
-          {isYearly ? "연별" : "월별"}
+        <DataCollectButton
+          isYearly={isYearly}
+          onClick={() => {
+            setIsYearly(!isYearly);
+            setShowPeerData(false);
+          }}
+        >
+          {isYearly ? "월별 보기" : "연도별 보기"}
         </DataCollectButton>
       </DataCollectContainer>
       <ChartContainer>
@@ -413,8 +421,10 @@ function TotalGraph({ data = [], peerData = [] }) {
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
-              dataKey="month"
-              tickFormatter={(value) => `${value}월`}
+              dataKey={isYearly ? "year" : "month"}
+              tickFormatter={(value) =>
+                isYearly ? `${value}년` : `${value}월`
+              }
               tick={{ fontSize: 12 }}
             />
             <YAxis
@@ -424,15 +434,15 @@ function TotalGraph({ data = [], peerData = [] }) {
               tick={{ fontSize: 10 }}
               allowDecimals={false}
             />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip isYearly={isYearly} />} />
             <Legend
               wrapperStyle={{ fontSize: 12, paddingTop: 20, paddingLeft: 50 }}
             />
             <Line
               type="monotone"
               dataKey="loanBalance"
-              name="내 상환액"
-              stroke="#8884d8"
+              name="내 잔액"
+              stroke="#4caf50"
               strokeWidth={2}
               dot={{ r: 5 }}
               activeDot={{ r: 8 }}
@@ -442,13 +452,13 @@ function TotalGraph({ data = [], peerData = [] }) {
               animationEasing="ease-in-out"
               connectNulls={false}
             />
-            {showPeerData && (
+            {showPeerData && !isYearly && (
               <Line
                 type="monotone"
                 data={visiblePeerData}
                 dataKey="loanBalance"
-                name="또래 평균 상환액"
-                stroke="#82ca9d"
+                name="또래 평균 잔액"
+                stroke="#FF6D0C"
                 strokeWidth={2}
                 dot={{ r: 5 }}
                 activeDot={{ r: 8 }}
@@ -471,7 +481,9 @@ function TotalGraph({ data = [], peerData = [] }) {
         </Button>
         <Button
           onClick={() => handleScroll(1)}
-          disabled={visibleRange[1] >= data.length}
+          disabled={
+            visibleRange[1] >= (isYearly ? yearData.length : data.length)
+          }
         >
           <img src={rightButton} alt="다음" />
         </Button>

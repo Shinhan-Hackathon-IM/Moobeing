@@ -29,32 +29,53 @@ const SubHeader = styled.div`
   margin-bottom: 5%;
 `;
 
-const SubTitle = styled.h2`
+const SubTitle = styled.div`
   margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+
+  @media (min-width: 600px) {
+    font-size: 27px;
+  }
 `;
 
 const SortButtonContainer = styled.div`
   display: flex;
   gap: 10px;
+
+  @media (min-width: 600px) {
+    gap: 20px;
+  }
 `;
 
 const SortButton = styled.p`
   margin: 0;
   font-size: 12px;
-  padding: 5px;
+  padding: 6px;
   cursor: pointer;
   background-color: ${(props) =>
     props.isactive === "true" ? "#348833" : "#e0eed2"};
   color: ${(props) => (props.isactive === "true" ? "#ffffff" : "#24272D")};
   border-radius: 10px;
+
+  @media (min-width: 600px) {
+    font-size: 14px;
+    padding: 8px;
+  }
 `;
 
-const TotalLoan = styled.h2`
+const TotalLoan = styled.div`
   margin-top: 0;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   margin-bottom: 0;
+  font-size: 20px;
+  font-weight: 700;
+
+  @media (min-width: 600px) {
+    font-size: 25px;
+  }
 `;
 
 const NavigateButton = styled.button`
@@ -64,7 +85,6 @@ const NavigateButton = styled.button`
   background-color: transparent;
   border: none;
   font-weight: 800;
-  font-family: Nanum Gothic;
 `;
 
 const NavigateImage = styled.img`
@@ -93,6 +113,10 @@ const NoLoansImage = styled.img`
   width: 70px; /* 이미지 크기 조정 */
   height: auto;
   margin: 10px 0px;
+
+  @media (min-width: 600px) {
+    width: 75px;
+  }
 `;
 
 const NoLoanText = styled.p`

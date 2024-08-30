@@ -10,7 +10,6 @@ const BarContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* background-color: #e8f5e9; */
   margin-bottom: 0px;
   padding: 10%;
 `;
@@ -39,8 +38,8 @@ const GraphFill = styled.div`
 const Radish = styled.img`
   height: 60px; /* 그래프 밖으로 삐져나오도록 크기 설정 */
   position: absolute;
-  top: -20px; /* 그래프 위쪽으로 조금 삐져나오도록 조정 */
-  transform: translateX(20px); /* 오른쪽으로 약간 이동 */
+  top: -23px; /* 그래프 위쪽으로 조금 삐져나오도록 조정 */
+  transform: translateX(30px); /* 오른쪽으로 약간 이동 */
   transition: left 2s ease;
 `;
 

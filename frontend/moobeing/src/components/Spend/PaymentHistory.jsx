@@ -28,12 +28,20 @@ const SelectDate = styled.div`
 `;
 
 const LoanSort = styled.button`
-  font-size: 10px;
-  background-color: #e0eed2;
-  border: none;
-  border-radius: 10px;
-  padding: 5px 7px;
+  margin: 0;
+  font-size: 12px;
+  padding: 6px;
   cursor: pointer;
+  border: none;
+  background-color: ${(props) =>
+    !props.showLoansOnly ? "#348833" : "#e0eed2"};
+  color: ${(props) => (!props.showLoansOnly ? "#ffffff" : "#24272D")};
+  border-radius: 10px;
+
+  @media (min-width: 600px) {
+    font-size: 14px;
+    padding: 8px;
+  }
 `;
 
 const PaymentHistory = ({ date, history }) => {
@@ -59,7 +67,7 @@ const PaymentHistory = ({ date, history }) => {
     <Container>
       <TitleContent>
         <SelectDate>선택 날짜: {date}</SelectDate>
-        <LoanSort onClick={handleFilterClick}>
+        <LoanSort showLoansOnly={showLoansOnly} onClick={handleFilterClick}>
           {showLoansOnly ? "전체 보기" : "대출만 보기"}
         </LoanSort>
       </TitleContent>

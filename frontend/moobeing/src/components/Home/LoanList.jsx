@@ -11,6 +11,12 @@ const BankLogo = styled.img`
   width: 40px;
   height: 40px;
   margin-right: 10px;
+
+  @media (min-width: 600px) {
+    width: 45px;
+    height: 45px;
+    margin-right: 15px;
+  }
 `;
 
 const LoanInfo = styled.div`
@@ -23,6 +29,10 @@ const LoanName = styled.div`
   display: flex;
   flex-direction: row;
   font-size: 13px;
+
+  @media (min-width: 600px) {
+    font-size: 18px;
+  }
 `;
 
 const LoanItem = styled.div`
@@ -40,13 +50,17 @@ const NavigateButton = styled.button`
   background-color: transparent;
   border: none;
   font-weight: 800;
-  font-family: Nanum Gothic;
-  font-size: 10px;
+  font-size: 5px;
 `;
 
 const NavigateImage = styled.img`
   width: 14px;
   height: 14px;
+
+  @media (min-width: 600px) {
+    width: 16px;
+    height: 16px;
+  }
 `;
 
 const InterestRate = styled.div`
@@ -57,6 +71,11 @@ const InterestRate = styled.div`
   padding: 5px 8px;
   border-radius: 10px;
   color: white;
+
+  @media (min-width: 600px) {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
 `;
 
 const LoanListContainer = styled.div`
