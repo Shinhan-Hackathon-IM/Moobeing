@@ -54,8 +54,6 @@ const RadishWrapper = styled.div`
 `;
 
 const TotalJourney = () => {
-  const paidLoanNum = 5;
-  const totalLoanNum = 5;
   const data = {
     paging: {
       current_page: 1,
@@ -111,10 +109,7 @@ const TotalJourney = () => {
           <PercentBar />
           <LeftMoney />
           <RadishWrapper>
-            <HiddenRadish
-              PaidLoanNum={paidLoanNum}
-              TotalLoanNum={totalLoanNum}
-            />
+            <HiddenRadish />
           </RadishWrapper>
         </Container>
         <Rectangle />

@@ -6,7 +6,8 @@ import soil from "../assets/pot/soill.png";
 import basicRad from "../assets/radishes/babyRad.svg";
 import arrow from "../assets/quiz/upArrow.svg";
 import RadishCard from "../components/PullRadish/RadishCard";
-import { getRandomRadish, getBabyRadish } from "../apis/RadishApi";
+import { getBabyRadish } from "../apis/RadishApi";
+import { getRandomRadish } from "../apis/LoanApi";
 
 const Container = styled.div`
   position: relative;
@@ -97,7 +98,7 @@ const Button = styled.button`
   align-items: center;
   position: relative;
   transition: all 0.2s;
-  margin-bottom: 500px;
+  margin-bottom: 400px;
 
   &:active {
     box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);

@@ -273,18 +273,19 @@ const RadishCollection = () => {
   }, []);
 
   const handleSort = (type) => {
-    if (type === "date") {
-      setCharacters([...characters]);
-    } else if (type === "radishRank") {
-      const sortedCharacters = [...characters].sort((a, b) => {
-        if (a.radishRank < b.radishRank) return -1;
-        if (a.radishRank > b.radishRank) return 1;
-        return 0;
-      });
-      setCharacters(sortedCharacters);
-    }
     setSortBy(type);
-    setSelectedSort(type);
+    let sortedCharacters = [...characters];
+    if (type === "date") {
+      sortedCharacters.sort(
+        (a, b) => new Date(b.radishDate) - new Date(a.radishDate)
+      );
+    } else if (type === "radishRank") {
+      const rankOrder = { S: 3, A: 2, B: 1 };
+      sortedCharacters.sort(
+        (a, b) => rankOrder[b.radishRank] - rankOrder[a.radishRank]
+      );
+    }
+    setCharacters(sortedCharacters);
   };
 
   const handleChoose = () => {
@@ -350,14 +351,14 @@ const RadishCollection = () => {
               <SortButtonContainer>
                 <SortButton
                   onClick={() => handleSort("date")}
-                  isselected={selectedSort === "date"}
+                  isselected={sortBy === "date"}
                 >
                   날짜순
                 </SortButton>
                 <LineImg src={Line} alt="Line" />
                 <SortButton
                   onClick={() => handleSort("radishRank")}
-                  isselected={selectedSort === "radishRank"}
+                  isselected={sortBy === "radishRank"}
                 >
                   랭킹순
                 </SortButton>

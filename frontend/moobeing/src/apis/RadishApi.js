@@ -31,16 +31,16 @@ export const selectRadish = async (radishName) => {
 };
 
 // 3. 맴버 무 뽑기
-export const getRandomRadish = async () => {
-  try {
-    const response = await api.post("/radish");
-    console.log("무뽑는 axios 함수가 잘잘잘 호출되었습니다.", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("랜덤 무 뽑기 실패:", error);
-    throw error;
-  }
-};
+// export const getRandomRadish = async () => {
+//   try {
+//     const response = await api.post("/radish");
+//     console.log("무뽑는 axios 함수가 잘잘잘 호출되었습니다.", response.data);
+//     return response.data;
+//   } catch (error) {
+//     console.error("랜덤 무 뽑기 실패:", error);
+//     throw error;
+//   }
+// };
 
 // 4. 사용자 애기 무 추가
 export const getBabyRadish = async () => {
