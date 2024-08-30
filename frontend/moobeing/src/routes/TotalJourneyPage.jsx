@@ -6,7 +6,7 @@ import HiddenRadish from "../components/TotalGraph/HiddenRadish";
 import LeftMoney from "../components/TotalGraph/LeftMoney";
 import Footer from "../components/Fixed/Footer";
 import Header from "../components/Fixed/Header";
-import { getAllLoanMapByMonth, getLoanBuddy } from "../apis/LoanApi";
+import { getAllLoanMapByMonth, getAllLoanBuddy } from "../apis/LoanApi";
 
 const PageWrapper = styled.div`
   display: flex;
@@ -57,30 +57,28 @@ const RadishWrapper = styled.div`
 
 const TotalJourney = () => {
   const [journeyData, setJourneyData] = useState([]);
-  // const [peerData, setPeerData] = useState([]); // peerData 주석 처리
+  const [peerData, setPeerData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const paidLoanNum = 5;
-  const totalLoanNum = 5;
+  const [paidLoanNum, setPaidLoanNum] = useState(5);
+  const [totalLoanNum, setTotalLoanNum] = useState(5);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
 
-        // API 호출
-        const [loanResponse] = await Promise.all([
+        const [loanResponse, buddyResponse] = await Promise.all([
           getAllLoanMapByMonth(),
-          // getLoanBuddy(), // peerData 주석 처리
+          getAllLoanBuddy(),
         ]);
 
-        const { getAllJourneyList } = loanResponse;
-        // const { getLoanBuddyList } = buddyResponse; // peerData 주석 처리
+        const { getAllJourneyList: journeyListData } = loanResponse;
+        const { getAllJourneyList: peerListData } = buddyResponse;
 
-        // 데이터를 직접 설정
-        setJourneyData(getAllJourneyList);
-        // setPeerData(getLoanBuddyList); // peerData 주석 처리
+        setJourneyData(journeyListData);
+        setPeerData(peerListData);
       } catch (err) {
         setError(err);
       } finally {
@@ -92,7 +90,7 @@ const TotalJourney = () => {
   }, []);
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error loading data.</div>;
+  if (error) return <div>데이터를 불러오는 중 오류가 발생했습니다.</div>;
 
   return (
     <PageWrapper>
@@ -100,7 +98,7 @@ const TotalJourney = () => {
         <Header />
         <Container>
           {journeyData.length > 0 ? (
-            <TotalGraph data={journeyData} peerData={journeyData} /> // peerData를 journeyData로 대체
+            <TotalGraph data={journeyData} peerData={peerData} />
           ) : (
             <div>데이터가 없습니다.</div>
           )}

@@ -46,6 +46,7 @@ const Radish = styled.img`
 
 const Text = styled.div`
   margin-top: 5%;
+  font-weight: 600;
 `;
 
 function PercentBar() {
@@ -89,7 +90,7 @@ function PercentBar() {
       {error ? (
         <Text>상환 내역이 없습니다.</Text> // 데이터가 없을 경우 표시할 텍스트
       ) : (
-        <Text>{fillpercent}% 상환했습니다!</Text> // 데이터가 있을 경우 표시할 텍스트
+        <Text>{fillpercent.toFixed(2)}% 상환했습니다!</Text> // 데이터가 있을 경우 표시할 텍스트
       )}
     </BarContainer>
   );
