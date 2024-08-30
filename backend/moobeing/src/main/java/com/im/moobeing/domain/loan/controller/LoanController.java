@@ -110,4 +110,11 @@ public class LoanController {
 	public ResponseEntity<?> getYearAllBuddyLoanMap(@AuthenticationPrincipal Member member){
 		return ResponseEntity.status(HttpStatus.OK).body(loanService.getYearAllBuddyLoanMap(member));
 	}
+
+	@Operation(summary = "상세 대출 조회 하기", description = "상세 대출 조회 하기")
+	@GetMapping("/detail")
+	public ResponseEntity<?> getDetailLoan(@AuthenticationPrincipal Member member,
+										   @RequestParam(defaultValue = "우리은행 주택담보대출") String loanProductName){
+		return ResponseEntity.status(HttpStatus.OK).body(loanService.getDetailLoan(member, loanProductName));
+	}
 }

@@ -496,4 +496,17 @@ public class LoanService {
 
 		return GetAllYearLoanMapResponse.of(getAllLoanMapDtoListResult);
 	}
+
+	public GetDetailLoanResponse getDetailLoan(Member member, String loanName) {
+		MemberLoan memberLoan = memberLoanRepository.findByMemberIdAndLoanProductName(member.getId(), loanName)
+				.orElseThrow(() -> new RuntimeException("todo 찾을 수 없는 memberLoan"));
+
+		LoanProduct loanProduct = loanProductRepository.findByLoanName(loanName)
+				.orElseThrow(() -> new RuntimeException("todo loanProduct 찾을 수 없음"));
+
+		Long remainingBalance = memberLoan.getRemainingBalance();
+		Long monthBalance = memberLoan.getInitialBalance() / loanProduct.getLoanPeriod();
+
+		return GetDetailLoanResponse.of(remainingBalance, monthBalance);
+	}
 }
