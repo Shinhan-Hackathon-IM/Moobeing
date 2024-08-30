@@ -67,6 +67,8 @@ public class AccountService {
 		MemberLoan memberLoan = memberLoanRepository.findByMemberIdAndLoanProductName(member.getId(), sendAccountRequest.getLoanName())
 			.orElseThrow(() -> new RuntimeException("todo 대출 없음"));
 
+		memberLoan.setRemainingBalance(memberLoan.getRemainingBalance() - sendAccountRequest.getMoney());
+
 		Long oldLoanBalance = memberLoan.getRemainingBalance() - sendAccountRequest.getMoney();
 
 		if(oldLoanBalance < 0) {

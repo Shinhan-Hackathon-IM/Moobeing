@@ -23,7 +23,7 @@ public class AccountController {
 		return ResponseEntity.status(HttpStatus.OK).body(accountService.getAccount(member));
 	}
 
-	@Operation(summary = "대출금 상납", description = "계좌 송금 조회하기")
+	@Operation(summary = "대출금 상납", description = "대출금 상납하기")
 	@PostMapping
 	public ResponseEntity<?> sendAccount(@AuthenticationPrincipal Member member, @RequestBody SendAccountRequest sendAccountRequest) {
 		return ResponseEntity.status(HttpStatus.OK).body(accountService.sendAccount(member, sendAccountRequest));

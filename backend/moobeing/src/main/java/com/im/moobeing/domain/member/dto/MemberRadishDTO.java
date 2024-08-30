@@ -5,6 +5,8 @@ import com.im.moobeing.domain.radish.entity.Radish;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 public class MemberRadishDTO {
@@ -13,6 +15,7 @@ public class MemberRadishDTO {
     private String radishRank;
     private Long radishNumber;
     private String radishImageUrl;
+    private LocalDateTime radishCreateTime;
 
     public static MemberRadishDTO of(MemberRadish memberRadish) {
         Radish radish = memberRadish.getRadish();
@@ -22,6 +25,7 @@ public class MemberRadishDTO {
                 .radishRank(radish.getRadishRank())
                 .radishNumber(memberRadish.getRadishNumber())
             .radishImageUrl(radish.getRadishImageUrl())
+                .radishCreateTime(memberRadish.getCreatedDate())
                 .build();
     }
 }
