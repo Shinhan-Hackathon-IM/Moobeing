@@ -1,11 +1,10 @@
 package com.im.moobeing.domain.account.dto.response;
 
-import java.util.List;
-
 import com.im.moobeing.domain.account.dto.GetAccountDto;
-
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.List;
 
 @Getter
 @Builder

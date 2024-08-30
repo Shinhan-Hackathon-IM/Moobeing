@@ -1,24 +1,16 @@
 package com.im.moobeing.domain.member.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.im.moobeing.domain.member.dto.request.MemberChangeRequest;
 import com.im.moobeing.domain.member.dto.request.MemberPwChangeRequest;
 import com.im.moobeing.global.entity.BaseTimeEntity;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name="member")
 @Getter
@@ -53,6 +45,9 @@ public class Member extends BaseTimeEntity {
     @Column(name = "user_key", nullable = true, length = 255)
     private String userKey;
 
+    @Column(name = "month_aver", nullable = true, length = 255)
+    private Long monthAver;
+
     @Column(name = "selected_radish_id", nullable = true)
     private Long selectedRadishId = 1L;
 
@@ -63,7 +58,7 @@ public class Member extends BaseTimeEntity {
     private String account;
 
     @Builder
-    public Member(Long id, String email, String password, Long totalPoints, Long totalLoan, String name, String gender, String birthday, String userKey, String account) {
+    public Member(Long id, String email, String password, Long totalPoints, Long totalLoan, String name, String gender, String birthday, String userKey, Long monthAver, Long selectedRadishId, String account) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -73,6 +68,8 @@ public class Member extends BaseTimeEntity {
         this.gender = gender;
         this.birthday = birthday;
         this.userKey = userKey;
+        this.monthAver = monthAver;
+        this.selectedRadishId = selectedRadishId;
         this.account = account;
     }
 

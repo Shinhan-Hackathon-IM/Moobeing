@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum WebSecurityPath {
-    REQUIRE_AUTH_PATH("/user", "/user/pw", "/user/radish", "/quiz/**", "/user/select", "/credit/**", "/expense/**", "/loan/**","/account/**", "/user/baby", "/user/baby-merge");
+    REQUIRE_AUTH_PATH("/user", "/user/pw", "/user/radish", "/quiz/**", "/user/select", "/credit/**", "/expense/**", "/loan/**","/account/**", "/user/baby", "/user/baby-merge", "/account/**");
 
     private final String[] paths;
 
