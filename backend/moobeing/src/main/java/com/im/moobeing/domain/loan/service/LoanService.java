@@ -108,13 +108,6 @@ public class LoanService {
 			}
 		}
 
-		// 5. 이번 달의 최종 잔액도 추가
-		getAllLoanMapDtoList.add(GetAllLoanMapDto.builder()
-				.year(currentYear)
-				.month(currentMonth)
-				.loanBalance(totalLoanBalance)
-				.build());
-
 		// 6. 필요한 응답 객체를 생성하고 반환
 		return GetLoanMapResponse.of(getAllLoanMapDtoList);
 	}
@@ -210,24 +203,29 @@ public class LoanService {
 		return GetSumLoanResponse.of(sum);
 	}
 
-	public List<LoanRepaymentRecord> getBuddyLoanMap(Member member, String loanName) {
-		// age와 loanName, month 범위에 맞는 AverageLoanRepaymentRecord 리스트 가져오기
-		List<AverageLoanRepaymentRecord> averageLoanRepaymentRecordList =
-				averageLoanRepaymentRecordRepository.findByAgeAndLoanNameAndMonthRange(
-						CURRENT_YEAR - Integer.parseInt(member.getBirthday().substring(0,2)),
-						loanName,
-						1,  // startMonth를 1로 고정
-						12); // endMonth를 12로 고정하여 전체 연도 범위로 검색
+	public GetAllLoanMapResponse getBuddyLoanMap(Member member, String loanName) {
+		// 1. 여정지도에 대한 시작점을 찾아야 한다. (시작 월, 시작 년도)
+		MemberLoan memberLoan = memberLoanRepository.findByMemberIdAndLoanProductName(member.getId(), loanName)
+				.orElseThrow(() -> new RuntimeException("todo memberLoan을 못 찾음"));
 
-		if (averageLoanRepaymentRecordList.isEmpty()) {
-			throw new RuntimeException("No matching loan repayment records found for the specified criteria.");
+		int startYear = memberLoan.getStartYear();
+		int startMonth = memberLoan.getStartMonth();
+
+		List<GetAllLoanMapDto> getAllLoanMapDtoList = new ArrayList<>();
+
+		List<AverageLoanRepaymentRecord> averageLoanRepaymentRecordList = averageLoanRepaymentRecordRepository.findByAgeAndLoanName(Integer.parseInt(member.getBirthday().substring(0,2)), loanName);
+
+		// 2. 여정지도에 순서대로 하나씩 넣는다. 이 때 시작 점, 끝점을 넣는다.
+		for (AverageLoanRepaymentRecord averageLoanRepaymentRecord: averageLoanRepaymentRecordList){
+			getAllLoanMapDtoList.add(GetAllLoanMapDto.of(startYear++, startMonth++, averageLoanRepaymentRecord.getRepaymentBalance()));
+
+			if(startMonth > 12){
+				startMonth = 1;
+				startYear++;
+			}
 		}
 
-		// memberLoanId 기준으로 LoanRepaymentRecord 리스트 가져오기
-		List<LoanRepaymentRecord> loanRepaymentRecordList = loanRepaymentRecordRepository.findAllByMemberLoanId(member.getId());
-
-		// 필터링된 LoanRepaymentRecord 리스트 반환 (페이징 없이 전체 리스트 반환)
-		return loanRepaymentRecordList;
+		return GetAllLoanMapResponse.of(getAllLoanMapDtoList);
 	}
 
 

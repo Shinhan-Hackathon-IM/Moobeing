@@ -45,7 +45,7 @@ public class LoanController {
 
 	@Operation(summary = "또래 상환능력 조회", description = "또래 상환능력 조회 하기")
 	@GetMapping("/buddy")
-	public ResponseEntity<?> getBuddyLoanMap(@AuthenticationPrincipal Member member, @RequestParam String loanName){
+	public ResponseEntity<?> getBuddyLoanMap(@AuthenticationPrincipal Member member, @RequestParam(defaultValue = "우리은행 주택담보대출") String loanName){
 		return ResponseEntity.status(HttpStatus.OK).body(loanService.getBuddyLoanMap(member, loanName));
 	}
 
