@@ -1,6 +1,7 @@
 package com.im.moobeing.domain.loan.service;
 
 import com.im.moobeing.domain.loan.dto.GetAllLoanMapDto;
+import com.im.moobeing.domain.loan.dto.GetAllYearLoanMapDto;
 import com.im.moobeing.domain.loan.dto.GetMemberLoanDto;
 import com.im.moobeing.domain.loan.dto.response.*;
 import com.im.moobeing.domain.loan.entity.AverageLoanRepaymentRecord;
@@ -211,6 +212,11 @@ public class LoanService {
 		int startYear = memberLoan.getStartYear();
 		int startMonth = memberLoan.getStartMonth();
 
+		LocalDate currentDate = LocalDate.now();
+
+		int endYear = currentDate.getYear();
+		int endMonth = currentDate.getMonthValue();
+
 		List<GetAllLoanMapDto> getAllLoanMapDtoList = new ArrayList<>();
 
 		List<AverageLoanRepaymentRecord> averageLoanRepaymentRecordList = averageLoanRepaymentRecordRepository.findByAgeAndLoanName(Integer.parseInt(member.getBirthday().substring(0,2)), loanName);
@@ -218,6 +224,10 @@ public class LoanService {
 		// 2. 여정지도에 순서대로 하나씩 넣는다. 이 때 시작 점, 끝점을 넣는다.
 		for (AverageLoanRepaymentRecord averageLoanRepaymentRecord: averageLoanRepaymentRecordList){
 			getAllLoanMapDtoList.add(GetAllLoanMapDto.of(startYear, startMonth++, averageLoanRepaymentRecord.getRepaymentBalance()));
+
+			if (startMonth == endMonth+1 && startYear == endYear){
+				break;
+			}
 
 			if(startMonth > 12){
 				startMonth = 1;
@@ -371,6 +381,32 @@ public class LoanService {
 		return memberService.addMemberRadish(member);
 	}
 
+	public GetAllYearLoanMapResponse getYearlyLoan(Member member) {
+		GetAllLoanMapResponse getAllLoanMapResponse = getAllLoanMap(member);
+
+		List<GetAllLoanMapDto> getAllLoanMapDtoList = getAllLoanMapResponse.getGetAllLoanMapDtoList();
+
+		List<GetAllYearLoanMapDto> getAllLoanMapDtoListResult = new ArrayList<>();
+
+		LocalDate currentDate = LocalDate.now();
+
+		int currentYear = currentDate.getYear();
+		int currentMonth = currentDate.getMonthValue();
+
+		for (GetAllLoanMapDto getAllLoanMapDto: getAllLoanMapDtoList){
+			if (currentYear == getAllLoanMapDto.getYear() && currentMonth == getAllLoanMapDto.getMonth()){
+				getAllLoanMapDtoListResult.add(GetAllYearLoanMapDto.of(getAllLoanMapDto.getYear(), getAllLoanMapDto.getLoanBalance()));
+				break;
+			}
+
+			if (getAllLoanMapDto.getMonth() == 12){
+				getAllLoanMapDtoListResult.add(GetAllYearLoanMapDto.of(getAllLoanMapDto.getYear(), getAllLoanMapDto.getLoanBalance()));
+			}
+		}
+
+		return GetAllYearLoanMapResponse.of(getAllLoanMapDtoListResult);
+	}
+
 	@Transactional
 	public String showMonthButton(Member member) {
 		member.setMemberComplete(MonthStatus.TRUE);
@@ -380,67 +416,84 @@ public class LoanService {
 		return "맴버 complete 살리기 큭큭";
 	}
 
-	public GetAllLoanMapResponse getYearlyLoan(Member member) {
-		// 1. 주어진 Member에 대한 모든 MemberLoan을 가져옴
-		List<MemberLoan> memberLoanList = memberLoanRepository.findAllByMemberId(member.getId());
-		int minYear = 10000;
-		int maxYear = 0;
-		long totalLoanBalance = 0;
+	// 특정 대출의 사용자 상환 기록을 연도별로 보여주는 메서드
+	public GetAllYearLoanMapResponse getYearLoanMap(Member member, String loanProductName) {
+		GetLoanMapResponse getAllLoanMapResponse = getLoanMap(member, loanProductName);
 
-		// 2. memberLoanList에서 가장 빠른 year, month와 가장 늦은 year, month를 찾는다.
-		for (MemberLoan loan : memberLoanList) {
-			if (maxYear < loan.getStartYear()) {
-				maxYear = loan.getStartYear();
+		List<GetAllLoanMapDto> getAllLoanMapDtoList = getAllLoanMapResponse.getGetAllLoanMapDtoList();
+
+		List<GetAllYearLoanMapDto> getAllLoanMapDtoListResult = new ArrayList<>();
+
+		LocalDate currentDate = LocalDate.now();
+
+		int currentYear = currentDate.getYear();
+		int currentMonth = currentDate.getMonthValue();
+
+		for (GetAllLoanMapDto getAllLoanMapDto: getAllLoanMapDtoList){
+			if (currentYear == getAllLoanMapDto.getYear() && currentMonth == getAllLoanMapDto.getMonth()){
+				getAllLoanMapDtoListResult.add(GetAllYearLoanMapDto.of(getAllLoanMapDto.getYear(), getAllLoanMapDto.getLoanBalance()));
+				break;
 			}
-			if (minYear > loan.getStartYear()) {
-				minYear = loan.getStartYear();
+
+			if (getAllLoanMapDto.getMonth() == 12){
+				getAllLoanMapDtoListResult.add(GetAllYearLoanMapDto.of(getAllLoanMapDto.getYear(), getAllLoanMapDto.getLoanBalance()));
 			}
 		}
-		int startYear = minYear;
 
-		// 목표 연도를 설정 (2024년)
-		final int targetYear = 2024;
+		return GetAllYearLoanMapResponse.of(getAllLoanMapDtoListResult);
+	}
 
-		List<LoanRepaymentRecord> loanRepaymentRecordList = new ArrayList<>();
-		for (MemberLoan loan : memberLoanList) {
-			loanRepaymentRecordList.addAll(loanRepaymentRecordRepository.findAllByMemberLoanId(loan.getId()));
-		}
-		List<GetAllLoanMapDto> getAllLoanMapDtoList = new ArrayList<>();
+	// 특정 상환의 또래별 연도별 상환 기록을 보여주는 메서드
+	public GetAllYearLoanMapResponse getYearBuddyLoanMap(Member member, String loanProductName) {
+		GetAllLoanMapResponse getAllLoanMapResponse = getBuddyLoanMap(member, loanProductName);
 
-		// 3. 첫 대출 시점부터 2024년까지 매년 1월부터 12월까지의 기록을 모두 반영
-		while (startYear <= targetYear) {
-			final int currentYear = startYear;
-			long yearlyRepayment = 0;
+		List<GetAllLoanMapDto> getAllLoanMapDtoList = getAllLoanMapResponse.getGetAllLoanMapDtoList();
 
-			// 해당 연도에 발생한 모든 상환 기록을 누적
-			for (LoanRepaymentRecord record : loanRepaymentRecordList) {
-				if (record.getYear() == currentYear) {
-					yearlyRepayment += record.getRepaymentBalance();
-				}
+		List<GetAllYearLoanMapDto> getAllLoanMapDtoListResult = new ArrayList<>();
+
+		LocalDate currentDate = LocalDate.now();
+
+		int currentYear = currentDate.getYear();
+		int currentMonth = currentDate.getMonthValue();
+
+		for (GetAllLoanMapDto getAllLoanMapDto: getAllLoanMapDtoList){
+			if (currentYear == getAllLoanMapDto.getYear() && currentMonth == getAllLoanMapDto.getMonth()){
+				getAllLoanMapDtoListResult.add(GetAllYearLoanMapDto.of(getAllLoanMapDto.getYear(), getAllLoanMapDto.getLoanBalance()));
+				break;
 			}
 
-			// 대출 시작 시점에 맞춰 InitialBalance를 추가
-			for (MemberLoan loan : memberLoanList) {
-				if (loan.getStartYear() == startYear && loan.getStartMonth() <= 12) {
-					totalLoanBalance += loan.getInitialBalance();
-				}
+			if (getAllLoanMapDto.getMonth() == 12){
+				getAllLoanMapDtoListResult.add(GetAllYearLoanMapDto.of(getAllLoanMapDto.getYear(), getAllLoanMapDto.getLoanBalance()));
 			}
-
-			// 해당 연도의 모든 상환 기록을 반영하여 잔액 갱신
-			totalLoanBalance -= yearlyRepayment;
-
-			// 현재의 year, 12월, loanBalance 값을 리스트에 추가
-			getAllLoanMapDtoList.add(GetAllLoanMapDto.builder()
-					.year(startYear)
-					.month(12)
-					.loanBalance(totalLoanBalance)
-					.build());
-
-			// 다음 연도로 넘어가기
-			startYear++;
 		}
 
-		// 필요한 응답 객체를 생성하고 반환
-		return GetAllLoanMapResponse.of(getAllLoanMapDtoList);
+		return GetAllYearLoanMapResponse.of(getAllLoanMapDtoListResult);
+	}
+
+	// 전체 여정 지도에서 또래별 연도로 보여주는 메서드
+	public GetAllYearLoanMapResponse getYearAllBuddyLoanMap(Member member) {
+		GetAllLoanMapResponse getAllLoanMapResponse = getAllBuddyLoanMap(member);
+
+		List<GetAllLoanMapDto> getAllLoanMapDtoList = getAllLoanMapResponse.getGetAllLoanMapDtoList();
+
+		List<GetAllYearLoanMapDto> getAllLoanMapDtoListResult = new ArrayList<>();
+
+		LocalDate currentDate = LocalDate.now();
+
+		int currentYear = currentDate.getYear();
+		int currentMonth = currentDate.getMonthValue();
+
+		for (GetAllLoanMapDto getAllLoanMapDto: getAllLoanMapDtoList){
+			if (currentYear == getAllLoanMapDto.getYear() && currentMonth == getAllLoanMapDto.getMonth()){
+				getAllLoanMapDtoListResult.add(GetAllYearLoanMapDto.of(getAllLoanMapDto.getYear(), getAllLoanMapDto.getLoanBalance()));
+				break;
+			}
+
+			if (getAllLoanMapDto.getMonth() == 12){
+				getAllLoanMapDtoListResult.add(GetAllYearLoanMapDto.of(getAllLoanMapDto.getYear(), getAllLoanMapDto.getLoanBalance()));
+			}
+		}
+
+		return GetAllYearLoanMapResponse.of(getAllLoanMapDtoListResult);
 	}
 }

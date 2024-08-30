@@ -10,4 +10,7 @@ public interface LoanRepaymentRecordRepository extends JpaRepository<LoanRepayme
 
     // 이 날짜에 상환한 내역이 있는 지 확인해주는 query 문 작성
     boolean existsByMemberLoanIdAndYearAndMonth(Long id, int year, int month);
+
+    // 특정 MemberLoan ID와 연도에 해당하는 모든 상환 기록을 가져오는 메서드
+    List<LoanRepaymentRecord> findAllByMemberLoanIdAndYear(Long memberLoanId, int year);
 }

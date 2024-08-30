@@ -90,4 +90,24 @@ public class LoanController {
 	public ResponseEntity<?> getYearlyLoan(@AuthenticationPrincipal Member member){
 		return ResponseEntity.status(HttpStatus.OK).body(loanService.getYearlyLoan(member));
 	}
+
+	@Operation(summary = "년도 선택한 대출 여정지도 검색", description = "선택한 대출 여정 지도를 검색한다.")
+	@GetMapping("/map-year")
+	public ResponseEntity<?> getYearLoanMap(@AuthenticationPrincipal Member member,
+										@RequestParam(defaultValue = "우리은행 주택담보대출") String loanProductName) {
+		return ResponseEntity.status(HttpStatus.OK).body(loanService.getYearLoanMap(member, loanProductName));
+	}
+
+	@Operation(summary = "년도 또래 선택한 대출 여정지도 검색", description = "선택한 대출 여정 지도를 검색한다.")
+	@GetMapping("/buddy-year")
+	public ResponseEntity<?> getYearBuddyLoanMap(@AuthenticationPrincipal Member member,
+											@RequestParam(defaultValue = "우리은행 주택담보대출") String loanProductName) {
+		return ResponseEntity.status(HttpStatus.OK).body(loanService.getYearBuddyLoanMap(member, loanProductName));
+	}
+
+	@Operation(summary = "모든 대출금 또래 상환능력 조회", description = "모든 대출금 또래 상환능력 조회 하기")
+	@GetMapping("/all-buddy-year")
+	public ResponseEntity<?> getYearAllBuddyLoanMap(@AuthenticationPrincipal Member member){
+		return ResponseEntity.status(HttpStatus.OK).body(loanService.getYearAllBuddyLoanMap(member));
+	}
 }
