@@ -45,8 +45,14 @@ const SubHeader = styled.div`
   margin-bottom: 20px;
 `;
 
-const SubTitle = styled.h2`
+const SubTitle = styled.div`
   margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+
+  @media (min-width: 600px) {
+    font-size: 27px;
+  }
 `;
 
 const CreditLevel = styled.div`
@@ -100,8 +106,12 @@ const CreditText = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 15px;
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 600;
+
+  @media (min-width: 600px) {
+    font-size: 20px;
+  }
 `;
 
 function CreditScore() {

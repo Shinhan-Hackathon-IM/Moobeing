@@ -28,8 +28,13 @@ const SubHeader = styled.div`
 `;
 
 const SubTitle = styled.div`
-  font-size: 1.5rem;
-  font-weight: bold;
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+
+  @media (min-width: 600px) {
+    font-size: 27px;
+  }
 `;
 
 const PayButton = styled.button`
@@ -152,7 +157,7 @@ function LeftMoney() {
       });
   }, []);
 
-  const remainingBalance = accountBenefit.accountLeftMoney;
+  const remainingBalance = accountBenefit.accountLeftMoney || 0;
   const loanList = accountBenefit.LoanList || []; // LoanList를 상태에서 가져오기
 
   // 대출 선택 시 호출되는 함수
@@ -188,7 +193,8 @@ function LeftMoney() {
       </SubHeader>
 
       <TextTag>
-        남은 돈 <MoneySpan>{remainingBalance?.toLocaleString()}원</MoneySpan>을{" "}
+        남은 돈 <MoneySpan>{remainingBalance?.toLocaleString()}원</MoneySpan>을
+        <br />
         <CustomDropdownContainer>
           <CustomDropdownHeader
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -214,6 +220,7 @@ function LeftMoney() {
           )}
         </CustomDropdownContainer>{" "}
         에 상환하면,
+        <br />
         <LastLine>
           이자 <MoneySpan>{interestBalance.toLocaleString()}원</MoneySpan>을
           아낄 수 있어요

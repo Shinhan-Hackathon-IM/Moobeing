@@ -16,6 +16,16 @@ export const getLoanSum = async () => {
   }
 };
 
+// 이번 달 상환 예정 금액 구하기
+export const getLoanMonthly = async () => {
+  try {
+    const response = await api.get("/loan/monthly");
+    return response.data;
+  } catch (error) {
+    console.error("이번 달 상환 예정 금액 불러오기 실패:", error);
+    throw error;
+  }
+};
 // 나의 대출 확인
 // getLoanSort("rate");   // 대출 정보를 금리에 따라 정렬하여 가져옴
 // getLoanSort("amount"); // 대출 정보를 금액에 따라 정렬하여 가져옴
@@ -30,12 +40,23 @@ export const getLoanSort = async (sortType) => {
 };
 
 // 모든 대출 예정지도 월별 확인
-export const getAllLoanMapByMonth = async (pageNum) => {
+export const getAllLoanMapByMonth = async () => {
   try {
-    const response = await api.get(`/loan/all-map?page=${pageNum}`);
+    const response = await api.get("/loan/all-map");
     return response.data;
   } catch (error) {
-    console.error("모든 대출 예정지도 정보 불러오기 실패:", error);
+    console.error("모든 월별 대출 여정 지도 정보 불러오기 실패:", error);
+    throw error;
+  }
+};
+
+// 모든 대출 예정지도 월별 확인
+export const getAllLoanMapByYear = async () => {
+  try {
+    const response = await api.get("/loan/all-map-year");
+    return response.data;
+  } catch (error) {
+    console.error("모든 연별 대출 여정 지도 정보 불러오기 실패:", error);
     throw error;
   }
 };

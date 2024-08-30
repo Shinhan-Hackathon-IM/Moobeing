@@ -35,20 +35,26 @@ const InputText = styled.input`
 `;
 
 const ChangeButton = styled.button`
-  height: 44px;
-  width: 40%;
+  height: 10%;
+  width: 110px;
   border-radius: 10px;
+  margin-top: 15vh;
+  margin-bottom: 5px;
+  padding: 10px 20px;
   background-color: #e0eed2;
-  color: #348833;
+  color: #24272d;
   font-size: 13px;
   font-weight: bold;
-  text-align: center;
+  border: none;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  margin: 18vh 0 8vh 0;
-  border: none;
+
+  @media (min-width: 600px) {
+    width: 125px;
+    font-size: 16px;
+  }
 `;
 
 const PasswordMismatchMessage = styled.div`

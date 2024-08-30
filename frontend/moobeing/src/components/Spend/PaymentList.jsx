@@ -172,25 +172,27 @@ function PaymentList({ payments }) {
                 </PaymentItem>
               );
             })}
+            <ScrollButtonContainer>
+              <ScrollButton onClick={handleScrollPrev}>
+                <NavigationImage
+                  src={currentPage > 1 ? leftButtonBlack : leftButton}
+                  alt="이전"
+                />
+              </ScrollButton>
+              <PageInfo>
+                {currentPage}/{totalPages}
+              </PageInfo>
+              <ScrollButton onClick={handleScrollNext}>
+                <NavigationImage
+                  src={
+                    currentPage < totalPages ? rightButtonBlack : rightButton
+                  }
+                  alt="다음"
+                />
+              </ScrollButton>
+            </ScrollButtonContainer>
           </PaymentListWrapper>
         )}
-        <ScrollButtonContainer>
-          <ScrollButton onClick={handleScrollPrev}>
-            <NavigationImage
-              src={currentPage > 1 ? leftButtonBlack : leftButton}
-              alt="이전"
-            />
-          </ScrollButton>
-          <PageInfo>
-            {currentPage}/{totalPages}
-          </PageInfo>
-          <ScrollButton onClick={handleScrollNext}>
-            <NavigationImage
-              src={currentPage < totalPages ? rightButtonBlack : rightButton}
-              alt="다음"
-            />
-          </ScrollButton>
-        </ScrollButtonContainer>
       </PaymentListContainer>
     </>
   );

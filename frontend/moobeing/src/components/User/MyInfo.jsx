@@ -13,12 +13,21 @@ const Container = styled.div`
 `;
 
 const PasswordChangeButton = styled.button`
-  padding: 10px;
-  background-color: #e0eed2;
-  color: #24272d;
-  border: none;
+  margin: 0;
+  font-size: 12px;
+  padding: 8px;
   cursor: pointer;
-  border-radius: 15px;
+  border: none;
+  font-weight: bold;
+  background-color: ${(props) =>
+    props.isactive === "true" ? "#348833" : "#e0eed2"};
+  color: ${(props) => (props.isactive === "true" ? "#ffffff" : "#24272D")};
+  border-radius: 10px;
+
+  @media (min-width: 600px) {
+    font-size: 14px;
+    padding: 10px;
+  }
 `;
 
 const SubHeader = styled.div`
@@ -67,7 +76,7 @@ const Value = styled.div`
 
 const LogoutButton = styled.div`
   height: 10%;
-  width: 25%;
+  width: 95px;
   border-radius: 10px;
   margin-top: 15vh;
   margin-bottom: 5px;
@@ -83,7 +92,8 @@ const LogoutButton = styled.div`
   justify-content: center;
 
   @media (min-width: 600px) {
-    font-size: 18px;
+    width: 110px;
+    font-size: 16px;
   }
 `;
 
@@ -121,10 +131,16 @@ const MyInfo = ({ onPasswordChangeClick }) => {
   // 생년월일 형식 변환
   const formattedBirthday = formatBirthday(userInfo.birthday);
 
+  // 성별 표시 함수
+  const getGenderDisplay = (gender) => {
+    if (!gender) return "";
+    return gender === "M" ? "남성" : gender === "F" ? "여성" : "";
+  };
+
   return (
     <Container>
       <SubHeader>
-        <strong>{userInfo.name} 님</strong>
+        <strong>{userInfo.name || "사용자"} 님</strong>
         <PasswordChangeButton onClick={onPasswordChangeClick}>
           비밀번호 변경
         </PasswordChangeButton>
@@ -133,7 +149,7 @@ const MyInfo = ({ onPasswordChangeClick }) => {
         <SubTitle>개인정보</SubTitle>
         <InfoRow>
           <Label>이메일</Label>
-          <Value>{userInfo.email}</Value>
+          <Value>{userInfo.email || ""}</Value>
         </InfoRow>
         <InfoRow>
           <Label>생년월일</Label>
@@ -141,7 +157,7 @@ const MyInfo = ({ onPasswordChangeClick }) => {
         </InfoRow>
         <InfoRow>
           <Label>성별</Label>
-          <Value>{userInfo.gender === "M" ? "남성" : "여성"}</Value>
+          <Value>{getGenderDisplay(userInfo.gender)}</Value>
         </InfoRow>
       </Contents>
       <LogoutButton>로그아웃</LogoutButton>

@@ -44,14 +44,29 @@ const LoanSum = styled.div`
 
 const SpendSum = styled.span`
   font-weight: 700;
-  margin-left: 5px;
+  margin-left: 8px;
+
+  @media (min-width: 600px) {
+    margin-left: 10px;
+  }
 `;
 
 const AnalyzeButton = styled.button`
-  background-color: #e0eed2;
+  margin: 0;
+  font-size: 12px;
+  padding: 6px;
+  cursor: pointer;
   border: none;
-  padding: 5px 8px;
+  background-color: ${(props) =>
+    props.buttonText === "분석하기" ? "#348833" : "#e0eed2"};
+  color: ${(props) =>
+    props.buttonText === "분석하기" ? "#ffffff" : "#24272D"};
   border-radius: 10px;
+
+  @media (min-width: 600px) {
+    font-size: 14px;
+    padding: 8px;
+  }
 `;
 
 const SubHeader = ({ month = "이월", onAnalyzeClick, totalExpense = 0 }) => {
@@ -78,7 +93,9 @@ const SubHeader = ({ month = "이월", onAnalyzeClick, totalExpense = 0 }) => {
       </Title>
       <LoanSum>
         <SpendSum>총 지출: {totalExpense.toLocaleString()}원</SpendSum>
-        <AnalyzeButton onClick={handleButtonClick}>{buttonText}</AnalyzeButton>
+        <AnalyzeButton buttonText={buttonText} onClick={handleButtonClick}>
+          {buttonText}
+        </AnalyzeButton>
       </LoanSum>
     </>
   );
