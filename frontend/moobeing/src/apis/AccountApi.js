@@ -17,9 +17,9 @@ export const getAccountInfo = async () => {
 };
 
 // 대출금 상환하기
-export const postAccountLoan = async () => {
+export const postAccountLoan = async (requestBody) => {
   try {
-    const response = await api.post("/account");
+    const response = await api.post("/account", requestBody);
     return response.data;
   } catch (error) {
     console.error("대출금 상환 실패:", error);

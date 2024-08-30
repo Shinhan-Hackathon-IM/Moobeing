@@ -97,9 +97,8 @@ const CustomPickersDay = styled(PickersDay)`
   height: auto;
   font-size: 0.8rem;
 
-  &.has-spending {
-    background-color: #f5fded;
-    border-radius: 50%;
+  &.has-loan {
+    background-color: #e0eed2;
   }
 
   .spend-amount {
@@ -126,18 +125,21 @@ function CustomDay(props) {
   const spendingData = monthlySpendData.find((spend) =>
     dayjs(spend.date).isSame(day, "day")
   );
-  const isSpendingDate = !!spendingData;
+
+  const hasLoan =
+    spendingData?.history?.some((item) => item.categoryName === "대출") ||
+    false;
 
   return (
     <CustomPickersDay
       {...other}
       day={day}
-      className={isSpendingDate ? "has-spending" : ""}
+      className={hasLoan ? "has-loan" : ""}
     >
       <span>{day.date()}</span>
-      {isSpendingDate && (
+      {spendingData?.totalSpend && (
         <span className="spend-amount">
-          -{(spendingData.totalSpend || 0).toLocaleString()}
+          -{spendingData.totalSpend.toLocaleString()}
         </span>
       )}
     </CustomPickersDay>
@@ -170,7 +172,19 @@ const CustomDateCalendar = ({
 CustomDateCalendar.propTypes = {
   selectedDate: PropTypes.object.isRequired,
   onDateChange: PropTypes.func.isRequired,
-  monthlySpendData: PropTypes.array.isRequired,
+  monthlySpendData: PropTypes.arrayOf(
+    PropTypes.shape({
+      date: PropTypes.string.isRequired,
+      totalSpend: PropTypes.number.isRequired,
+      history: PropTypes.arrayOf(
+        PropTypes.shape({
+          title: PropTypes.string.isRequired,
+          categoryName: PropTypes.string.isRequired,
+          price: PropTypes.number.isRequired,
+        })
+      ).isRequired,
+    })
+  ).isRequired,
 };
 
 export default CustomDateCalendar;
