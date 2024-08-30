@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import radishImage from "../../assets/radishes/basicRad.svg"; // Radish 이미지 경로를 맞춰주세요
+import radishImage from "../../assets/radishes/basicRad.svg";
+import { getLoanPercent } from "../../apis/LoanApi";
+import useUserStore from "../../store/UserStore";
 
 const BarContainer = styled.div`
   width: 95%;
@@ -44,26 +46,52 @@ const Radish = styled.img`
 
 const Text = styled.div`
   margin-top: 5%;
+  font-weight: 600;
 `;
 
 function PercentBar() {
-  const [fillpercent, setfillpercent] = useState(0);
+  const { userInfo } = useUserStore((state) => ({
+    userInfo: state.userInfo,
+  }));
 
-  // 예시: 데이터를 받아와서 fillpercent 설정
+  const [fillpercent, setFillPercent] = useState(0); // 기본값을 0으로 설정
+  const [error, setError] = useState(false); // 데이터 유무를 판단하기 위한 에러 상태
+
   useEffect(() => {
-    // 백엔드나 API로부터 값을 가져와서 설정할 수 있음
-    const fetchedPercent = 20; // 이 값을 나중에 백엔드에서 받아오는 값으로 변경
-    setfillpercent(fetchedPercent);
-  }, []); // 처음 렌더링 시 실행
+    const fetchData = async () => {
+      try {
+        const response = await getLoanPercent();
+        const remainingPercent = response.remainingPercent || 0; // 데이터를 받아오지 못할 경우 기본값을 0으로 설정
+
+        if (remainingPercent > 0) {
+          setFillPercent(remainingPercent); // 데이터를 받아올 경우 상태 업데이트
+        } else {
+          setError(true); // 데이터가 없는 경우 에러 상태를 true로 설정
+        }
+      } catch (error) {
+        console.error("Failed to fetch loan percent data:", error);
+        setError(true); // 오류 발생 시 에러 상태를 true로 설정
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // 기본 무 이미지 설정
+  const radishImgUrl = userInfo?.radishImageUrl || radishImage;
 
   return (
     <BarContainer>
       <GraphContainer>
         <GraphFill fillpercent={fillpercent}>
-          <Radish src={radishImage} alt="Radish" />
+          <Radish src={radishImgUrl} alt="Radish" />
         </GraphFill>
       </GraphContainer>
-      <Text>{fillpercent}% 상환했습니다!</Text>
+      {error ? (
+        <Text>상환 내역이 없습니다.</Text> // 데이터가 없을 경우 표시할 텍스트
+      ) : (
+        <Text>{fillpercent.toFixed(2)}% 상환했습니다!</Text> // 데이터가 있을 경우 표시할 텍스트
+      )}
     </BarContainer>
   );
 }

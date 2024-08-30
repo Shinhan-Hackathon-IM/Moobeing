@@ -41,10 +41,10 @@ export const getAllLoanMapByMonth = async (pageNum) => {
 };
 
 // 특정 대출 예정지도 월별 확인
-export const getLoanMapByProductName = async (loanProductName, pageNum) => {
+export const getLoanMapByProductName = async (loanProductName) => {
   try {
     const response = await api.get(
-      `/loan/map?loanProductName=${loanProductName}&page=${pageNum}`
+      `/loan/map?loanProductName=${loanProductName}`
     );
     return response.data;
   } catch (error) {
@@ -53,13 +53,35 @@ export const getLoanMapByProductName = async (loanProductName, pageNum) => {
   }
 };
 
-// 또래 상환 내역 조회
-export const getLoanBuddy = async () => {
+// 전체 또래 상환 내역 조회
+export const getAllLoanBuddy = async () => {
   try {
-    const response = await api.get("/loan/buddy");
+    const response = await api.get("/loan/all-buddy");
     return response.data;
   } catch (error) {
     console.error("또래 상환 내역 불러오기 실패:", error);
+    throw error;
+  }
+};
+
+// 또래 상환 내역 조회
+export const getProductLoanBuddy = async () => {
+  try {
+    const response = await api.get(`/loan/buddy?loanName=${loanName}`);
+    return response.data;
+  } catch (error) {
+    console.error("또래 상환 내역 불러오기 실패:", error);
+    throw error;
+  }
+};
+
+// 몇 퍼센트 상환했는지 알아보는 API
+export const getLoanPercent = async () => {
+  try {
+    const response = await api.get("/loan/percent");
+    return response.data;
+  } catch (error) {
+    console.error("몇 퍼센트 상환인지 불러오기 실패:", error);
     throw error;
   }
 };

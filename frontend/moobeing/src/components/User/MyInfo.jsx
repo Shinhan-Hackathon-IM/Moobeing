@@ -12,13 +12,13 @@ const Container = styled.div`
   box-sizing: border-box;
 `;
 
-const PasswordChangebutton = styled.button`
+const PasswordChangeButton = styled.button`
   padding: 10px;
   background-color: #e0eed2;
   color: #24272d;
   border: none;
   cursor: pointer;
-  border-radius: 20px;
+  border-radius: 15px;
 `;
 
 const SubHeader = styled.div`
@@ -32,7 +32,7 @@ const SubHeader = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 20px 15px 20px 25px;
   box-sizing: border-box;
 `;
 
@@ -53,7 +53,8 @@ const InfoRow = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: 30px;
+  padding: 0px 2px;
 `;
 
 const Label = styled.div`
@@ -67,20 +68,36 @@ const Value = styled.div`
 const LogoutButton = styled.div`
   height: 10%;
   width: 25%;
-  border-radius: 20px;
+  border-radius: 10px;
   margin-top: 15vh;
   margin-bottom: 5px;
   padding: 10px 20px;
   background-color: #e0eed2;
   color: #24272d;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: bold;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media (min-width: 600px) {
+    font-size: 18px;
+  }
 `;
+
+// 생년월일을 "YYYY-MM-DD" 형식으로 변환하는 함수
+const formatBirthday = (birthday) => {
+  if (!birthday || birthday.length !== 6) return "";
+
+  const yearPrefix = parseInt(birthday.slice(0, 2), 10) <= 50 ? "20" : "19"; // 50 이하일 경우 2000년대, 그 이상은 1900년대 가정
+  const year = yearPrefix + birthday.slice(0, 2);
+  const month = birthday.slice(2, 4);
+  const day = birthday.slice(4, 6);
+
+  return `${year}-${month}-${day}`;
+};
 
 const MyInfo = ({ onPasswordChangeClick }) => {
   // Zustand 스토어에서 사용자 정보 가져오기
@@ -101,44 +118,30 @@ const MyInfo = ({ onPasswordChangeClick }) => {
     fetchData();
   }, [setUserInfo]);
 
-  console.log(userInfo);
-
-  // 더미 데이터 생성
-  const userData = {
-    email: "ssafy11@shinhan.com",
-    totalPoints: 1500,
-    totalLoan: "300,000",
-    name: "제갈싸피",
-    gender: "M",
-    birthday: "2000-01-01",
-    phoneNumber: "010-1234-5678",
-  };
+  // 생년월일 형식 변환
+  const formattedBirthday = formatBirthday(userInfo.birthday);
 
   return (
     <Container>
       <SubHeader>
-        <span>{userData.name}님</span>
-        <PasswordChangebutton onClick={onPasswordChangeClick}>
+        <strong>{userInfo.name} 님</strong>
+        <PasswordChangeButton onClick={onPasswordChangeClick}>
           비밀번호 변경
-        </PasswordChangebutton>
+        </PasswordChangeButton>
       </SubHeader>
       <Contents>
         <SubTitle>개인정보</SubTitle>
         <InfoRow>
           <Label>이메일</Label>
-          <Value>{userData.email}</Value>
+          <Value>{userInfo.email}</Value>
         </InfoRow>
         <InfoRow>
           <Label>생년월일</Label>
-          <Value>{userData.birthday}</Value>
-        </InfoRow>
-        <InfoRow>
-          <Label>휴대폰 번호</Label>
-          <Value>{userData.phoneNumber}</Value>
+          <Value>{formattedBirthday}</Value>
         </InfoRow>
         <InfoRow>
           <Label>성별</Label>
-          <Value>{userData.gender === "M" ? "남성" : "여성"}</Value>
+          <Value>{userInfo.gender === "M" ? "남성" : "여성"}</Value>
         </InfoRow>
       </Contents>
       <LogoutButton>로그아웃</LogoutButton>

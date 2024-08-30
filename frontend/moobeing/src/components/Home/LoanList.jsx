@@ -118,8 +118,8 @@ function LoanList({ loans }) {
     });
   };
 
-  const handleLoanItemClick = (loanId) => {
-    navigate(`/loan-journey/${loanId}`);
+  const handleLoanItemClick = (loanName) => {
+    navigate(`/loan-journey/${loanName}`);
   };
 
   const visibleLoans = loans.slice(currentIndex, currentIndex + loansPerPage);
@@ -132,7 +132,7 @@ function LoanList({ loans }) {
           {visibleLoans.map((loan, index) => (
             <LoanItem
               key={index}
-              onClick={() => handleLoanItemClick(loan.user_deposit_id)}
+              onClick={() => handleLoanItemClick(loan.loanProductName)}
             >
               <BankLogo src={loan.bankImageUrl} alt="로고" />
               <LoanInfo>

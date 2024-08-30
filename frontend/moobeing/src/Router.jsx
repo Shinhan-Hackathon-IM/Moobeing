@@ -55,7 +55,7 @@ function Router() {
         />
         <Route path="/loading" element={<Loading />} />
         <Route
-          path="/loan-journey/:loanId"
+          path="/loan-journey/:loanName"
           element={userInfo ? <LoanJourney /> : <Navigate to="/login" />}
         />
         <Route
@@ -72,7 +72,7 @@ function Router() {
           element={userInfo ? <RadishCollection /> : <Navigate to="/login" />}
         />
         <Route
-          path="/repayment/:selectedLoanId"
+          path="/repayment/:selectedLoanName"
           element={userInfo ? <Repayment /> : <Navigate to="/login" />}
         />
         <Route
