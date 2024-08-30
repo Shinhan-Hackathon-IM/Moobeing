@@ -71,26 +71,51 @@ public class LoanService {
 	}
 
 	public GetLoanMapResponse getLoanMap(Member member, String reqProductName) {
+		// 1. 주어진 member와 상품명에 해당하는 MemberLoan을 가져옴
 		MemberLoan memberLoan = memberLoanRepository.findByMemberIdAndLoanProductName(member.getId(), reqProductName)
-				.orElseThrow(() -> new RuntimeException("todo memberLoan 없음"));
+				.orElseThrow(() -> new RuntimeException("해당 memberLoan이 없습니다"));
 
+		// 2. 해당 MemberLoan의 모든 상환 기록을 가져옴
 		List<LoanRepaymentRecord> loanRepaymentRecordList = loanRepaymentRecordRepository.findAllByMemberLoanId(memberLoan.getId());
 
 		long totalLoanBalance = memberLoan.getInitialBalance();
 
 		List<GetAllLoanMapDto> getAllLoanMapDtoList = new ArrayList<>();
 
-		for (LoanRepaymentRecord record : loanRepaymentRecordList) {
-			totalLoanBalance -= record.getRepaymentBalance();
+		// 3. 현재 날짜를 계산
+		LocalDate now = LocalDate.now();
+		int currentYear = now.getYear();
+		int currentMonth = now.getMonthValue();
 
-			getAllLoanMapDtoList.add(GetAllLoanMapDto.builder()
-					.year(record.getYear())
-					.month(record.getMonth())
-					.loanBalance(totalLoanBalance)
-					.build());
+		// 3.5 이번 달의 시작 잔액 입력
+		getAllLoanMapDtoList.add(GetAllLoanMapDto.builder()
+				.year(memberLoan.getStartYear())
+				.month(memberLoan.getStartMonth())
+				.loanBalance(memberLoan.getInitialBalance())
+				.build());
+
+		// 4. 상환 기록을 순회하며 대출 잔액을 계산
+		for (LoanRepaymentRecord record : loanRepaymentRecordList) {
+			// 상환 기록이 현재 연도와 월 이전인 경우만 잔액 계산
+			if (record.getYear() < currentYear || (record.getYear() == currentYear && record.getMonth() <= currentMonth)) {
+				totalLoanBalance -= record.getRepaymentBalance();
+
+				getAllLoanMapDtoList.add(GetAllLoanMapDto.builder()
+						.year(record.getYear())
+						.month(record.getMonth())
+						.loanBalance(totalLoanBalance)
+						.build());
+			}
 		}
 
-		// 필요에 따라 GetLoanMapResponse를 생성하고 반환
+		// 5. 이번 달의 최종 잔액도 추가
+		getAllLoanMapDtoList.add(GetAllLoanMapDto.builder()
+				.year(currentYear)
+				.month(currentMonth)
+				.loanBalance(totalLoanBalance)
+				.build());
+
+		// 6. 필요한 응답 객체를 생성하고 반환
 		return GetLoanMapResponse.of(getAllLoanMapDtoList);
 	}
 

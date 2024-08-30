@@ -26,7 +26,8 @@ public class LoanController {
 
 	@Operation(summary = "선택한 대출 여정지도 검색", description = "선택한 대출 여정 지도를 검색한다.")
 	@GetMapping("/map")
-	public ResponseEntity<?> getLoanMap(@AuthenticationPrincipal Member member, @RequestParam String loanProductName){
+	public ResponseEntity<?> getLoanMap(@AuthenticationPrincipal Member member,
+										@RequestParam(defaultValue = "우리은행 주택담보대출") String loanProductName) {
 		return ResponseEntity.status(HttpStatus.OK).body(loanService.getLoanMap(member, loanProductName));
 	}
 
