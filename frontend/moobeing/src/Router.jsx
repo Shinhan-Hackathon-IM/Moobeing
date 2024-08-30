@@ -55,7 +55,7 @@ function Router() {
         />
         <Route path="/loading" element={<Loading />} />
         <Route
-          path="/loan-journey/:loanId"
+          path="/loan-journey/:loanName"
           element={userInfo ? <LoanJourney /> : <Navigate to="/login" />}
         />
         <Route

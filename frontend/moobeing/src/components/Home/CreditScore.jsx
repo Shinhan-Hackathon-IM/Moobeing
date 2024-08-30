@@ -170,7 +170,7 @@ function CreditScore() {
           grade={creditInfo.ratingName}
           fillpercent={creditInfo.ratingPercent}
         >
-          <Radish src={userInfo.radishImageUrl} alt="Radish" />
+          <Radish src={radishImage} alt="Radish" />
         </GraphFill>
       </GraphContainer>
       <CreditText>{displayText}</CreditText>

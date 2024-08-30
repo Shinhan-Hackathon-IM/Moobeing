@@ -65,11 +65,13 @@ const SubHeader = ({ month = "이월", onAnalyzeClick, totalExpense = 0 }) => {
     onAnalyzeClick();
   };
 
+  const userName = userInfo.name ? userInfo.name : "사용자";
+
   return (
     <>
       <Title>
         <TitleText>
-          <AccentText>{userInfo.name}님</AccentText>
+          <AccentText>{userName}님</AccentText>
           의<br />
           <AccentText>{month}</AccentText> 지출내역
         </TitleText>

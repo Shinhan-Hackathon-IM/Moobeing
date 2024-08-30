@@ -39,14 +39,3 @@ export const getSpendDataByDay = async (year, month) => {
     throw error;
   }
 };
-
-// 통장 조회
-export const getAccountInfo = async () => {
-  try {
-    const response = await api.get("/account");
-    return response.data;
-  } catch (error) {
-    console.error("통장 조회 실패:", error);
-    throw error;
-  }
-};

@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import DropDownArrow from "../../assets/dropdown/DropdownArrow.png";
+import { getAccountBenefit } from "../../apis/AccountApi";
+import { getLoanSort } from "../../apis/LoanApi";
 
 const Container = styled.div`
   background-color: #f5fded;
@@ -104,7 +106,7 @@ const CustomDropdownList = styled.ul`
 
 const CustomDropdownItem = styled.li`
   padding: 8px;
-  font-size: 1rem;
+  font-size: 13px;
   cursor: pointer;
 
   &:hover {
@@ -133,27 +135,59 @@ const LastLine = styled.div`
 `;
 
 function LeftMoney() {
+  const [accountBenefit, setAccountBenefit] = useState({});
+  const [loanList, setLoanList] = useState([]);
   const [selectedLoan, setSelectedLoan] = useState(""); // 선택된 대출 상품 상태
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // 드롭다운 열림 상태
+  const [interestBalance, setInterestBalance] = useState(0);
   const navigate = useNavigate(); // useNavigate 훅 사용
 
-  const loans = [
-    { id: 1, name: "참대출" },
-    { id: 2, name: "신한 대출" },
-    { id: 3, name: "우리 대출" },
-  ];
+  // 컴포넌트가 마운트될 때 대출 목록과 계좌 혜택 데이터를 가져오기
+  useEffect(() => {
+    // 대출 목록을 rate 파라미터와 함께 가져오기
+    getLoanSort("rate")
+      .then((response) => {
+        const loanNames = response.getMemberLoanDtoList.map((loan) => ({
+          name: loan.loanProductName,
+          id: loan.loanProductName,
+        }));
+        setLoanList(loanNames); // 대출 목록 상태 업데이트
+      })
+      .catch((error) => {
+        console.error("대출 목록을 가져오는 중 오류 발생:", error);
+      });
 
-  const handleLoanChange = (id) => {
-    setSelectedLoan(id);
-    setIsDropdownOpen(false);
+    // 계좌 혜택 데이터 가져오기
+    getAccountBenefit()
+      .then((response) => {
+        setAccountBenefit(response); // 계좌 혜택 상태 업데이트
+      })
+      .catch((error) => {
+        console.error("계좌 혜택 데이터를 가져오는 중 오류 발생:", error);
+      });
+  }, []);
+
+  // 대출 선택 시 호출되는 함수
+  const handleLoanChange = (loanName) => {
+    setSelectedLoan(loanName); // 선택된 대출 업데이트
+    setIsDropdownOpen(false); // 드롭다운 닫기
+
+    // 선택된 대출의 이자 잔액 찾기
+    const selectedInterest = accountBenefit?.LoanList?.find(
+      (loan) => loan.loanName === loanName
+    )?.interestBalance;
+
+    if (selectedInterest !== undefined) {
+      setInterestBalance(selectedInterest); // 이자 잔액 상태 업데이트
+    }
   };
 
+  // '상환하러 가기' 버튼 클릭 시 호출되는 함수
   const handlePayment = () => {
     if (selectedLoan) {
-      // 선택된 대출 상품을 Params로 전달하여 이동
-      navigate(`/repayment/${selectedLoan}`);
+      navigate(`/repayment/${selectedLoan}`); // 선택된 대출과 함께 이동
     } else {
-      alert("대출 상품을 선택해주세요.");
+      alert("대출 상품을 선택해주세요."); // 대출이 선택되지 않았을 때 경고 표시
     }
   };
 
@@ -169,18 +203,21 @@ function LeftMoney() {
           <CustomDropdownHeader
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            {loans.find((loan) => loan.id === selectedLoan)?.name ||
-              "대출 상품 선택"}
+            {selectedLoan.length > 8
+              ? `${selectedLoan.substring(0, 8)}...`
+              : selectedLoan || "대출 상품 선택"}
           </CustomDropdownHeader>
           {isDropdownOpen && (
             <CustomDropdownList>
-              {loans.map((loan) => (
+              {loanList.map((loan) => (
                 <CustomDropdownItem
                   key={loan.id}
-                  onClick={() => handleLoanChange(loan.id)}
-                  selected={selectedLoan === loan.id}
+                  onClick={() => handleLoanChange(loan.name)}
+                  selected={selectedLoan === loan.name}
                 >
-                  {loan.name}
+                  {loan.name.length > 12
+                    ? `${loan.name.substring(0, 12)}...`
+                    : loan.name}
                 </CustomDropdownItem>
               ))}
             </CustomDropdownList>
@@ -188,7 +225,8 @@ function LeftMoney() {
         </CustomDropdownContainer>{" "}
         에 상환하면,
         <LastLine>
-          이자 <MoneySpan>2,324원</MoneySpan>을 아낄 수 있어요
+          이자 <MoneySpan>{interestBalance.toLocaleString()}원</MoneySpan>을
+          아낄 수 있어요
         </LastLine>
       </TextTag>
 

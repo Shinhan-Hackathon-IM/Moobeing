@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import Header from "../components/Fixed/Header";
 import Footer from "../components/Fixed/Footer";
 import DropDownArrow from "../assets/dropdown/DropdownArrow.png";
-import { getAccountInfo } from "../apis/SpendApi";
+import { getAccountInfo } from "../apis/AccountApi";
 
 const Container = styled.div`
   display: flex;
