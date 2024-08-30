@@ -175,6 +175,15 @@ INSERT IGNORE INTO expense_category (expense_category_id, name) VALUES
 (6, '건강');
 
 -- 9. Expense 테이블에 더미 데이터 삽입 (이미 존재할 경우 삽입 무시)
+INSERT IGNORE INTO expense (expense_id, member_id, expense_category_id, title, price, expense_date) VALUES
+(1, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 1, '마트 장보기', 50000, '2024-08-01 10:00:00'),
+(2, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 2, '대출 상환금', 200000, '2024-08-02 12:00:00'),
+(3, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 3, '영화 관람', 15000, '2024-08-03 15:00:00'),
+(4, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 4, '술자리', 80000, '2024-08-04 20:00:00'),
+(5, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 5, '택시 이용', 25000, '2024-08-05 08:00:00'),
+(6, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 6, '병원 진료비', 70000, '2024-08-06 09:00:00');
+
+-- 10. account 더미 데이터 생성하기.
 INSERT IGNORE INTO account (account_id, account_num, member_id, account_balance, account_name) VALUES
 (1, '110-1234-5678', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 1000000, '신한 MY 통장'),
 (2, '110-2345-6789', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 2000000, '신한 S 드림 적금'),
