@@ -18,7 +18,7 @@ const PasswordChangeButton = styled.button`
   color: #24272d;
   border: none;
   cursor: pointer;
-  border-radius: 20px;
+  border-radius: 15px;
 `;
 
 const SubHeader = styled.div`

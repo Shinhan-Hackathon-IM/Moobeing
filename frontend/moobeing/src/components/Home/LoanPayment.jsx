@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { getLoanSum } from "../../apis/LoanApi";
+import goToJourney from "../../assets/button/goToJourney.svg";
 
 const Container = styled.div`
   background-color: #f5fded;
@@ -78,6 +79,21 @@ const PayButton = styled.button`
   }
 `;
 
+const NavigateButton = styled.button`
+  margin-left: 5px;
+  margin-top: 4px;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  font-weight: 800;
+  font-family: Nanum Gothic;
+`;
+
+const NavigateImage = styled.img`
+  width: 20px;
+  height: 20px;
+`;
+
 function LoanPayment() {
   const [loanSum, setLoanSum] = useState({ sumLoanValue: 0 }); // 기본값을 0으로 설정
   const [error, setError] = useState(null); // 에러 상태 추가
@@ -100,8 +116,8 @@ function LoanPayment() {
 
   const navigate = useNavigate();
 
-  const handleRepayment = () => {
-    navigate("/repayment/1");
+  const handleSpendPage = () => {
+    navigate("/spend");
   };
 
   return (
@@ -109,10 +125,12 @@ function LoanPayment() {
       <SubHeader>
         <SubTitle>이번 달 상환 예정 금액</SubTitle>
       </SubHeader>
-      <LoanBalance>{loanSum.sumLoanValue.toLocaleString()} 원</LoanBalance>
-      <LoanBalanceContainer>
-        <PayButton onClick={handleRepayment}>상환하러 가기</PayButton>
-      </LoanBalanceContainer>
+      <LoanBalance>
+        {loanSum.sumLoanValue.toLocaleString()} 원
+        <NavigateButton onClick={handleSpendPage}>
+          <NavigateImage src={goToJourney} alt="여정지도" />
+        </NavigateButton>
+      </LoanBalance>
     </Container>
   );
 }

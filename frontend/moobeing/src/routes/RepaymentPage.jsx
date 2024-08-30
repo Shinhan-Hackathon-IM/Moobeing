@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/Fixed/Header";
 import Footer from "../components/Fixed/Footer";
 import DropDownArrow from "../assets/dropdown/DropdownArrow.png";
-import { getAccountInfo } from "../apis/AccountApi";
+import { getAccountInfo, postAccountLoan } from "../apis/AccountApi";
 
 const Container = styled.div`
   display: flex;
@@ -61,7 +61,7 @@ const CustomDropdownContainer = styled.div`
 const CustomDropdownHeader = styled.div`
   width: 100%;
   padding: 8px 0;
-  font-size: 1rem;
+  font-size: 14px;
   background-color: transparent;
   border: none;
   border-bottom: 1px solid #ccc;
@@ -72,7 +72,7 @@ const CustomDropdownHeader = styled.div`
   align-items: center;
   background-image: url(${DropDownArrow});
   background-repeat: no-repeat;
-  background-position: right 8px center;
+  background-position: right 6px center;
   background-size: 15px 10px;
 
   &:focus {
@@ -97,8 +97,9 @@ const CustomDropdownList = styled.ul`
 
 const CustomDropdownItem = styled.li`
   padding: 8px;
-  font-size: 1rem;
+  font-size: 15px;
   cursor: pointer;
+  white-space: pre-line;
 
   &:hover {
     background-color: #c5e1ab;
@@ -180,50 +181,55 @@ const PayButton = styled.button`
   font-size: 1rem;
   margin-top: 10px;
   border-radius: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
-  transition: all 0.2s ease-in-out; /* 버튼 클릭 시 애니메이션 추가 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
 
   &:hover {
-    background-color: #b5c99a; /* 호버 시 약간 더 어두운 색상 */
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 깊이 변경 */
-    transform: translateY(-2px); /* 호버 시 약간 떠오르는 효과 */
+    background-color: #b5c99a;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
   }
 
   &:active {
-    background-color: #a9b98e; /* 클릭 시 더 어두운 색상 */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 클릭 시 그림자 효과 줄임 */
-    transform: translateY(0); /* 클릭 시 원래 위치로 돌아옴 */
+    background-color: #a9b98e;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(0);
   }
 `;
 
 const Repayment = () => {
-  const { selectedLoanId } = useParams();
-  // 계좌 정보를 저장할 상태를 정의합니다.
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { selectedLoanName } = useParams();
+  const { loanList, remainingBalance } = location.state || {}; // state에서 정보 가져오기
+
+  // 계좌랑 대출의 기본 정보 저장
   const [accounts, setAccounts] = useState([]);
+  const [selectedLoan, setSelectedLoan] = useState(selectedLoanName || "");
+  const [selectedAccount, setSelectedAccount] = useState("");
+  const [repaymentAmount, setRepaymentAmount] = useState(0);
+  const [isLoanDropdownOpen, setIsLoanDropdownOpen] = useState(false);
+  const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
 
-  const loans = [
-    { id: 1, name: "참대출" },
-    { id: 2, name: "신한 대출" },
-    { id: 3, name: "우리 대출" },
-  ];
-
-  // 컴포넌트가 마운트될 때 API로부터 데이터를 가져옵니다.
+  // 남는돈 있다면 가져와서 표시
   useEffect(() => {
-    // 비동기 함수로 데이터를 가져옵니다.
+    if (remainingBalance) {
+      setRepaymentAmount(remainingBalance);
+    }
+  }, [remainingBalance]);
+
+  // 계좌 정보 가져오기 부분
+  useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        // API로부터 데이터를 가져옵니다.
         const response = await getAccountInfo();
-
-        // 가져온 데이터를 원하는 형태로 가공합니다.
         const fetchedAccounts = response.getAccountDtoList.map(
           (account, index) => ({
-            id: index + 1, // 고유 id를 부여합니다. (기존 데이터와의 호환을 위해 추가)
-            name: `계좌${index + 1} (${account.accountNum})`, // 계좌 이름 형식에 맞추어 데이터 포맷팅
+            id: index + 1,
+            name: `${account.accountName}\n(${account.accountNum})`, // Full display with newline for dropdown items
+            displayName: `${account.accountName}`, // Only accountName for dropdown header
           })
         );
-
-        // 상태를 업데이트합니다.
         setAccounts(fetchedAccounts);
       } catch (error) {
         console.error("계좌 정보를 가져오는 중 오류가 발생했습니다:", error);
@@ -231,18 +237,10 @@ const Repayment = () => {
     };
 
     fetchAccounts();
-  }, []); // 빈 배열을 두 번째 인자로 전달하여 컴포넌트가 마운트될 때 한 번만 실행되도록 합니다.
+  }, []);
 
-  const [selectedLoan, setSelectedLoan] = useState(
-    loans.find((loan) => loan.id === parseInt(selectedLoanId, 10))?.id || ""
-  );
-  const [selectedAccount, setSelectedAccount] = useState("");
-  const [repaymentAmount, setRepaymentAmount] = useState(0);
-  const [isLoanDropdownOpen, setIsLoanDropdownOpen] = useState(false);
-  const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
-
-  const handleLoanSelect = (id) => {
-    setSelectedLoan(id);
+  const handleLoanSelect = (loanName) => {
+    setSelectedLoan(loanName);
     setIsLoanDropdownOpen(false);
   };
 
@@ -252,27 +250,48 @@ const Repayment = () => {
   };
 
   const handleRepaymentInputChange = (e) => {
-    // 쉼표 제거 후 숫자 변환
     const value = e.target.value.replace(/,/g, "");
     setRepaymentAmount(value === "" ? 0 : parseInt(value, 10));
   };
 
   const handleAddAmount = (amount) => {
-    setRepaymentAmount((prevAmount) => parseInt(prevAmount) + amount * 10000); // Converts amount in 만원 to 원 and adds it to the current amount
+    setRepaymentAmount((prevAmount) => parseInt(prevAmount) + amount * 10000); // Adds amount in 만원
   };
 
   const formatAmount = (amount) => {
     return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  const handlePayment = () => {
-    // 지금은 랜덤으로 설정되어있는데 API 받아와서 바꾸기
-    const isPaymentSuccessful = Math.random() > 0.5;
+  const handlePayment = async () => {
+    if (!selectedLoan || !selectedAccount || repaymentAmount <= 0) {
+      alert("입력하지 않은 정보가 있습니다.");
+      return;
+    }
 
-    if (isPaymentSuccessful) {
-      alert("상환되었습니다!");
-    } else {
-      alert("상환 실패! 다시 시도해 주세요.");
+    try {
+      const selectedAccountNum = accounts
+        .find((account) => account.id === parseInt(selectedAccount, 10))
+        ?.name.split("\n")[1]
+        .replace(/[()]/g, ""); // 실제 선택한 계좌번호 가져오기
+
+      if (!selectedAccountNum) {
+        alert("유효한 계좌를 선택하세요.");
+        return;
+      }
+
+      const requestBody = {
+        accountNum: String(selectedAccountNum), // 실제 계좌번호로 설정
+        loanName: String(selectedLoan), // 선택된 대출 이름으로 설정
+        money: Number(repaymentAmount), // 상환할 금액 (원 단위)
+      };
+
+      const result = await postAccountLoan(requestBody);
+      console.log("대출금 상환 성공:", result);
+      alert("상환되었습니다!"); // 성공 메시지 표시
+      navigate(`/loan-journey/${selectedLoan}`); // 상환 후 페이지 이동
+    } catch (error) {
+      console.error("대출금 상환 중 오류 발생:", error);
+      alert("상환 실패! 다시 시도해 주세요."); // 오류 메시지 표시
     }
   };
 
@@ -288,18 +307,23 @@ const Repayment = () => {
               <CustomDropdownHeader
                 onClick={() => setIsLoanDropdownOpen(!isLoanDropdownOpen)}
               >
-                {loans.find((loan) => loan.id === parseInt(selectedLoan, 10))
-                  ?.name || "대출상품 선택"}
+                {selectedLoan
+                  ? selectedLoan.length > 8
+                    ? `${selectedLoan.slice(0, 8)}...`
+                    : selectedLoan
+                  : "대출상품 선택"}
               </CustomDropdownHeader>
               {isLoanDropdownOpen && (
                 <CustomDropdownList>
-                  {loans.map((loan) => (
+                  {loanList?.map((loan) => (
                     <CustomDropdownItem
-                      key={loan.id}
-                      onClick={() => handleLoanSelect(loan.id)}
-                      selected={selectedLoan === loan.id}
+                      key={loan.loanName}
+                      onClick={() => handleLoanSelect(loan.loanName)}
+                      selected={selectedLoan === loan.loanName}
                     >
-                      {loan.name}
+                      {loan.loanName.length > 14
+                        ? `${loan.loanName.slice(0, 14)}...`
+                        : loan.loanName}
                     </CustomDropdownItem>
                   ))}
                 </CustomDropdownList>
@@ -315,7 +339,8 @@ const Repayment = () => {
               >
                 {accounts.find(
                   (account) => account.id === parseInt(selectedAccount, 10)
-                )?.name || "출금계좌 선택"}
+                )?.displayName || "출금계좌 선택"}{" "}
+                {/* Display only accountName in the header */}
               </CustomDropdownHeader>
               {isAccountDropdownOpen && (
                 <CustomDropdownList>
@@ -325,7 +350,7 @@ const Repayment = () => {
                       onClick={() => handleAccountSelect(account.id)}
                       selected={selectedAccount === account.id}
                     >
-                      {account.name}
+                      {account.name}{" "}
                     </CustomDropdownItem>
                   ))}
                 </CustomDropdownList>
