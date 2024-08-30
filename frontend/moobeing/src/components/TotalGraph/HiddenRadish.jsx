@@ -7,6 +7,7 @@ import pot3rd from "../../assets/pot/pot3rd.svg";
 import pot4th from "../../assets/pot/pot4th.svg";
 import pot5th from "../../assets/pot/pot5th.svg";
 import pot6th from "../../assets/pot/pot6th.svg";
+import GrayChatBubble from "../../assets/GrayChatBubble.svg";
 import { getLoanNumber } from "../../apis/LoanApi";
 
 const RadishContainer = styled.div`
@@ -27,6 +28,31 @@ const PotRadish = styled.img`
   margin-bottom: -30px;
 `;
 
+const ChatBubbleContainer = styled.div`
+  position: absolute;
+  top: 15px;
+  right: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const ChatBubble = styled.img`
+  width: 100px;
+  height: auto;
+`;
+
+const ChatText = styled.p`
+  position: absolute;
+  top: 40%;
+  left: 55%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+  color: #333;
+`;
+
 const PullRadishButton = styled.button`
   position: absolute;
   top: 90%;
@@ -45,8 +71,7 @@ const PullRadishButton = styled.button`
 
 const fadeInOut = keyframes`
   0% { opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
+  50% { opacity: 1; }
   100% { opacity: 0; }
 `;
 
@@ -55,8 +80,8 @@ const Message = styled.div`
   bottom: 200px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.8);
-  color: #c41a1a;
+  background-color: rgba(144, 144, 144, 0.8);
+  color: #ffffff;
   padding: 10px 20px;
   border-radius: 5px;
   font-size: 18px;
@@ -87,17 +112,6 @@ function HiddenRadish() {
     }
     fetchLoanNum();
   }, []);
-
-  // useEffect(() => {
-  //   console.log(
-  //     "State updated - paidLoanNum:",
-  //     paidLoanNum,
-  //     "totalLoanNum:",
-  //     totalLoanNum,
-  //     "isPullAvailable:",
-  //     isPullAvailable
-  //   );
-  // }, [paidLoanNum, totalLoanNum, isPullAvailable]);
 
   const getPotImage = () => {
     const images = [potDefault, pot2nd, pot3rd, pot4th, pot5th, pot6th];
@@ -145,6 +159,12 @@ function HiddenRadish() {
 
   return (
     <RadishContainer>
+      <ChatBubbleContainer>
+        <ChatBubble src={GrayChatBubble} alt="Chat bubble" />
+        <ChatText>
+          {`${totalLoanNum}/${paidLoanNum}`}개 <br /> 상환{" "}
+        </ChatText>
+      </ChatBubbleContainer>
       <PotRadish src={getPotImage()} alt="Radish pot" />
       {isComplete && (
         <PullRadishButton
