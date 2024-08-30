@@ -1,32 +1,44 @@
-@import url("http://fonts.googleapis.com/earlyaccess/nanumgothic.css");
-
 @font-face {
-  font-family: "GmarketSansMedium";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff")
-    format("woff");
-  font-weight: 500;
+  font-family: "Dream";
   font-style: normal;
+  font-weight: 400;
+  src: url("//fastly.jsdelivr.net/korean-webfonts/1/corps/lottemart/LotteMartDream/LotteMartDreamMedium.woff2")
+      format("woff2"),
+    url("//fastly.jsdelivr.net/korean-webfonts/1/corps/lottemart/LotteMartDream/LotteMartDreamMedium.woff")
+      format("woff");
+}
+@font-face {
+  font-family: "Dream";
+  font-style: normal;
+  font-weight: 700;
+  src: url("//fastly.jsdelivr.net/korean-webfonts/1/corps/lottemart/LotteMartDream/LotteMartDreamBold.woff2")
+      format("woff2"),
+    url("//fastly.jsdelivr.net/korean-webfonts/1/corps/lottemart/LotteMartDream/LotteMartDreamBold.woff")
+      format("woff");
+}
+@font-face {
+  font-family: "Dream";
+  font-style: normal;
+  font-weight: 300;
+  src: url("//fastly.jsdelivr.net/korean-webfonts/1/corps/lottemart/LotteMartDream/LotteMartDreamLight.woff2")
+      format("woff2"),
+    url("//fastly.jsdelivr.net/korean-webfonts/1/corps/lottemart/LotteMartDream/LotteMartDreamLight.woff")
+      format("woff");
+}
+.lottemartdream * {
+  font-family: "Dream", sans-serif;
 }
 
 @font-face {
-  font-family: "S-CoreDream";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff")
+  font-family: "mainFont";
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
     format("woff");
-  font-weight: 300; /* Light weight */
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "S-CoreDream";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-6Bold.woff")
-    format("woff");
-  font-weight: bold; /* Bold weight */
+  font-weight: 400;
   font-style: normal;
 }
 
 :root {
-  font-family: Nanum Gothic, GmarketSansMedium, S-CoreDream, Inter, system-ui,
-    Avenir, Helvetica, Arial, sans-serif;
+  font-family: mainFont, Dream, system-ui, Helvetica, Arial, sans-serif;
   line-height: 1.5;
 
   color-scheme: light dark;

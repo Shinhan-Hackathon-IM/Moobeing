@@ -7,6 +7,7 @@ import CreditScore from "../components/Home/CreditScore";
 import Footer from "../components/Fixed/Footer";
 import Header from "../components/Fixed/Header";
 import { getNotStartedQuiz } from "../apis/QuizApi";
+import useUserStore from "../store/UserStore"; // Zustand 스토어 import
 
 const Screen = styled.div`
   display: flex;
@@ -61,45 +62,47 @@ const QuizWrapper = styled.div`
 const Home = () => {
   const [isQuizPopupVisible, setQuizPopupVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [isAlarmVisible, setAlarmVisible] = useState(true);
-
-  const handleCloseQuizPopup = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setQuizPopupVisible(false);
-      setAlarmVisible(false);
-    }, 500);
-  };
-
-  const handleAlarmClick = () => {
-    setQuizPopupVisible(true);
-  };
-
   const [quizData, setQuizData] = useState(null);
+  const setCanAccessQuiz = useUserStore((state) => state.setCanAccessQuiz);
 
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
         const data = await getNotStartedQuiz();
         setQuizData(data);
+        if (data) {
+          setQuizPopupVisible(true);
+          setCanAccessQuiz(true); // 퀴즈 팝업이 표시될 때 canAccessQuiz를 true로 설정
+        }
       } catch (error) {
         console.error("퀴즈 데이터 가져오기 실패:", error);
       }
     };
 
     fetchQuizData();
-  }, []);
+  }, [setCanAccessQuiz]);
+
+  useEffect(() => {
+    // isQuizPopupVisible 상태가 변경될 때마다 canAccessQuiz 업데이트
+    setCanAccessQuiz(isQuizPopupVisible);
+  }, [isQuizPopupVisible, setCanAccessQuiz]);
+
+  const handleCloseQuizPopup = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setQuizPopupVisible(false);
+      setIsClosing(false);
+      setCanAccessQuiz(false); // 퀴즈 팝업이 닫힐 때 canAccessQuiz를 false로 설정
+    }, 500);
+  };
 
   return (
     <Screen>
       <Container>
-        <Header
-          onAlarmClick={handleAlarmClick}
-          isAlarmVisible={isAlarmVisible}
-        />
-        {isQuizPopupVisible && (
+        <Header />
+        {isQuizPopupVisible && quizData && (
           <QuizWrapper $isclosing={isClosing}>
-            <QuizPopup onClose={handleCloseQuizPopup} />
+            <QuizPopup onClose={handleCloseQuizPopup} quizData={quizData} />
           </QuizWrapper>
         )}
         <LoanHistory />

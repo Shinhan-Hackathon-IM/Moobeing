@@ -5,7 +5,10 @@ const useUserStore = create((set) => ({
   userInfo: true, // 사용자 정보를 저장할 상태
   isLoading: true, // 로딩 상태를 저장할 상태
   creditRate: null, // 신용등급 정보를 저장할 상태
+  canAccessQuiz: false,
 
+  // 퀴즈로 바로 갈 수 있는건지
+  setCanAccessQuiz: (value) => set({ canAccessQuiz: value }),
   // 사용자 정보를 설정하는 액션
   setUserInfo: (info) => set({ userInfo: info, isLoading: false }),
 

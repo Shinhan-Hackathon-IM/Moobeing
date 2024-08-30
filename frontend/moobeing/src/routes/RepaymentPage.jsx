@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/Fixed/Header";
 import Footer from "../components/Fixed/Footer";
@@ -197,6 +197,33 @@ const PayButton = styled.button`
   }
 `;
 
+const fadeInOut = keyframes`
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
+`;
+
+const AlertContainer = styled.div`
+  position: fixed;
+  top: 80px; // Adjust this value based on your Header height
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100000;
+`;
+
+const AlertMessage = styled.div`
+  background-color: rgba(144, 144, 144, 0.8);
+  color: #ffffff;
+  padding: 10px 20px;
+  margin-top: 10px;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: bold;
+  white-space: nowrap;
+  animation: ${fadeInOut} 2s ease-in-out;
+`;
+
 const Repayment = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -210,6 +237,7 @@ const Repayment = () => {
   const [repaymentAmount, setRepaymentAmount] = useState(0);
   const [isLoanDropdownOpen, setIsLoanDropdownOpen] = useState(false);
   const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   // 남는돈 있다면 가져와서 표시
   useEffect(() => {
@@ -262,9 +290,15 @@ const Repayment = () => {
     return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
+  const showAlert = (message) => {
+    console.log("Alert Message:", message); // 이 라인을 추가
+    setAlertMessage(message);
+    setTimeout(() => setAlertMessage(""), 2000);
+  };
+
   const handlePayment = async () => {
     if (!selectedLoan || !selectedAccount || repaymentAmount <= 0) {
-      alert("입력하지 않은 정보가 있습니다.");
+      showAlert("입력하지 않은 정보가 있습니다.");
       return;
     }
 
@@ -272,32 +306,39 @@ const Repayment = () => {
       const selectedAccountNum = accounts
         .find((account) => account.id === parseInt(selectedAccount, 10))
         ?.name.split("\n")[1]
-        .replace(/[()]/g, ""); // 실제 선택한 계좌번호 가져오기
+        .replace(/[()]/g, "");
 
       if (!selectedAccountNum) {
-        alert("유효한 계좌를 선택하세요.");
+        showAlert("유효한 계좌를 선택하세요.");
         return;
       }
 
       const requestBody = {
-        accountNum: String(selectedAccountNum), // 실제 계좌번호로 설정
-        loanName: String(selectedLoan), // 선택된 대출 이름으로 설정
-        money: Number(repaymentAmount), // 상환할 금액 (원 단위)
+        accountNum: String(selectedAccountNum),
+        loanName: String(selectedLoan),
+        money: Number(repaymentAmount),
       };
 
       const result = await postAccountLoan(requestBody);
       console.log("대출금 상환 성공:", result);
-      alert("상환되었습니다!"); // 성공 메시지 표시
-      navigate(`/loan-journey/${selectedLoan}`); // 상환 후 페이지 이동
+      showAlert("상환되었습니다!");
+
+      // 딜레이 추가
+      setTimeout(() => {
+        navigate(`/loan-journey/${selectedLoan}`);
+      }, 2000); // 2초 후 페이지 이동
     } catch (error) {
       console.error("대출금 상환 중 오류 발생:", error);
-      alert("상환 실패! 다시 시도해 주세요."); // 오류 메시지 표시
+      showAlert("상환 실패! 다시 시도해 주세요.");
     }
   };
-
   return (
     <Container>
       <Header />
+      <AlertContainer>
+        {alertMessage && <AlertMessage>{alertMessage}</AlertMessage>}
+      </AlertContainer>
+
       <MainContent>
         <h1>대출 상환</h1>
         <RepaymentComponent>

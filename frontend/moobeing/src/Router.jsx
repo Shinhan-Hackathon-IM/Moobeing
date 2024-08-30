@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./routes/HomePage";
 import Loading from "./routes/LoadingPage";
@@ -13,47 +14,47 @@ import Welcome from "./routes/WelcomePage";
 import Quiz from "./routes/QuizPage";
 import QuizResult from "./routes/QuizResultPage";
 import GetRadish from "./routes/GetRadishPage";
-import { useEffect } from "react";
-import useUserStore from "./store/UserStore"; // Zustand 스토어 임포트
+import useUserStore from "./store/UserStore";
 
 function Router() {
-  const { userInfo, isLoading, setLoading, setUserInfo } = useUserStore(
-    (state) => ({
+  const { userInfo, isLoading, setLoading, setUserInfo, canAccessQuiz } =
+    useUserStore((state) => ({
       userInfo: state.userInfo,
       isLoading: state.isLoading,
       setLoading: state.setLoading,
       setUserInfo: state.setUserInfo,
-    })
-  );
+      canAccessQuiz: state.canAccessQuiz,
+    }));
+
+  const [initializing, setInitializing] = useState(true);
 
   useEffect(() => {
-    // 사용자가 로그인되어 있는지 확인하기 위한 초기화 로직
-    const checkUserLoggedIn = async () => {
+    const initializeApp = async () => {
       setLoading(true);
       // 여기서 사용자 인증 및 정보를 가져오는 로직을 수행
       // 예를 들어, 토큰 유효성 검사 또는 사용자 정보 가져오기
 
+      // 시뮬레이션을 위한 setTimeout
       setTimeout(() => {
-        setLoading(false); // 로딩 상태 업데이트 (로그인 확인 로직이 필요)
+        setLoading(false);
+        setInitializing(false);
       }, 1000);
     };
 
-    checkUserLoggedIn();
+    initializeApp();
   }, [setLoading]);
 
-  if (isLoading) {
-    return <Loading />; // 로딩 중일 때 로딩 페이지 표시
+  if (initializing) {
+    return <Loading isLoading={true} />;
   }
 
   return (
     <BrowserRouter>
       <Routes>
-        {/* 로그인 여부에 따라 리디렉션 또는 접근 제어 */}
         <Route
           path="/"
           element={userInfo ? <Home /> : <Navigate to="/login" />}
         />
-        <Route path="/loading" element={<Loading />} />
         <Route
           path="/loan-journey/:loanName"
           element={userInfo ? <LoanJourney /> : <Navigate to="/login" />}
@@ -89,7 +90,15 @@ function Router() {
         />
         <Route
           path="/quiz"
-          element={userInfo ? <Quiz /> : <Navigate to="/login" />}
+          element={
+            userInfo && canAccessQuiz ? (
+              <Quiz />
+            ) : userInfo ? (
+              <Navigate to="/" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
         />
         <Route
           path="/quiz/result/:quizId"

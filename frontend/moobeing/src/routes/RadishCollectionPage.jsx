@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styled, { keyframes } from "styled-components";
 import Footer from "../components/Fixed/Footer";
 import Header from "../components/Fixed/Header";
@@ -133,6 +133,7 @@ const CharacterName = styled.span`
   padding: 2px 5px;
   border-radius: 20px;
   background-color: ${(props) => {
+    console.log("Rank:", props.rank); // 이 줄을 추가해서 rank 값을 확인
     switch (props.rank) {
       case "B":
         return "#D6F2CE";
@@ -251,10 +252,9 @@ const GrowButton = styled.button`
 `;
 
 const RadishCollection = () => {
-  const [sortBy, setSortBy] = useState("date");
+  const [sortBy, setSortBy] = useState("radishCreateTime");
   const [isChooseActive, setIsChooseActive] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
-  const [selectedSort, setSelectedSort] = useState("date");
   const [characters, setCharacters] = useState([]);
   const { userInfo, setUserInfo } = useUserStore();
   const [growingCharacter, setGrowingCharacter] = useState(null);
@@ -272,21 +272,18 @@ const RadishCollection = () => {
     fetchRadishCollection();
   }, []);
 
-  const handleSort = (type) => {
-    setSortBy(type);
-    let sortedCharacters = [...characters];
-    if (type === "date") {
-      sortedCharacters.sort(
-        (a, b) => new Date(b.radishDate) - new Date(a.radishDate)
+  const sortedCharacters = useMemo(() => {
+    let sorted = [...characters];
+    if (sortBy === "radishCreateTime") {
+      sorted.sort(
+        (a, b) => new Date(b.radishCreateTime) - new Date(a.radishCreateTime)
       );
-    } else if (type === "radishRank") {
+    } else if (sortBy === "radishRank") {
       const rankOrder = { S: 3, A: 2, B: 1 };
-      sortedCharacters.sort(
-        (a, b) => rankOrder[b.radishRank] - rankOrder[a.radishRank]
-      );
+      sorted.sort((a, b) => rankOrder[b.radishRank] - rankOrder[a.radishRank]);
     }
-    setCharacters(sortedCharacters);
-  };
+    return sorted;
+  }, [characters, sortBy]);
 
   const handleChoose = () => {
     setIsChooseActive(!isChooseActive);
@@ -322,16 +319,17 @@ const RadishCollection = () => {
     try {
       const newRadish = await growBabyRadish();
       setTimeout(() => {
-        const updatedCharacters = characters.map((c) => {
-          if (c.radishId === char.radishId) {
-            return {
-              ...newRadish,
-              radishNumber: c.radishNumber - 5,
-            };
-          }
-          return c;
-        });
-        setCharacters(updatedCharacters);
+        setCharacters((prevCharacters) =>
+          prevCharacters.map((c) => {
+            if (c.radishId === char.radishId) {
+              return {
+                ...newRadish,
+                radishNumber: c.radishNumber - 5,
+              };
+            }
+            return c;
+          })
+        );
         setGrowingCharacter(null);
       }, 2000);
     } catch (error) {
@@ -350,14 +348,14 @@ const RadishCollection = () => {
               <Subtitle>무 컬렉션</Subtitle>
               <SortButtonContainer>
                 <SortButton
-                  onClick={() => handleSort("date")}
-                  isselected={sortBy === "date"}
+                  onClick={() => setSortBy("radishCreateTime")}
+                  isselected={sortBy === "radishCreateTime"}
                 >
                   날짜순
                 </SortButton>
                 <LineImg src={Line} alt="Line" />
                 <SortButton
-                  onClick={() => handleSort("radishRank")}
+                  onClick={() => setSortBy("radishRank")}
                   isselected={sortBy === "radishRank"}
                 >
                   랭킹순
@@ -373,7 +371,7 @@ const RadishCollection = () => {
               </ChooseButton>
             </ChooseButtonContainer>
             <CardContainer>
-              {characters.map((char) => (
+              {sortedCharacters.map((char) => (
                 <CharacterCard
                   key={char.radishId}
                   isselectable={isChooseActive ? "true" : "false"}
