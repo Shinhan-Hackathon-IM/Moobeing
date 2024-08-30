@@ -217,7 +217,7 @@ public class LoanService {
 
 		// 2. 여정지도에 순서대로 하나씩 넣는다. 이 때 시작 점, 끝점을 넣는다.
 		for (AverageLoanRepaymentRecord averageLoanRepaymentRecord: averageLoanRepaymentRecordList){
-			getAllLoanMapDtoList.add(GetAllLoanMapDto.of(startYear++, startMonth++, averageLoanRepaymentRecord.getRepaymentBalance()));
+			getAllLoanMapDtoList.add(GetAllLoanMapDto.of(startYear, startMonth++, averageLoanRepaymentRecord.getRepaymentBalance()));
 
 			if(startMonth > 12){
 				startMonth = 1;
