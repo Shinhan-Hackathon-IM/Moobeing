@@ -6,7 +6,11 @@ import HiddenRadish from "../components/TotalGraph/HiddenRadish";
 import LeftMoney from "../components/TotalGraph/LeftMoney";
 import Footer from "../components/Fixed/Footer";
 import Header from "../components/Fixed/Header";
-import { getAllLoanMapByMonth, getAllLoanBuddy } from "../apis/LoanApi";
+import {
+  getAllLoanMapByMonth,
+  getAllLoanBuddy,
+  getAllLoanMapByYear,
+} from "../apis/LoanApi";
 
 const PageWrapper = styled.div`
   display: flex;
@@ -57,6 +61,7 @@ const RadishWrapper = styled.div`
 
 const TotalJourney = () => {
   const [journeyData, setJourneyData] = useState([]);
+  const [yearJourneyData, setYearJourneyData] = useState([]);
   const [peerData, setPeerData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -66,16 +71,20 @@ const TotalJourney = () => {
       try {
         setLoading(true);
 
-        const [loanResponse, buddyResponse] = await Promise.all([
-          getAllLoanMapByMonth(),
-          getAllLoanBuddy(),
-        ]);
+        const [loanResponse, buddyResponse, yearJourneyResponse] =
+          await Promise.all([
+            getAllLoanMapByMonth(),
+            getAllLoanBuddy(),
+            getAllLoanMapByYear(),
+          ]);
 
         const { getAllJourneyList: journeyListData } = loanResponse;
         const { getAllJourneyList: peerListData } = buddyResponse;
+        const { getAllJourneyList: yearJourneyData } = yearJourneyResponse;
 
         setJourneyData(journeyListData);
         setPeerData(peerListData);
+        setYearJourneyData(yearJourneyData);
       } catch (err) {
         setError(err);
       } finally {
@@ -95,7 +104,11 @@ const TotalJourney = () => {
         <Header />
         <Container>
           {journeyData.length > 0 ? (
-            <TotalGraph data={journeyData} peerData={peerData} />
+            <TotalGraph
+              data={journeyData}
+              peerData={peerData}
+              yearData={yearJourneyData}
+            />
           ) : (
             <div>데이터가 없습니다.</div>
           )}
