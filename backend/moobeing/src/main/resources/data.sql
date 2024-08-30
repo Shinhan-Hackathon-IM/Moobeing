@@ -1,6 +1,6 @@
 -- 1. 맴버 생성
-INSERT IGNORE INTO member (member_id, email, password, total_points, total_loan, name, gender, birthday, user_key, selected_radish_id, month_aver)
-VALUES (1, 'test@gmail.com', 'test', 0, 0, 'Test User', 'M', '000101', 'user_key_123', 1, 10000000);
+INSERT IGNORE INTO member (member_id, email, password, total_points, total_loan, name, gender, birthday, user_key, selected_radish_id, month_aver, month_complete)
+VALUES (1, 'test@gmail.com', 'test', 0, 0, 'Test User', 'M', '000101', 'user_key_123', 1, 10000000, false);
 
 -- 2. 대출 상품 더미 데이터 12개 생성
 INSERT IGNORE INTO loan_product (loan_product_id, loan_name, bank_image_url, bank_name, loan_period, interest_rate, description) VALUES

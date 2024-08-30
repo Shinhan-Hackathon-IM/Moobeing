@@ -3,10 +3,7 @@ package com.im.moobeing.domain.loan.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.im.moobeing.domain.loan.service.LoanService;
 import com.im.moobeing.domain.member.entity.Member;
@@ -67,5 +64,23 @@ public class LoanController {
 	@GetMapping("/all-buddy")
 	public ResponseEntity<?> getAllBuddyLoanMap(@AuthenticationPrincipal Member member){
 		return ResponseEntity.status(HttpStatus.OK).body(loanService.getAllBuddyLoanMap(member));
+	}
+
+	@Operation(summary = "몇개의 대출을 모두 갚았는 지", description = "몇개의 대출을 모두 갚았는 지 알려주는 API")
+	@GetMapping("/count")
+	public ResponseEntity<?> getAllCountLoan(@AuthenticationPrincipal Member member){
+		return ResponseEntity.status(HttpStatus.OK).body(loanService.getAllCountLoan(member));
+	}
+
+	@Operation(summary = "이번 달 대출금 버튼 클릭 ", description = "버튼을 클릭하면 대출금 보내기")
+	@PostMapping("/monthClick")
+	public ResponseEntity<?> hideMonthButton(@AuthenticationPrincipal Member member) {
+		return ResponseEntity.status(HttpStatus.OK).body(loanService.hideMonthButton(member));
+	}
+
+	@Operation(summary = "Test 맴버 대출 무 살리기", description = "Test 맴버 대출 무 살리기")
+	@PostMapping("/testMonth")
+	public ResponseEntity<?> showMonthButton(@AuthenticationPrincipal Member member) {
+		return ResponseEntity.status(HttpStatus.OK).body(loanService.showMonthButton(member));
 	}
 }

@@ -118,15 +118,22 @@ public class MemberService {
     @Transactional
     public AddMemberRadishResponse addMemberRadish(Member member) {
         // 랜덤 Radish ID 선택
-        Long randomRadishId = 1 + new Random().nextLong(radishRepository.count());
+        long count = radishRepository.count();
+        Long randomRadishId;
+
+        do {
+            randomRadishId = 1 + new Random().nextLong(count);
+        } while (randomRadishId == 3L);
 
         // 해당 radishId에 대한 Radish 엔티티를 찾습니다.
+        Long finalRandomRadishId = randomRadishId;
         Radish radish = radishRepository.findById(randomRadishId)
-            .orElseThrow(() -> new IllegalArgumentException("Radish not found with id: " + randomRadishId));
+            .orElseThrow(() -> new IllegalArgumentException("Radish not found with id: " + finalRandomRadishId));
 
         // MemberRadish 생성 및 추가
+        Long finalRandomRadishId1 = randomRadishId;
         MemberRadish existingMemberRadish = member.getMemberRadishes().stream()
-            .filter(memberRadish -> memberRadish.getRadish().getId().equals(randomRadishId))
+            .filter(memberRadish -> memberRadish.getRadish().getId().equals(finalRandomRadishId1))
             .findFirst()
             .orElse(null);
 

@@ -51,6 +51,9 @@ public class Member extends BaseTimeEntity {
     @Column(name = "selected_radish_id", nullable = true)
     private Long selectedRadishId = 1L;
 
+    @Column(name = "month_complete", nullable = true, length = 255)
+    private MonthStatus monthComplete = MonthStatus.FALSE;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<MemberRadish> memberRadishes = new ArrayList<>();
 
@@ -58,7 +61,7 @@ public class Member extends BaseTimeEntity {
     private String account;
 
     @Builder
-    public Member(Long id, String email, String password, Long totalPoints, Long totalLoan, String name, String gender, String birthday, String userKey, Long monthAver, Long selectedRadishId, String account) {
+    public Member(Long id, String email, String password, Long totalPoints, Long totalLoan, String name, String gender, String birthday, String userKey, Long monthAver, Long selectedRadishId, MonthStatus monthComplete, String account) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -70,6 +73,7 @@ public class Member extends BaseTimeEntity {
         this.userKey = userKey;
         this.monthAver = monthAver;
         this.selectedRadishId = selectedRadishId;
+        this.monthComplete = monthComplete;
         this.account = account;
     }
 
@@ -94,4 +98,8 @@ public class Member extends BaseTimeEntity {
     }
 
     public void setMemberAccount(String account) { this.account = account; }
+
+    public void setMemberComplete(MonthStatus monthComplete) {
+        this.monthComplete = monthComplete;
+    }
 }

@@ -11,11 +11,16 @@ import com.im.moobeing.domain.loan.repository.AverageLoanRepaymentRecordReposito
 import com.im.moobeing.domain.loan.repository.LoanProductRepository;
 import com.im.moobeing.domain.loan.repository.LoanRepaymentRecordRepository;
 import com.im.moobeing.domain.loan.repository.MemberLoanRepository;
+import com.im.moobeing.domain.member.dto.response.AddMemberRadishResponse;
 import com.im.moobeing.domain.member.entity.Member;
+import com.im.moobeing.domain.member.entity.MonthStatus;
+import com.im.moobeing.domain.member.repository.MemberRepository;
+import com.im.moobeing.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -27,8 +32,10 @@ public class LoanService {
 	private final LoanProductRepository loanProductRepository;
 	private final AverageLoanRepaymentRecordRepository averageLoanRepaymentRecordRepository;
 	private final MemberLoanRepository memberLoanRepository;
+	private final MemberService memberService;
 
 	private static final int CURRENT_YEAR = 2024;
+	private final MemberRepository memberRepository;
 
 	public GetMemberLoanResponse getMemberLoan(Member member, String sort) {
 		// Member ID로 MemberLoan을 조회
@@ -283,5 +290,59 @@ public class LoanService {
 
 		// 이후에 mergedLoanMapDtoList를 반환하거나, GetAllLoanMapResponse로 변환하여 반환
 		return GetAllLoanMapResponse.of(mergedLoanMapDtoList);
+	}
+
+	@Transactional
+    public GetAllCountLoanResponse getAllCountLoan(Member member) {
+		List<MemberLoan> memberLoans = memberLoanRepository.findAllByMemberId(member.getId());
+
+		LocalDate today = LocalDate.now();
+
+		int year = today.getYear();
+		int month = today.getMonthValue();
+
+		int allLoanCnt = 0;
+		int completedCnt = 0;
+
+		for (MemberLoan loan : memberLoans) {
+			if(loan.getRemainingBalance() == 0){
+				continue;
+			}
+			allLoanCnt++;
+			if (loanRepaymentRecordRepository.existsByMemberLoanIdAndYearAndMonth(loan.getId(), year, month)){
+				completedCnt++;
+			}
+		}
+
+		if (member.getMonthComplete() == MonthStatus.DONE){
+			return GetAllCountLoanResponse.of(allLoanCnt,completedCnt, false);
+		}
+
+		member.setMemberComplete(MonthStatus.TRUE);
+
+		memberRepository.save(member);
+
+		return GetAllCountLoanResponse.of(allLoanCnt, completedCnt, true);
+    }
+
+	@Transactional
+	public AddMemberRadishResponse hideMonthButton(Member member) {
+		if (member.getMonthComplete() != MonthStatus.TRUE){
+			throw new RuntimeException("todo 너 잘못 보냈어!!");
+		}
+		member.setMemberComplete(MonthStatus.DONE);
+
+		memberRepository.save(member);
+
+		return memberService.addMemberRadish(member);
+	}
+
+	@Transactional
+	public String showMonthButton(Member member) {
+		member.setMemberComplete(MonthStatus.TRUE);
+
+		memberRepository.save(member);
+
+		return "맴버 complete 살리기 큭큭";
 	}
 }
