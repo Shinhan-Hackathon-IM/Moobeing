@@ -61,9 +61,6 @@ const TotalJourney = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [paidLoanNum, setPaidLoanNum] = useState(5);
-  const [totalLoanNum, setTotalLoanNum] = useState(5);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -105,10 +102,7 @@ const TotalJourney = () => {
           <PercentBar />
           <LeftMoney />
           <RadishWrapper>
-            <HiddenRadish
-              PaidLoanNum={paidLoanNum}
-              TotalLoanNum={totalLoanNum}
-            />
+            <HiddenRadish />
           </RadishWrapper>
         </Container>
         <Rectangle />

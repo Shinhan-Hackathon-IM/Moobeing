@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import Footer from "../components/Fixed/Footer";
 import Header from "../components/Fixed/Header";
 import Line from "../assets/button/Line.svg";
-import { getUserRadishCollection, selectRadish } from "../apis/RadishApi";
+import {
+  getUserRadishCollection,
+  selectRadish,
+  growBabyRadish,
+} from "../apis/RadishApi";
 import useUserStore from "../store/UserStore";
 import checkBox from "../assets/checkBox.svg";
 
@@ -13,13 +17,13 @@ const PageWrapper = styled.div`
   width: 100%;
   height: 100vh;
   overflow: hidden;
+  padding-bottom: 30px;
 `;
 
 const ScrollableContent = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
   width: 100%;
   overflow-y: auto;
   box-sizing: border-box;
@@ -31,10 +35,16 @@ const ContentContainer = styled.div`
 `;
 
 const Container = styled.div`
-  margin-top: 5vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin: 5vh auto 0;
+  padding: 0 20px;
+  box-sizing: border-box;
+`;
+
+const TitleContainer = styled.div`
+  text-align: center;
+  margin-bottom: 20px;
 `;
 
 const Subtitle = styled.h2`
@@ -55,10 +65,19 @@ const SortButton = styled.button`
   font-weight: ${(props) => (props.isselected ? "bold" : "normal")};
 `;
 
-const ChooseButton = styled.button`
-  align-self: flex-end;
-  margin-right: 20px;
+const LineImg = styled.img`
+  height: 15px;
+  padding: 0px 10px;
+  margin-top: 2px;
+`;
+
+const ChooseButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
   margin-bottom: 20px;
+`;
+
+const ChooseButton = styled.button`
   background-color: ${(props) =>
     props.isactive === "true" ? "#348833" : "#E0EED2"};
   color: ${(props) => (props.isactive === "true" ? "white" : "black")};
@@ -73,13 +92,12 @@ const CardContainer = styled.div`
   flex-wrap: wrap;
   justify-content: flex-start;
   gap: 20px;
-  padding: 0 20px;
   margin-bottom: 50px;
 `;
 
 const CharacterCard = styled.div`
-  width: 45%;
-  margin-left: 3px;
+  width: calc(50% - 10px);
+  max-width: 180px;
   height: 150px;
   background-color: #f5fded;
   display: flex;
@@ -87,6 +105,7 @@ const CharacterCard = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
   border-radius: 10%;
   cursor: ${(props) => (props.isselectable === "true" ? "pointer" : "default")};
   box-shadow: 0.3px 0.3px 6px rgba(0, 0, 0, 0.12);
@@ -95,11 +114,16 @@ const CharacterCard = styled.div`
     `
     filter: drop-shadow(0 0 8px #348833);
   `}
+
+  @media (max-width: 400px) {
+    width: calc(50% - 10px);
+    margin-left: 0;
+  }
 `;
 
 const CharacterImage = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
 `;
 
 const CharacterName = styled.span`
@@ -128,6 +152,14 @@ const CharacterCount = styled.span`
   right: 10px;
 `;
 
+const CheckBoxOverlay = styled.img`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 20px;
+  height: 20px;
+`;
+
 const DecisionButtonContainer = styled.div`
   position: fixed;
   bottom: 90px;
@@ -148,18 +180,74 @@ const DecisionButton = styled.button`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
-const LineImg = styled.img`
-  height: 15px;
-  padding: 0px 10px;
-  margin-top: 2px;
+const explosionAnimation = keyframes`
+  0% { transform: scale(0); opacity: 1; }
+  20% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2); opacity: 0; }
 `;
 
-const CheckBoxOverlay = styled.img`
+const smokeAnimation = keyframes`
+  0% { transform: scale(0); opacity: 1; }
+  50% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(2); opacity: 0; }
+`;
+
+const newCharacterAnimation = keyframes`
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+`;
+
+const AnimationContainer = styled.div`
   position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 20px;
-  height: 20px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ExplosionEffect = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #ffd700;
+  border-radius: 50%;
+  animation: ${explosionAnimation} 0.5s ease-out;
+`;
+
+const SmokeEffect = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(200, 200, 200, 0.8);
+  border-radius: 50%;
+  animation: ${smokeAnimation} 1s ease-out 0.5s;
+`;
+
+const NewCharacterEffect = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ${newCharacterAnimation} 0.5s ease-out 1.5s both;
+`;
+
+const GrowButton = styled.button`
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #348833;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  z-index: 10;
 `;
 
 const RadishCollection = () => {
@@ -169,6 +257,7 @@ const RadishCollection = () => {
   const [selectedSort, setSelectedSort] = useState("date");
   const [characters, setCharacters] = useState([]);
   const { userInfo, setUserInfo } = useUserStore();
+  const [growingCharacter, setGrowingCharacter] = useState(null);
 
   useEffect(() => {
     const fetchRadishCollection = async () => {
@@ -184,18 +273,19 @@ const RadishCollection = () => {
   }, []);
 
   const handleSort = (type) => {
-    if (type === "date") {
-      setCharacters([...characters]);
-    } else if (type === "radishRank") {
-      const sortedCharacters = [...characters].sort((a, b) => {
-        if (a.radishRank < b.radishRank) return -1;
-        if (a.radishRank > b.radishRank) return 1;
-        return 0;
-      });
-      setCharacters(sortedCharacters);
-    }
     setSortBy(type);
-    setSelectedSort(type);
+    let sortedCharacters = [...characters];
+    if (type === "date") {
+      sortedCharacters.sort(
+        (a, b) => new Date(b.radishDate) - new Date(a.radishDate)
+      );
+    } else if (type === "radishRank") {
+      const rankOrder = { S: 3, A: 2, B: 1 };
+      sortedCharacters.sort(
+        (a, b) => rankOrder[b.radishRank] - rankOrder[a.radishRank]
+      );
+    }
+    setCharacters(sortedCharacters);
   };
 
   const handleChoose = () => {
@@ -227,34 +317,61 @@ const RadishCollection = () => {
     }
   };
 
+  const handleGrow = async (char) => {
+    setGrowingCharacter(char);
+    try {
+      const newRadish = await growBabyRadish();
+      setTimeout(() => {
+        const updatedCharacters = characters.map((c) => {
+          if (c.radishId === char.radishId) {
+            return {
+              ...newRadish,
+              radishNumber: c.radishNumber - 5,
+            };
+          }
+          return c;
+        });
+        setCharacters(updatedCharacters);
+        setGrowingCharacter(null);
+      }, 2000);
+    } catch (error) {
+      console.error("Failed to grow radish:", error);
+      setGrowingCharacter(null);
+    }
+  };
+
   return (
     <PageWrapper>
       <Header />
       <ScrollableContent>
         <ContentContainer>
           <Container>
-            <Subtitle>무 컬렉션</Subtitle>
-            <SortButtonContainer>
-              <SortButton
-                onClick={() => handleSort("date")}
-                isselected={selectedSort === "date"}
+            <TitleContainer>
+              <Subtitle>무 컬렉션</Subtitle>
+              <SortButtonContainer>
+                <SortButton
+                  onClick={() => handleSort("date")}
+                  isselected={sortBy === "date"}
+                >
+                  날짜순
+                </SortButton>
+                <LineImg src={Line} alt="Line" />
+                <SortButton
+                  onClick={() => handleSort("radishRank")}
+                  isselected={sortBy === "radishRank"}
+                >
+                  랭킹순
+                </SortButton>
+              </SortButtonContainer>
+            </TitleContainer>
+            <ChooseButtonContainer>
+              <ChooseButton
+                onClick={handleChoose}
+                isactive={isChooseActive.toString()}
               >
-                날짜순
-              </SortButton>
-              <LineImg src={Line} alt="Line" />
-              <SortButton
-                onClick={() => handleSort("radishRank")}
-                isselected={selectedSort === "radishRank"}
-              >
-                랭킹순
-              </SortButton>
-            </SortButtonContainer>
-            <ChooseButton
-              onClick={handleChoose}
-              isactive={isChooseActive.toString()}
-            >
-              선택
-            </ChooseButton>
+                선택
+              </ChooseButton>
+            </ChooseButtonContainer>
             <CardContainer>
               {characters.map((char) => (
                 <CharacterCard
@@ -263,7 +380,17 @@ const RadishCollection = () => {
                   isselected={selectedCharacter?.radishId === char.radishId}
                   onClick={() => handleCardClick(char)}
                 >
-                  <CharacterImage src={char.radishImageUrl} />
+                  {growingCharacter?.radishId === char.radishId ? (
+                    <AnimationContainer>
+                      <ExplosionEffect />
+                      <SmokeEffect />
+                      <NewCharacterEffect>
+                        <CharacterImage src={char.radishImageUrl} />
+                      </NewCharacterEffect>
+                    </AnimationContainer>
+                  ) : (
+                    <CharacterImage src={char.radishImageUrl} />
+                  )}
                   <CharacterName rank={char.radishRank}>
                     {char.radishName}
                   </CharacterName>
@@ -273,6 +400,17 @@ const RadishCollection = () => {
                     (isChooseActive &&
                       selectedCharacter?.radishId === char.radishId)) && (
                     <CheckBoxOverlay src={checkBox} alt="Selected" />
+                  )}
+                  {char.radishName === "응애무" && char.radishNumber >= 5 && (
+                    <GrowButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleGrow(char);
+                      }}
+                      disabled={growingCharacter !== null}
+                    >
+                      성장하기
+                    </GrowButton>
                   )}
                 </CharacterCard>
               ))}

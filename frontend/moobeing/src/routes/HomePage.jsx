@@ -6,6 +6,7 @@ import QuizPopup from "../components/Home/QuizPopup";
 import CreditScore from "../components/Home/CreditScore";
 import Footer from "../components/Fixed/Footer";
 import Header from "../components/Fixed/Header";
+import { getNotStartedQuiz } from "../apis/QuizApi";
 
 const Screen = styled.div`
   display: flex;
@@ -34,8 +35,6 @@ const slideDown = keyframes`
     opacity: 1;
   }
 `;
-
-import { getNotStartedQuiz } from "../apis/QuizApi";
 
 const Container = styled.div`
   flex: 1;

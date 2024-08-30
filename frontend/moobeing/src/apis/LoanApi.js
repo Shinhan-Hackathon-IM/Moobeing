@@ -85,3 +85,32 @@ export const getLoanPercent = async () => {
     throw error;
   }
 };
+
+// 상환완료 했을 때 무 뽑기
+export const getRandomRadish = async () => {
+  try {
+    const response = await api.post("/loan/monthClick");
+    console.log("무뽑는 axios 함수가 잘잘잘 호출되었습니다.", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("랜덤 무 뽑기 실패:", error);
+    throw error;
+  }
+};
+
+// 상환한 대출의 개수와 가입되어 있는 대출 상품의 개수
+// 무뽑기 버튼의 활성화 유무
+export const getLoanNumber = async () => {
+  try {
+    const response = await api.get("/loan/count");
+    console.log(response);
+    console.log(
+      "대출상품 개수 함수 잘잘잘 출력되었습니다 지금 현재 버튼 활성화 유무는:",
+      response.data.showButton
+    );
+    return response.data;
+  } catch (error) {
+    console.error("대출상품 개수 조회에 실패하였습니다 힝힝", error);
+    throw error;
+  }
+};
