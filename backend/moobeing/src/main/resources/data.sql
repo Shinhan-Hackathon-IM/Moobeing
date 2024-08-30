@@ -159,11 +159,11 @@ INSERT IGNORE INTO loan_repayment_record (loan_repayment_record_id, create_at, m
 
 -- 7. Account 테이블에 데이터 삽입 (이미 존재할 경우 삽입 무시)
 INSERT IGNORE INTO account (account_id, account_num, member_id, account_balance, account_name) VALUES
-(1, '123-456-789', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 1000000, '계좌 이름'),
-(2, '123-456-790', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 2000000, '계좌 이름'),
-(3, '123-456-791', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 3000000, '계좌 이름'),
-(4, '123-456-792', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 4000000, '계좌 이름'),
-(5, '123-456-793', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 5000000, '계좌 이름');
+(1, '110-1234-5678', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 1000000, '신한 MY 통장'),
+(2, '110-2345-6789', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 2000000, '신한 S 드림 적금'),
+(3, '110-3456-7890', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 3000000, '신한 S행복 적금'),
+(4, '110-4567-8901', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 4000000, '신한 주니어 저축예금'),
+(5, '110-5678-9012', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 5000000, '신한 S-20 정기예금');
 
 -- 8. ExpenseCategory 테이블에 카테고리 데이터 삽입 (이미 존재할 경우 삽입 무시)
 INSERT IGNORE INTO expense_category (expense_category_id, name) VALUES
@@ -183,13 +183,6 @@ INSERT IGNORE INTO expense (expense_id, member_id, expense_category_id, title, p
 (5, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 5, '택시 이용', 25000, '2024-08-05 08:00:00'),
 (6, (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 6, '병원 진료비', 70000, '2024-08-06 09:00:00');
 
--- 10. account 더미 데이터 생성하기.
-INSERT IGNORE INTO account (account_id, account_num, member_id, account_balance, account_name) VALUES
-(1, '110-1234-5678', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 1000000, '신한 MY 통장'),
-(2, '110-2345-6789', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 2000000, '신한 S 드림 적금'),
-(3, '110-3456-7890', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 3000000, '신한 S행복 적금'),
-(4, '110-4567-8901', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 4000000, '신한 주니어 저축예금'),
-(5, '110-5678-9012', (SELECT member_id FROM member WHERE email = 'test@gmail.com'), 5000000, '신한 S-20 정기예금');
 
 -- 10. Quiz 테이블에 더미 데이터 삽입 (이미 존재할 경우 삽입 무시)
 INSERT IGNORE INTO quiz (quiz_id, created_date, modified_date, answer, ended_at, example, is_correct, status, member_id)
