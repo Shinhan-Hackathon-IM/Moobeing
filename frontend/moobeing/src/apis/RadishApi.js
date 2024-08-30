@@ -53,5 +53,16 @@ export const getBabyRadish = async () => {
   }
 };
 
-// default export로 내보내기
-export default getUserRadishCollection;
+// 5. 애기 무 5개 모였을 시에 상위등급으로 업그레이드
+export const growBabyRadish = async () => {
+  try {
+    const response = await api.post("/baby-merge");
+    return response.data;
+  } catch (error) {
+    console.error("애기 무 변신 실패:", error);
+    throw error;
+  }
+};
+
+// // default export로 내보내기
+// export default getUserRadishCollection;
