@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -288,6 +289,16 @@ public class LoanService {
 			}
 		}
 
+		// 현재 연도와 월을 구함
+		LocalDate currentDate = LocalDate.now();
+		int currentYear = currentDate.getYear();
+		int currentMonth = currentDate.getMonthValue();
+
+		// 현재 연도와 월을 기준으로 필터링
+		mergedLoanMapDtoList = mergedLoanMapDtoList.stream()
+				.filter(dto -> dto.getYear() < currentYear || (dto.getYear() == currentYear && dto.getMonth() <= currentMonth))
+				.collect(Collectors.toList());
+
 		// 이후에 mergedLoanMapDtoList를 반환하거나, GetAllLoanMapResponse로 변환하여 반환
 		return GetAllLoanMapResponse.of(mergedLoanMapDtoList);
 	}
@@ -344,5 +355,69 @@ public class LoanService {
 		memberRepository.save(member);
 
 		return "맴버 complete 살리기 큭큭";
+	}
+
+	public GetAllLoanMapResponse getYearlyLoan(Member member) {
+		// 1. 주어진 Member에 대한 모든 MemberLoan을 가져옴
+		List<MemberLoan> memberLoanList = memberLoanRepository.findAllByMemberId(member.getId());
+		int minYear = 10000;
+		int maxYear = 0;
+		long totalLoanBalance = 0;
+
+		// 2. memberLoanList에서 가장 빠른 year, month와 가장 늦은 year, month를 찾는다.
+		for (MemberLoan loan : memberLoanList) {
+			if (maxYear < loan.getStartYear()) {
+				maxYear = loan.getStartYear();
+			}
+			if (minYear > loan.getStartYear()) {
+				minYear = loan.getStartYear();
+			}
+		}
+		int startYear = minYear;
+
+		// 목표 연도를 설정 (2024년)
+		final int targetYear = 2024;
+
+		List<LoanRepaymentRecord> loanRepaymentRecordList = new ArrayList<>();
+		for (MemberLoan loan : memberLoanList) {
+			loanRepaymentRecordList.addAll(loanRepaymentRecordRepository.findAllByMemberLoanId(loan.getId()));
+		}
+		List<GetAllLoanMapDto> getAllLoanMapDtoList = new ArrayList<>();
+
+		// 3. 첫 대출 시점부터 2024년까지 매년 1월부터 12월까지의 기록을 모두 반영
+		while (startYear <= targetYear) {
+			final int currentYear = startYear;
+			long yearlyRepayment = 0;
+
+			// 해당 연도에 발생한 모든 상환 기록을 누적
+			for (LoanRepaymentRecord record : loanRepaymentRecordList) {
+				if (record.getYear() == currentYear) {
+					yearlyRepayment += record.getRepaymentBalance();
+				}
+			}
+
+			// 대출 시작 시점에 맞춰 InitialBalance를 추가
+			for (MemberLoan loan : memberLoanList) {
+				if (loan.getStartYear() == startYear && loan.getStartMonth() <= 12) {
+					totalLoanBalance += loan.getInitialBalance();
+				}
+			}
+
+			// 해당 연도의 모든 상환 기록을 반영하여 잔액 갱신
+			totalLoanBalance -= yearlyRepayment;
+
+			// 현재의 year, 12월, loanBalance 값을 리스트에 추가
+			getAllLoanMapDtoList.add(GetAllLoanMapDto.builder()
+					.year(startYear)
+					.month(12)
+					.loanBalance(totalLoanBalance)
+					.build());
+
+			// 다음 연도로 넘어가기
+			startYear++;
+		}
+
+		// 필요한 응답 객체를 생성하고 반환
+		return GetAllLoanMapResponse.of(getAllLoanMapDtoList);
 	}
 }

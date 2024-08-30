@@ -83,4 +83,10 @@ public class LoanController {
 	public ResponseEntity<?> showMonthButton(@AuthenticationPrincipal Member member) {
 		return ResponseEntity.status(HttpStatus.OK).body(loanService.showMonthButton(member));
 	}
+
+	@Operation(summary = "년도 총합 대출 여정지도 검색", description = "년도 총합 대출 여정지도 검색")
+	@GetMapping("/all-map-year")
+	public ResponseEntity<?> getYearlyLoan(@AuthenticationPrincipal Member member){
+		return ResponseEntity.status(HttpStatus.OK).body(loanService.getYearlyLoan(member));
+	}
 }
