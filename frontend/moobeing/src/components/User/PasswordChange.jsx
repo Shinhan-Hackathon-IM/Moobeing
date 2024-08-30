@@ -91,19 +91,38 @@ const ErrorMessage = styled.div`
   width: 100%;
 `;
 
+const AlertContainer = styled.div`
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background-color: rgba(255, 68, 58, 0.798);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  animation: fadeInOut 2s ease-in-out;
+  width: 80%; /* 너비를 80%로 설정 */
+  max-width: 500px; /* 최대 너비를 500px로 설정 */
+`;
+
 const PasswordChange = () => {
   const [oldPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [passwordMismatch, setPasswordMismatch] = useState(false);
+  const [passwordSame, setPasswordSame] = useState(false); // 기존 비밀번호와 새 비밀번호 일치 상태 추가
   const [errorMessage, setErrorMessage] = useState(""); // 에러 메시지 상태 추가
   const [successMessage, setSuccessMessage] = useState(""); // 성공 메시지 상태 추가
   const [isPasswordChanged, setIsPasswordChanged] = useState(false); // 비밀번호 변경 성공 여부 상태 추가
+  const [alertMessage, setAlertMessage] = useState(""); // 커스텀 경고창 메시지 상태 추가
   const navigate = useNavigate(); // 페이지 이동을 위한 hook 사용
 
   const handleNewPasswordChange = (e) => {
     setNewPassword(e.target.value);
     setPasswordMismatch(false); // 새로운 비밀번호가 입력되면 mismatch 상태 리셋
+    setPasswordSame(false); // 새로운 비밀번호가 입력되면 기존 비밀번호와의 일치 상태 리셋
   };
 
   const handleConfirmNewPasswordChange = (e) => {
@@ -115,9 +134,21 @@ const PasswordChange = () => {
     }
   };
 
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setTimeout(() => setAlertMessage(""), 2000); // 2초 후 경고창 사라짐
+  };
+
   const handleChangePassword = async () => {
     if (passwordMismatch) {
-      alert("새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
+      showAlert(`새 비밀번호와 확인 비밀번호가
+        일치하지 않습니다.`);
+      return;
+    }
+
+    if (oldPassword === newPassword) {
+      setPasswordSame(true); // 기존 비밀번호와 새 비밀번호가 일치함을 표시
+      showAlert("기존 비밀번호와 새 비밀번호가 일치합니다.");
       return;
     }
 
@@ -139,6 +170,8 @@ const PasswordChange = () => {
   return (
     <Container>
       <Title>비밀번호 변경하기</Title>
+      {alertMessage && <AlertContainer>{alertMessage}</AlertContainer>}{" "}
+      {/* 커스텀 경고창 추가 */}
       <InputText
         type="password"
         placeholder="기존 비밀번호"
@@ -157,11 +190,16 @@ const PasswordChange = () => {
         value={confirmNewPassword}
         onChange={handleConfirmNewPasswordChange}
       />
-      {passwordMismatch && (
+      {/* {passwordMismatch && (
         <PasswordMismatchMessage>
           비밀번호가 일치하지 않습니다
         </PasswordMismatchMessage>
-      )}
+      )} */}
+      {/* {passwordSame && (
+        <PasswordMismatchMessage>
+          기존 비밀번호와 새 비밀번호가 일치합니다
+        </PasswordMismatchMessage>
+      )} */}
       {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
       {isPasswordChanged ? (
