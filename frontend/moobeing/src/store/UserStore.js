@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 // Zustand 스토어 생성
 const useUserStore = create((set) => ({
-  userInfo: true, // 사용자 정보를 저장할 상태
+  userInfo: null, // 사용자 정보를 저장할 상태
   isLoading: true, // 로딩 상태를 저장할 상태
   creditRate: null, // 신용등급 정보를 저장할 상태
   canAccessQuiz: false,
