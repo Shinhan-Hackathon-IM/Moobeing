@@ -44,7 +44,7 @@ const ChangeButton = styled.button`
   background-color: #e0eed2;
   color: #24272d;
   font-size: 13px;
-  font-weight: bold;
+  font-weight: 500;
   border: none;
   cursor: pointer;
   display: flex;

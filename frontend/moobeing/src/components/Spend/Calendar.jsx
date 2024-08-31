@@ -55,6 +55,11 @@ const CalendarContainer = styled.div`
     font-size: 15px;
   }
 
+  .MuiPickersSlideTransition-root.MuiDayCalendar-slideTransition {
+    min-height: 320px;
+    overflow: visible !important;
+  }
+
   @media (min-width: 600px) {
     .MuiDateCalendar-root {
       min-height: 560px;
@@ -81,8 +86,8 @@ const CalendarContainer = styled.div`
       font-weight: 600;
       margin: 0px 29px;
     }
-    .MuiDayCalendar-slideTransition {
-      min-height: 300px;
+    .MuiPickersSlideTransition-root.MuiDayCalendar-slideTransition {
+      min-height: 420px;
     }
   }
 `;
