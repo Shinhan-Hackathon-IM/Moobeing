@@ -7,7 +7,10 @@ const ResultContainer = styled.div`
   border-radius: 10px;
   padding: 20px;
   margin: 20px;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   text-align: center;
 `;
 
@@ -25,15 +28,24 @@ const Result = styled.div`
 const Radish = styled.img`
   width: 50%;
   height: 50%;
+
+  @media (min-width: 600px) {
+    width: 40%;
+    height: 40%;
+  }
 `;
 
 const ChatBubbleContainer = styled.div`
   position: relative;
-  margin-top: 100px;
+  margin-top: 80px;
   height: auto;
   max-width: 260px;
   margin-left: auto;
   margin-right: auto;
+
+  @media (min-width: 600px) {
+    max-width: 300px;
+  }
 `;
 
 const ChatBubbleSVG = styled.svg`
@@ -66,13 +78,18 @@ const Button = styled.button`
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  margin: 4px 2px;
+  margin: 10px 2px;
   cursor: pointer;
   border-radius: 12px;
   transition: background-color 0.3s ease;
+  width: 180px;
 
   &:hover {
     background-color: #45a049;
+  }
+
+  @media (min-width: 600px) {
+    width: 250px;
   }
 `;
 
@@ -149,7 +166,7 @@ function RightResult({ message, answer }) {
 
   return (
     <ResultContainer>
-      <Expression>다음기회에!</Expression>
+      <Expression>다음 기회에!</Expression>
       <Result>
         지난 주 지출액은 <br /> {formattedAnswer} 입니다.
       </Result>

@@ -28,7 +28,7 @@ const Container = styled.div`
 
 const Soil = styled.img`
   width: 100%;
-  height: auto;
+  height: 25%;
   bottom: 0;
   z-index: 1;
 `;
@@ -46,7 +46,7 @@ const BasicRadish = styled.img`
   bottom: ${(props) => props.$bottom}%;
   left: 50%;
   transform: translateX(-50%);
-  width: 70%;
+  width: 60%;
   height: auto;
   z-index: 0;
   transition: bottom 0.5s ease-out;
@@ -55,6 +55,10 @@ const BasicRadish = styled.img`
     css`
       animation: ${shakeAnimation} 0.5s ease-in-out;
     `}
+
+  @media (min-width: 600px) {
+    width: 30%;
+  }
 `;
 
 const Text = styled.div`
@@ -69,7 +73,7 @@ const Text = styled.div`
 `;
 
 const PageWrapper = styled.div`
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   overflow: hidden;
   display: flex;
@@ -137,14 +141,14 @@ const CardWrapper = styled.div`
 
 const CollectionButton = styled.button`
   position: absolute;
-  bottom: 10%;
+  bottom: 7%;
   left: 50%;
   transform: translateX(-50%);
   padding: 10px 20px;
-  background-color: #4caf50;
+  background-color: #46944a;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   font-size: 16px;
   opacity: 0;
