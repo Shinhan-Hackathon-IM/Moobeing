@@ -26,7 +26,7 @@ const CalendarContainer = styled.div`
     width: 95%;
     max-width: 100%;
     height: auto;
-    min-height: 300px;
+    min-height: 450px;
   }
   .MuiDayCalendar-header {
     margin-top: 8px;
@@ -34,6 +34,7 @@ const CalendarContainer = styled.div`
   }
   .MuiDayCalendar-monthContainer {
     margin-top: 8px;
+    margin-bottom: 10px;
   }
   .MuiPickersCalendarHeader-root {
     margin-top: 8px;
@@ -43,7 +44,7 @@ const CalendarContainer = styled.div`
   }
   .MuiDayCalendar-weekContainer {
     justify-content: space-around;
-    margin-bottom: 8px;
+    margin-bottom: 15px;
   }
   .MuiDayCalendar-weekDayLabel {
     font-size: 16px;
@@ -56,7 +57,7 @@ const CalendarContainer = styled.div`
 
   @media (min-width: 600px) {
     .MuiDateCalendar-root {
-      min-height: 500px;
+      min-height: 560px;
       height: auto;
     }
     .MuiDayCalendar-header {
@@ -71,7 +72,7 @@ const CalendarContainer = styled.div`
       margin-bottom: 16px;
     }
     .MuiDayCalendar-weekContainer {
-      margin-bottom: 16px;
+      margin-bottom: 25px;
       margin-left: 8px;
       padding-right: 8px;
     }
@@ -102,7 +103,7 @@ const CustomPickersDay = styled(PickersDay)`
   }
 
   .spend-amount {
-    font-size: 0.6em;
+    font-size: 0.5em;
     color: #ff4c4c;
     position: absolute;
     bottom: -15px;
@@ -151,6 +152,14 @@ const CustomDateCalendar = ({
   onDateChange,
   monthlySpendData,
 }) => {
+  const handleMonthChange = (newDate) => {
+    // 월이 변경될 때 호출되는 함수
+    const updatedDate = selectedDate
+      .set("year", newDate.year())
+      .set("month", newDate.month());
+    onDateChange(updatedDate);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -158,6 +167,7 @@ const CustomDateCalendar = ({
           <DateCalendar
             value={selectedDate}
             onChange={(newDate) => onDateChange(newDate)}
+            onMonthChange={handleMonthChange}
             slots={{ day: CustomDay }}
             slotProps={{
               day: { monthlySpendData },

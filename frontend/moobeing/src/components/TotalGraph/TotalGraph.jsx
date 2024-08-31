@@ -207,7 +207,6 @@ const CustomDropdownItem = styled.li`
     background-color: #C5E1AB;
   `}
 `;
-
 const CustomDropdown = ({ options, selectedOption, onChange, visibleData }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -223,7 +222,7 @@ const CustomDropdown = ({ options, selectedOption, onChange, visibleData }) => {
   return (
     <CustomDropdownContainer>
       <CustomDropdownHeader onClick={() => setIsOpen(!isOpen)}>
-        {currentVisibleYear ? `${currentVisibleYear}년` : "연도를 선택하세요"}
+        {currentVisibleYear ? `${currentVisibleYear}년` : "연도 선택"}
       </CustomDropdownHeader>
       {isOpen && (
         <CustomDropdownList>
@@ -276,7 +275,12 @@ const CustomTooltip = ({ active, payload, label, isYearly }) => {
   return null;
 };
 
-function TotalGraph({ data = [], peerData = [], yearData = [] }) {
+function TotalGraph({
+  data = [],
+  peerData = [],
+  yearData = [],
+  yearPeerData = [],
+}) {
   const [visibleRange, setVisibleRange] = useState([0, 4]);
   const [yAxisDomain, setYAxisDomain] = useState([0, 0]);
   const [showPeerData, setShowPeerData] = useState(false);
@@ -287,14 +291,25 @@ function TotalGraph({ data = [], peerData = [], yearData = [] }) {
 
   useEffect(() => {
     if (data.length > 0) {
-      setVisibleRange([0, 4]);
-      setCurrentYear(data[0].year);
+      const lastYear = availableYears[availableYears.length - 1];
+      setCurrentYear(lastYear);
+
+      const lastYearIndex = data.findIndex((item) => item.year === lastYear);
+      setVisibleRange([lastYearIndex, lastYearIndex + 4]);
     }
   }, [data]);
 
   useEffect(() => {
     updateYAxisDomain();
-  }, [data, peerData, visibleRange, showPeerData, isYearly]);
+  }, [
+    data,
+    peerData,
+    yearData,
+    yearPeerData,
+    visibleRange,
+    showPeerData,
+    isYearly,
+  ]);
 
   const updateYAxisDomain = () => {
     const targetData = isYearly ? yearData : data;
@@ -306,8 +321,9 @@ function TotalGraph({ data = [], peerData = [], yearData = [] }) {
       ...visibleData.map((item) => item.loanBalance || 0)
     );
 
-    if (showPeerData && peerData.length > 0 && !isYearly) {
-      const visiblePeerData = getVisibleData(peerData, visibleRange);
+    if (showPeerData) {
+      const peerTargetData = isYearly ? yearPeerData : peerData;
+      const visiblePeerData = getVisibleData(peerTargetData, visibleRange);
       maxAmount = Math.max(
         maxAmount,
         ...visiblePeerData.map((item) => item.loanBalance || 0)
@@ -343,9 +359,8 @@ function TotalGraph({ data = [], peerData = [], yearData = [] }) {
 
   const handleYearChange = (selectedYear) => {
     setCurrentYear(selectedYear);
-    const newIndex = data.findIndex(
-      (item) => item.year === selectedYear && item.month === 1
-    );
+    const targetData = isYearly ? yearData : data;
+    const newIndex = targetData.findIndex((item) => item.year === selectedYear);
 
     if (newIndex !== -1) {
       setVisibleRange([newIndex, newIndex + 4]);
@@ -364,7 +379,10 @@ function TotalGraph({ data = [], peerData = [], yearData = [] }) {
   };
 
   const visibleData = getVisibleData(isYearly ? yearData : data, visibleRange);
-  const visiblePeerData = getVisibleData(peerData, visibleRange);
+  const visiblePeerData = getVisibleData(
+    isYearly ? yearPeerData : peerData,
+    visibleRange
+  );
 
   const formatToKoreanWon = (value) => {
     if (value >= 100000000) {
@@ -386,15 +404,13 @@ function TotalGraph({ data = [], peerData = [], yearData = [] }) {
 
   return (
     <GraphContainer>
-      {!isYearly && (
-        <ToggleWrapper onClick={() => setShowPeerData(!showPeerData)}>
-          <ToggleButton active={showPeerData}>
-            <ToggleCircle active={showPeerData}>
-              {showPeerData ? "끄기" : "또래"}
-            </ToggleCircle>
-          </ToggleButton>
-        </ToggleWrapper>
-      )}
+      <ToggleWrapper onClick={() => setShowPeerData(!showPeerData)}>
+        <ToggleButton active={showPeerData}>
+          <ToggleCircle active={showPeerData}>
+            {showPeerData ? "끄기" : "또래"}
+          </ToggleCircle>
+        </ToggleButton>
+      </ToggleWrapper>
       <TitleOfChart>전체여정</TitleOfChart>
       <DataCollectContainer>
         <CustomDropdown
@@ -407,7 +423,8 @@ function TotalGraph({ data = [], peerData = [], yearData = [] }) {
           isYearly={isYearly}
           onClick={() => {
             setIsYearly(!isYearly);
-            setShowPeerData(false);
+            setShowPeerData(false); // Reset peer data visibility when switching view
+            setVisibleRange([0, 4]); // Reset to first data of the selected view
           }}
         >
           {isYearly ? "월별 보기" : "연도별 보기"}
@@ -452,7 +469,7 @@ function TotalGraph({ data = [], peerData = [], yearData = [] }) {
               animationEasing="ease-in-out"
               connectNulls={false}
             />
-            {showPeerData && !isYearly && (
+            {showPeerData && (
               <Line
                 type="monotone"
                 data={visiblePeerData}

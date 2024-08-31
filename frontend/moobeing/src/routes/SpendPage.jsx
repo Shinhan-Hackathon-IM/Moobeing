@@ -32,8 +32,7 @@ const ScrollableContent = styled.div`
 
 const CalendarWrapper = styled.div`
   width: 100%;
-  padding: 20px;
-  margin-bottom: 10px;
+  padding: 20px 20px 0px 20px;
   box-sizing: border-box;
 `;
 
