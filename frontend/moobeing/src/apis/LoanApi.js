@@ -80,7 +80,18 @@ export const getAllLoanBuddy = async () => {
     const response = await api.get("/loan/all-buddy");
     return response.data;
   } catch (error) {
-    console.error("또래 상환 내역 불러오기 실패:", error);
+    console.error("월별 또래 상환 내역 불러오기 실패:", error);
+    throw error;
+  }
+};
+
+// 전체 또래 상환 내역 조회
+export const getYearLoanBuddy = async () => {
+  try {
+    const response = await api.get("/loan/all-buddy-year");
+    return response.data;
+  } catch (error) {
+    console.error("연별 또래 상환 내역 불러오기 실패:", error);
     throw error;
   }
 };

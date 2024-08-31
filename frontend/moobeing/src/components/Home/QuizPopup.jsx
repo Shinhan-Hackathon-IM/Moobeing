@@ -5,7 +5,6 @@ import babyRad from "../../assets/radishes/babyRad.svg";
 import closeButton from "../../assets/button/closeButton.svg";
 import useUserStore from "../../store/UserStore";
 
-// Keyframe for fade-out animation
 const fadeOut = keyframes`
   from {
     opacity: 1;
@@ -58,10 +57,16 @@ const CloseImg = styled.img`
 const SubTitle = styled.h2`
   position: absolute;
   top: 35px;
-  left: 40px;
-  font-size: 20px;
+  left: 35px;
+  font-size: 18px;
   font-weight: 800;
   text-align: left;
+
+  @media (min-width: 600px) {
+    top: 40px;
+    left: 55px;
+    font-size: 22px;
+  }
 `;
 
 const Radish = styled.img`
@@ -76,7 +81,7 @@ const QuizButton = styled.button`
   padding: 10px 20px;
   font-size: 15px;
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
   transition: all 0.2s ease-in-out; /* 버튼 클릭 시 애니메이션 추가 */
 
@@ -113,7 +118,7 @@ function QuizPopup() {
         <CloseImg src={closeButton} alt="닫기" />
       </CloseButton>
       <SubTitle>
-        {user.userInfo.name}님, "내 소비내역 맞추기"
+        {user.userInfo.name || "사용자"}님, "내 소비내역 맞추기"
         <br />
         퀴즈가 도착했어요!
       </SubTitle>

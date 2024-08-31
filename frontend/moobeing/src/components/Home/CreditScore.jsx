@@ -68,37 +68,35 @@ const CreditLevel = styled.div`
 
 const GraphContainer = styled.div`
   width: 100%;
-  background-color: ${({ grade }) =>
-    GraphColors[grade]}; /* 배경색은 등급별로 설정 */
+  background-color: ${({ grade }) => GraphColors[grade]};
   height: 30px;
   border-radius: 20px;
-  overflow: visible; /* 그래프 밖으로 삐져나올 수 있도록 설정 */
+  overflow: visible;
   position: relative;
   margin: 15px 0px;
 `;
 
 const GraphFill = styled.div.attrs(({ fillpercent }) => ({
   style: {
-    width: `calc(${fillpercent}% - 10px)`,
+    width: `${fillpercent}%`,
   },
 }))`
-  background-color: ${({ grade }) =>
-    darken(0.2, GraphColors[grade])}; /* 더 진한 색 */
+  background-color: ${({ grade }) => darken(0.2, GraphColors[grade])};
   height: 100%;
   border-radius: 20px;
-  transition: width 2s ease; /* 부드러운 채우기 애니메이션 */
+  transition: width 2s ease;
   position: relative;
   display: flex;
-  justify-content: flex-end; /* Radish가 항상 오른쪽 끝에 위치 */
-  align-items: center; /* Radish를 세로로 중앙 정렬 */
+  justify-content: flex-end;
+  align-items: center;
 `;
 
 const Radish = styled.img`
-  height: 60px; /* 그래프 밖으로 삐져나오도록 큰 크기 설정 */
+  height: 60px;
   position: absolute;
-  top: -23px; /* 그래프 위쪽으로 조금 삐져나오도록 조정 */
-  transition: left 2s ease;
-  transform: translateX(35px); /* 오른쪽으로 약간 이동 */
+  top: -19px;
+  right: -35px; // 오른쪽에 고정
+  transition: right 2s ease;
 `;
 
 const CreditText = styled.div`
@@ -122,16 +120,16 @@ function CreditScore() {
 
   const [creditInfo, setCreditInfo] = useState({
     ratingName: creditRate ? creditRate.ratingName : "A",
-    ratingPercent: creditRate ? creditRate.ratingPercent : 100,
+    ratingPercent: creditRate ? Math.max(creditRate.ratingPercent, 0) : 100,
   });
-  const [error, setError] = useState(null); // 에러 상태 추가
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getCreditRate();
 
-        const ratingPercent = data.ratingPercent;
+        const ratingPercent = Math.max(data.ratingPercent, 0); // 0 미만일 경우 0으로 설정
         const ratingName = data.ratingName || "E";
 
         setCreditInfo({
