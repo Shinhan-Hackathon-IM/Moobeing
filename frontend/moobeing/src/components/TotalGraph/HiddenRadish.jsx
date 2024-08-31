@@ -35,6 +35,11 @@ const ChatBubbleContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  @media (min-width: 600px) {
+    top: 15px;
+    right: 200px;
+  }
 `;
 
 const ChatBubble = styled.img`
@@ -49,13 +54,13 @@ const ChatText = styled.p`
   transform: translate(-50%, -50%);
   margin: 0;
   text-align: center;
-  font-size: 12px;
+  font-size: 13px;
   color: #333;
 `;
 
 const PullRadishButton = styled.button`
   position: absolute;
-  top: 90%;
+  top: 80%;
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 10px 20px;
@@ -162,7 +167,7 @@ function HiddenRadish() {
       <ChatBubbleContainer>
         <ChatBubble src={GrayChatBubble} alt="Chat bubble" />
         <ChatText>
-          {`${totalLoanNum}/${paidLoanNum}`}개 <br /> 상환{" "}
+          {`${totalLoanNum} / ${paidLoanNum}`}개 <br /> 상환{" "}
         </ChatText>
       </ChatBubbleContainer>
       <PotRadish src={getPotImage()} alt="Radish pot" />
@@ -171,7 +176,7 @@ function HiddenRadish() {
           onClick={handleGetRadish}
           isPullAvailable={isPullAvailable}
         >
-          무뽑기
+          무 뽑기
         </PullRadishButton>
       )}
       {showMessage && <Message>이미 뽑으셨습니다</Message>}

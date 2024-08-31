@@ -74,10 +74,45 @@ export const getLoanMapByProductName = async (loanProductName) => {
   }
 };
 
+//특정 대출 예정지도 연별 확인
+export const getYearByProductName = async (loanProductName) => {
+  try {
+    const response = await api.get(
+      `/loan/map-year?loanProductName=${loanProductName}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("특정 대출 여정 지도 연별 확인 불러오기 실패:", error);
+    throw error;
+  }
+};
+
 // 전체 또래 상환 내역 조회
 export const getAllLoanBuddy = async () => {
   try {
     const response = await api.get("/loan/all-buddy");
+    return response.data;
+  } catch (error) {
+    console.error("월별 또래 상환 내역 불러오기 실패:", error);
+    throw error;
+  }
+};
+
+// 전체 또래 상환 내역 조회
+export const getYearLoanBuddy = async () => {
+  try {
+    const response = await api.get("/loan/all-buddy-year");
+    return response.data;
+  } catch (error) {
+    console.error("연별 또래 상환 내역 불러오기 실패:", error);
+    throw error;
+  }
+};
+
+// 월별 또래 상환 내역 조회
+export const getProductLoanBuddy = async (loanProductName) => {
+  try {
+    const response = await api.get(`/loan/buddy?loanName=${loanProductName}`);
     return response.data;
   } catch (error) {
     console.error("또래 상환 내역 불러오기 실패:", error);
@@ -85,13 +120,15 @@ export const getAllLoanBuddy = async () => {
   }
 };
 
-// 또래 상환 내역 조회
-export const getProductLoanBuddy = async () => {
+// 연별 또래 상환 내역 조회
+export const getProductYearLoanBuddy = async (loanProductName) => {
   try {
-    const response = await api.get(`/loan/buddy?loanName=${loanName}`);
+    const response = await api.get(
+      `/loan/buddy-year?loanName=${loanProductName}`
+    );
     return response.data;
   } catch (error) {
-    console.error("또래 상환 내역 불러오기 실패:", error);
+    console.error("연별 또래 상환 내역 불러오기 실패:", error);
     throw error;
   }
 };
@@ -136,12 +173,22 @@ export const getLoanNumber = async () => {
   }
 };
 
+<<<<<<< HEAD
 export const changeInterestRate = async () => {
   try {
     const response = await api.post("/loan/good");
     console.log("금리혜택을 받는 axios 함수가 호출 되었습니다");
   } catch (error) {
     console.error("금리혜택을 받는 함수 호출 실패", error);
+=======
+// 대출 상세 정보
+export const getLoanDetail = async (loanName) => {
+  try {
+    const response = await api.get(`/loan/detail?loanName=${loanName}`);
+    return response.data;
+  } catch (error) {
+    console.error("대출 상세 정보 불러오기 실패:", error);
+>>>>>>> d905ec356d32e2f4b90d57f0a22dfe3973b372a7
     throw error;
   }
 };

@@ -3,7 +3,13 @@ import LoanGraph from "../components/LoanGraph/LoanGraph";
 import LoanDescription from "../components/LoanGraph/LoanDescription";
 import Footer from "../components/Fixed/Footer";
 import Header from "../components/Fixed/Header";
-import { getLoanMapByProductName, getProductLoanBuddy } from "../apis/LoanApi";
+import {
+  getLoanMapByProductName,
+  getYearByProductName,
+  getProductLoanBuddy,
+  getProductYearLoanBuddy,
+  getLoanDetail,
+} from "../apis/LoanApi";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Loading from "./LoadingPage";
@@ -40,32 +46,65 @@ const Container = styled.div`
 `;
 
 const LoanJourney = () => {
-  const { loanName } = useParams(); // useParams를 사용하여 URL 매개변수 가져오기
+  const { loanName } = useParams(); // URL에서 loanName 매개변수 가져오기
   const [loanData, setLoanData] = useState([]);
   const [loanPeerData, setLoanPeerData] = useState([]);
+  const [yearJourneyData, setYearJourneyData] = useState([]);
+  const [yearPeerData, setYearPeerData] = useState([]);
+  const [loanDetail, setLoanDetail] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true); // 로딩 상태 시작
-        const data = await getLoanMapByProductName(loanName); // 비동기 함수 호출 및 데이터 가져오기
-        setLoading(false); // 로딩 상태 종료
+        setLoading(true);
+        setError(null);
 
-        const { getAllJourneyList } = data;
-        setLoanData(getAllJourneyList); // 데이터 상태 업데이트
+        // 비동기 API 호출들을 병렬로 실행
+        const [
+          loanResponse,
+          peerResponse,
+          yearResponse,
+          yearPeerResponse,
+          detailResponse,
+        ] = await Promise.all([
+          getLoanMapByProductName(loanName), // loan 데이터 호출
+          getProductLoanBuddy(loanName), // peer 데이터 호출
+          getYearByProductName(loanName), // 연도별 loan 데이터 호출
+          getProductYearLoanBuddy(loanName), // 연도별 peer 데이터 호출
+          getLoanDetail(loanName), // loan 세부 데이터 호출
+        ]);
+
+        const { getAllJourneyList: allJourneyList } = loanResponse;
+        const { getAllJourneyList: peerJourneyList } = peerResponse;
+        const { getAllJourneyList: yearJourneyList } = yearResponse;
+        const { getAllJourneyList: yearPeerJourneyList } = yearPeerResponse;
+
+        // 상태 업데이트
+        setLoanData(allJourneyList);
+        setLoanPeerData(peerJourneyList);
+        setYearJourneyData(yearJourneyList);
+        setYearPeerData(yearPeerJourneyList);
+        setLoanDetail(detailResponse);
       } catch (error) {
         console.error("데이터 불러오기 실패:", error);
-        setError(error); // 에러 상태 업데이트
-        setLoading(false); // 로딩 상태 종료
+        setError(error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchData(); // 데이터 가져오기 함수 호출
+    fetchData();
   }, [loanName]); // loanName이 변경될 때마다 useEffect 실행
 
+<<<<<<< HEAD
   if (loading) return <Loading />; // 로딩 중일 때 표시할 내용
+=======
+  console.log();
+
+  if (loading) return <div>Loading...</div>; // 로딩 중일 때 표시할 내용
+>>>>>>> d905ec356d32e2f4b90d57f0a22dfe3973b372a7
   if (error) return <div>데이터를 불러오는 중 오류가 발생했습니다.</div>; // 에러 발생 시 표시할 내용
 
   return (
@@ -74,11 +113,16 @@ const LoanJourney = () => {
         <Header />
         <Container>
           {loanData.length > 0 ? (
-            <LoanGraph data={loanData} peerData={loanPeerData} />
+            <LoanGraph
+              data={loanData}
+              peerData={loanPeerData}
+              yearData={yearJourneyData}
+              yearPeerData={yearPeerData}
+            />
           ) : (
             <div>데이터가 없습니다.</div>
           )}
-          <LoanDescription />
+          <LoanDescription loanDetail={loanDetail} />
         </Container>
       </ScrollableContent>
       <Footer />

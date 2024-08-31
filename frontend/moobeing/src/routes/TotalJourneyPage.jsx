@@ -11,6 +11,7 @@ import {
   getAllLoanMapByMonth,
   getAllLoanBuddy,
   getAllLoanMapByYear,
+  getYearLoanBuddy,
 } from "../apis/LoanApi";
 
 const PageWrapper = styled.div`
@@ -64,6 +65,7 @@ const TotalJourney = () => {
   const [journeyData, setJourneyData] = useState([]);
   const [yearJourneyData, setYearJourneyData] = useState([]);
   const [peerData, setPeerData] = useState([]);
+  const [yearPeerData, setYearPeerData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -72,20 +74,27 @@ const TotalJourney = () => {
       try {
         setLoading(true);
 
-        const [loanResponse, buddyResponse, yearJourneyResponse] =
-          await Promise.all([
-            getAllLoanMapByMonth(),
-            getAllLoanBuddy(),
-            getAllLoanMapByYear(),
-          ]);
+        const [
+          loanResponse,
+          buddyResponse,
+          yearJourneyResponse,
+          yearBuddyResponse,
+        ] = await Promise.all([
+          getAllLoanMapByMonth(),
+          getAllLoanBuddy(),
+          getAllLoanMapByYear(),
+          getYearLoanBuddy(),
+        ]);
 
         const { getAllJourneyList: journeyListData } = loanResponse;
         const { getAllJourneyList: peerListData } = buddyResponse;
         const { getAllJourneyList: yearJourneyData } = yearJourneyResponse;
+        const { getAllJourneyList: yearPeerData } = yearBuddyResponse;
 
         setJourneyData(journeyListData);
         setPeerData(peerListData);
         setYearJourneyData(yearJourneyData);
+        setYearPeerData(yearPeerData);
       } catch (err) {
         setError(err);
       } finally {
@@ -109,6 +118,7 @@ const TotalJourney = () => {
               data={journeyData}
               peerData={peerData}
               yearData={yearJourneyData}
+              yearPeerData={yearPeerData}
             />
           ) : (
             <div>데이터가 없습니다.</div>
