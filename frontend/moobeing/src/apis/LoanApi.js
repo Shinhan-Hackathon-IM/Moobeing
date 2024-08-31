@@ -74,6 +74,19 @@ export const getLoanMapByProductName = async (loanProductName) => {
   }
 };
 
+//특정 대출 예정지도 연별 확인
+export const getYearByProductName = async (loanProductName) => {
+  try {
+    const response = await api.get(
+      `/loan/map-year?loanProductName=${loanProductName}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("특정 대출 여정 지도 연별 확인 불러오기 실패:", error);
+    throw error;
+  }
+};
+
 // 전체 또래 상환 내역 조회
 export const getAllLoanBuddy = async () => {
   try {
@@ -96,13 +109,26 @@ export const getYearLoanBuddy = async () => {
   }
 };
 
-// 또래 상환 내역 조회
-export const getProductLoanBuddy = async () => {
+// 월별 또래 상환 내역 조회
+export const getProductLoanBuddy = async (loanProductName) => {
   try {
-    const response = await api.get(`/loan/buddy?loanName=${loanName}`);
+    const response = await api.get(`/loan/buddy?loanName=${loanProductName}`);
     return response.data;
   } catch (error) {
     console.error("또래 상환 내역 불러오기 실패:", error);
+    throw error;
+  }
+};
+
+// 연별 또래 상환 내역 조회
+export const getProductYearLoanBuddy = async (loanProductName) => {
+  try {
+    const response = await api.get(
+      `/loan/buddy-year?loanName=${loanProductName}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("연별 또래 상환 내역 불러오기 실패:", error);
     throw error;
   }
 };
@@ -143,6 +169,17 @@ export const getLoanNumber = async () => {
     return response.data;
   } catch (error) {
     console.error("대출상품 개수 조회에 실패하였습니다 힝힝", error);
+    throw error;
+  }
+};
+
+// 대출 상세 정보
+export const getLoanDetail = async (loanName) => {
+  try {
+    const response = await api.get(`/loan/detail?loanName=${loanName}`);
+    return response.data;
+  } catch (error) {
+    console.error("대출 상세 정보 불러오기 실패:", error);
     throw error;
   }
 };

@@ -49,6 +49,11 @@ const PaymentHistory = ({ date, history }) => {
   const [showLoansOnly, setShowLoansOnly] = useState(false);
 
   useEffect(() => {
+    // date가 변경될 때마다 showLoansOnly를 초기화
+    setShowLoansOnly(false);
+  }, [date]);
+
+  useEffect(() => {
     // showLoansOnly 상태에 따라 필터링 적용
     if (showLoansOnly) {
       setFilteredHistory(

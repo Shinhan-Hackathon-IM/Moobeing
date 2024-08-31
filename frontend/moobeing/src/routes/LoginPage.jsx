@@ -34,6 +34,8 @@ const InputText = styled.input`
   font-size: 12px;
   font-weight: 400;
   text-align: start;
+  color: #24272d;
+  background-color: #ffffff;
   width: 80%;
   margin: 8px 0;
   padding: 12px;

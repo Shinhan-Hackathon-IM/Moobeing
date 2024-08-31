@@ -128,7 +128,8 @@ const InputContainer = styled.div`
 const Input = styled.input`
   width: 100%;
   padding: 8px 30px 8px 0;
-  font-size: 20px;
+  font-size: 18px;
+  color: #24272d;
   background-color: transparent;
   border: none;
   border-bottom: 1px solid #ccc;
@@ -185,13 +186,11 @@ const PayButton = styled.button`
   transition: all 0.2s ease-in-out;
 
   &:hover {
-    background-color: #b5c99a;
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
   }
 
   &:active {
-    background-color: #a9b98e;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transform: translateY(0);
   }
