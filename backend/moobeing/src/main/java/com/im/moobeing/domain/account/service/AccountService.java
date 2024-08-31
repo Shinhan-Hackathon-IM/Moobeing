@@ -16,6 +16,8 @@ import com.im.moobeing.domain.loan.repository.LoanProductRepository;
 import com.im.moobeing.domain.loan.repository.LoanRepaymentRecordRepository;
 import com.im.moobeing.domain.loan.repository.MemberLoanRepository;
 import com.im.moobeing.domain.member.entity.Member;
+import com.im.moobeing.global.error.ErrorCode;
+import com.im.moobeing.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,26 +55,26 @@ public class AccountService {
 	public SendAccountResponse sendAccount(Member member, SendAccountRequest sendAccountRequest) {
 		// 여기서 계좌 번호를 찾아서 balance를 빼고
 		Account account = accountRepository.findByMemberIdAndAccountNum(member.getId(), sendAccountRequest.getAccountNum())
-			.orElseThrow(() -> new RuntimeException("todo 계좌 번호 없음"));
+			.orElseThrow(() -> new BusinessException(ErrorCode.AC_NOT_FOUND));
 
 		Long oldAccountBalance = account.getAccountBalance() - sendAccountRequest.getMoney();
 
 		if(oldAccountBalance < 0) {
-			throw new RuntimeException("todo 돈 없음");
+			throw new BusinessException(ErrorCode.AC_NOT_HAVE_ENOUGH);
 		}
 
 		account.setAccountBalance(oldAccountBalance);
 
 		// 여기서 대출 번호를 찾아서 remain_balance를 빼면된다. (member와 대출 상품이름으로 찾는다)
 		MemberLoan memberLoan = memberLoanRepository.findByMemberIdAndLoanProductName(member.getId(), sendAccountRequest.getLoanName())
-			.orElseThrow(() -> new RuntimeException("todo 대출 없음"));
+			.orElseThrow(() -> new BusinessException(ErrorCode.ML_NOT_FOUND));
 
 		memberLoan.setRemainingBalance(memberLoan.getRemainingBalance() - sendAccountRequest.getMoney());
 
 		Long oldLoanBalance = memberLoan.getRemainingBalance() - sendAccountRequest.getMoney();
 
 		if(oldLoanBalance < 0) {
-			throw new RuntimeException("todo 대출 초과 상환임");
+			throw new BusinessException(ErrorCode.ML_OVER_BALANCE);
 		}
 
 		// 현재 시간 가져오기
@@ -118,7 +120,7 @@ public class AccountService {
 		for (MemberLoan loan : memberLoan) {
 			Long canPay = loan.getRemainingBalance() - remainder;
 			LoanProduct loanProduct = loanProductRepository.findByLoanName(loan.getLoanProductName())
-					.orElseThrow(()-> new RuntimeException("todo loanProduct 못찾음"));
+					.orElseThrow(()-> new BusinessException(ErrorCode.LP_NOT_FOUND));
 			if (canPay <= 0){
 				canPay = loan.getRemainingBalance();
 			}

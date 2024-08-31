@@ -17,6 +17,8 @@ import com.im.moobeing.domain.member.entity.Member;
 import com.im.moobeing.domain.member.entity.MonthStatus;
 import com.im.moobeing.domain.member.repository.MemberRepository;
 import com.im.moobeing.domain.member.service.MemberService;
+import com.im.moobeing.global.error.ErrorCode;
+import com.im.moobeing.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,7 +55,7 @@ public class LoanService {
 			}
 
 			LoanProduct product = loanProductRepository.findByLoanName(loan.getLoanProductName())
-				.orElseThrow(() -> new RuntimeException("todo error"));
+				.orElseThrow(() -> new BusinessException(ErrorCode.LP_NOT_FOUND));
 
 			getMemberLoanDtoList.add(
 				GetMemberLoanDto.of(loan, product)
@@ -138,8 +140,6 @@ public class LoanService {
 		}
 		int startYear = minYear;
 		int startMonth = minMonth;
-		final int tmpYear = startYear;
-		final int tmpMonth = startMonth;
 
 		// 목표 연도와 월을 설정 (2024년 8월)
 		final int targetYear = 2024;
@@ -207,7 +207,7 @@ public class LoanService {
 	public GetAllLoanMapResponse getBuddyLoanMap(Member member, String loanName) {
 		// 1. 여정지도에 대한 시작점을 찾아야 한다. (시작 월, 시작 년도)
 		MemberLoan memberLoan = memberLoanRepository.findByMemberIdAndLoanProductName(member.getId(), loanName)
-				.orElseThrow(() -> new RuntimeException("todo memberLoan을 못 찾음"));
+				.orElseThrow(() -> new BusinessException(ErrorCode.ML_NOT_FOUND));
 
 		int startYear = memberLoan.getStartYear();
 		int startMonth = memberLoan.getStartMonth();
@@ -372,7 +372,7 @@ public class LoanService {
 	@Transactional
 	public AddMemberRadishResponse hideMonthButton(Member member) {
 		if (member.getMonthComplete() != MonthStatus.TRUE){
-			throw new RuntimeException("todo 너 잘못 보냈어!!");
+			throw new BusinessException(ErrorCode.MC_WRONG_REQUEST);
 		}
 		member.setMemberComplete(MonthStatus.DONE);
 
@@ -499,10 +499,10 @@ public class LoanService {
 
 	public GetDetailLoanResponse getDetailLoan(Member member, String loanName) {
 		MemberLoan memberLoan = memberLoanRepository.findByMemberIdAndLoanProductName(member.getId(), loanName)
-				.orElseThrow(() -> new RuntimeException("todo 찾을 수 없는 memberLoan"));
+				.orElseThrow(() -> new BusinessException(ErrorCode.ML_NOT_FOUND));
 
 		LoanProduct loanProduct = loanProductRepository.findByLoanName(loanName)
-				.orElseThrow(() -> new RuntimeException("todo loanProduct 찾을 수 없음"));
+				.orElseThrow(() -> new BusinessException(ErrorCode.LP_NOT_FOUND));
 
 		Long remainingBalance = memberLoan.getRemainingBalance();
 		Long monthBalance = memberLoan.getInitialBalance() / loanProduct.getLoanPeriod();

@@ -31,7 +31,25 @@ public enum ErrorCode {
 	QZ_NOT_FOUND_QUIZ(HttpStatus.NOT_FOUND, "QZ001", "해당 퀴즈가 존재하지 않습니다."),
 	QZ_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "QZ002", "해당 퀴즈에 대한 접근 권한이 없습니다."),
 	INVALID_QUIZ_TYPE(HttpStatus.BAD_REQUEST, "QZ002", "올바르지 않은 퀴즈 타입입니다."),
-	INVALID_STATUS_TYPE(HttpStatus.BAD_REQUEST, "QZ003", "올바르지 않은 퀴즈 상태입니다.");
+	INVALID_STATUS_TYPE(HttpStatus.BAD_REQUEST, "QZ003", "올바르지 않은 퀴즈 상태입니다."),
+
+	// MemberLoan
+	ML_NOT_FOUND(HttpStatus.NOT_FOUND, "ML001", "해당 맴버 대출은 존재하지 않습니다."),
+	ML_OVER_BALANCE(HttpStatus.BAD_REQUEST, "ML002", "대출 초과 상환입니다."),
+
+	// LoanProduct
+	LP_NOT_FOUND(HttpStatus.NOT_FOUND, "LP001", "해당 대출 상품은 존재하지 않습니다."),
+
+	//AverageLoanRepayment
+	AL_NOT_FOUND(HttpStatus.NOT_FOUND, "AL001", "해당 또래 데이터는 존재하지 않습니다."),
+
+	//Account
+	AC_NOT_FOUND(HttpStatus.NOT_FOUND, "AC001","해당 계좌는 존재하지 않습니다."),
+	AC_NOT_HAVE_ENOUGH(HttpStatus.BAD_REQUEST, "AC002", "해당 계좌에 남은 돈이 적습니다."),
+
+	// MonthComplete
+	MC_WRONG_REQUEST(HttpStatus.BAD_REQUEST, "MC001", "이번달은 상환 보상은 이미 받았습니다.");
+
 
 	private final HttpStatus status;
 	private final String code;

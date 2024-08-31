@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.im.moobeing.global.error.exception.BusinessException;
 import org.springframework.stereotype.Service;
 
 import com.im.moobeing.domain.expense.dto.GetCategoryListDto;
@@ -96,7 +97,7 @@ public class ExpenseService {
 					expenseDateResponse.getDate().getMonthValue() == loanRepaymentRecord.getMonth() &&
 					expenseDateResponse.getDate().getYear() == loanRepaymentRecord.getYear()){
 					MemberLoan memberLoan = memberLoanRepository.findById(loanRepaymentRecord.getMemberLoanId())
-						.orElseThrow(() -> new RuntimeException("todo"));
+						.orElseThrow(() -> new BusinessException(ErrorCode.ML_NOT_FOUND));
 					String title = memberLoan.getLoanProductName() + " 상환";
 					int price = Math.toIntExact(loanRepaymentRecord.getRepaymentBalance());
 					expenseDateResponse.getHistory().add(ExpenseHistoryResponse.from(title, "대출", price));
