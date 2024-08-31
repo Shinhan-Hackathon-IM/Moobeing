@@ -117,4 +117,11 @@ public class LoanController {
 										   @RequestParam(defaultValue = "우리은행 주택담보대출") String loanProductName){
 		return ResponseEntity.status(HttpStatus.OK).body(loanService.getDetailLoan(member, loanProductName));
 	}
+
+	@Operation(summary = "대출 금리 줄이기", description = "대출 금리 줄이기")
+	@PostMapping("/good")
+	public ResponseEntity<?> setGoodMember(@AuthenticationPrincipal Member member){
+		loanService.setGoodMember(member);
+		return ResponseEntity.status(HttpStatus.OK).body(null);
+	}
 }

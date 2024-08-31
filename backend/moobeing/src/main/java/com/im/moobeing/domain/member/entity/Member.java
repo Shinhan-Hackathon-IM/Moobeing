@@ -60,8 +60,11 @@ public class Member extends BaseTimeEntity {
     @Column
     private String account;
 
+    @Column(name = "good_member", nullable = true, length = 255)
+    private boolean goodMember;
+
     @Builder
-    public Member(Long id, String email, String password, Long totalPoints, Long totalLoan, String name, String gender, String birthday, String userKey, Long monthAver, Long selectedRadishId, MonthStatus monthComplete, String account) {
+    public Member(Long id, String email, String password, Long totalPoints, Long totalLoan, String name, String gender, String birthday, String userKey, Long monthAver, Long selectedRadishId, MonthStatus monthComplete, String account, boolean goodMember) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -75,7 +78,9 @@ public class Member extends BaseTimeEntity {
         this.selectedRadishId = selectedRadishId;
         this.monthComplete = monthComplete;
         this.account = account;
+        this.goodMember = goodMember;
     }
+
 
     public void changeMember(MemberChangeRequest memberChangeRequest){
         this.name = memberChangeRequest.getName();
@@ -101,5 +106,9 @@ public class Member extends BaseTimeEntity {
 
     public void setMemberComplete(MonthStatus monthComplete) {
         this.monthComplete = monthComplete;
+    }
+
+    public void setGoodMember(boolean goodMember) {
+        this.goodMember = goodMember;
     }
 }

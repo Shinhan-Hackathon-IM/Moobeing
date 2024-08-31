@@ -1,6 +1,6 @@
 -- 1. 맴버 생성
-INSERT IGNORE INTO member (member_id, email, password, total_points, total_loan, name, gender, birthday, user_key, selected_radish_id, month_aver, month_complete)
-VALUES (1, 'test@gmail.com', 'test', 0, 0, 'Test User', 'M', '000101', 'user_key_123', 1, 10000000, false);
+INSERT IGNORE INTO member (member_id, email, password, total_points, total_loan, name, gender, birthday, user_key, selected_radish_id, month_aver, month_complete, good_member)
+VALUES (1, 'test@gmail.com', 'test', 0, 0, 'Test User', 'M', '000101', 'user_key_123', 1, 10000000, false, false);
 
 -- 2. 대출 상품 더미 데이터 12개 생성
 INSERT IGNORE INTO loan_product (loan_product_id, loan_name, bank_image_url, bank_name, loan_period, interest_rate, description) VALUES
@@ -424,3 +424,106 @@ VALUES
 1, -- 기본 무의 개수
 NOW(),
 NOW());
+
+-- 12. radish_time 테이블에 새로운 레코드 추가
+INSERT INTO radish_time (member_id, created_date, modified_date)
+VALUES
+    ((SELECT member_id FROM member WHERE email = 'test@gmail.com'),
+     NOW(),
+     NOW());
+
+-- 12. radish_time 테이블에 3월 레코드 추가
+INSERT INTO radish_time (member_id, created_date, modified_date)
+VALUES
+    ((SELECT member_id FROM member WHERE email = 'test@gmail.com'),
+     '2024-03-01 00:00:00',
+     '2024-03-01 00:00:00');
+
+-- 12. radish_time 테이블에 4월 레코드 추가
+INSERT INTO radish_time (member_id, created_date, modified_date)
+VALUES
+    ((SELECT member_id FROM member WHERE email = 'test@gmail.com'),
+     '2024-04-01 00:00:00',
+     '2024-04-01 00:00:00');
+
+-- 12. radish_time 테이블에 5월 레코드 추가
+INSERT INTO radish_time (member_id, created_date, modified_date)
+VALUES
+    ((SELECT member_id FROM member WHERE email = 'test@gmail.com'),
+     '2024-05-01 00:00:00',
+     '2024-05-01 00:00:00');
+
+-- 12. radish_time 테이블에 6월 레코드 추가
+INSERT INTO radish_time (member_id, created_date, modified_date)
+VALUES
+    ((SELECT member_id FROM member WHERE email = 'test@gmail.com'),
+     '2024-06-01 00:00:00',
+     '2024-06-01 00:00:00');
+
+-- 12. radish_time 테이블에 7월 레코드 추가
+INSERT INTO radish_time (member_id, created_date, modified_date)
+VALUES
+    ((SELECT member_id FROM member WHERE email = 'test@gmail.com'),
+     '2024-07-01 00:00:00',
+     '2024-07-01 00:00:00');
+
+-- 12. radish_time 테이블에 8월 레코드 추가
+INSERT INTO radish_time (member_id, created_date, modified_date)
+VALUES
+    ((SELECT member_id FROM member WHERE email = 'test@gmail.com'),
+     '2024-08-01 00:00:00',
+     '2024-08-01 00:00:00');
+
+-- 11. test@gmail.com 회원에게 1번 무를 추가
+INSERT IGNORE INTO member_radish (member_radish_id, member_id, radish_id, radish_number, created_date, modified_date)
+VALUES
+(2, (SELECT member_id FROM member WHERE email = 'test@gmail.com'),
+4, -- 1번 무를 의미
+1, -- 기본 무의 개수
+'2024-04-01 00:00:00', -- 5월에 추가
+'2024-04-01 00:00:00');
+
+-- 11. test@gmail.com 회원에게 1번 무를 추가
+INSERT IGNORE INTO member_radish (member_radish_id, member_id, radish_id, radish_number, created_date, modified_date)
+VALUES
+(3, (SELECT member_id FROM member WHERE email = 'test@gmail.com'),
+5, -- 1번 무를 의미
+1, -- 기본 무의 개수
+'2024-05-01 00:00:00', -- 5월에 추가
+'2024-05-01 00:00:00');
+
+       -- 11. test@gmail.com 회원에게 1번 무를 추가
+INSERT IGNORE INTO member_radish (member_radish_id, member_id, radish_id, radish_number, created_date, modified_date)
+VALUES
+(4, (SELECT member_id FROM member WHERE email = 'test@gmail.com'),
+6, -- 1번 무를 의미
+1, -- 기본 무의 개수
+'2024-06-01 00:00:00', -- 6월에 추가
+'2024-06-01 00:00:00');
+
+       -- 11. test@gmail.com 회원에게 1번 무를 추가
+INSERT IGNORE INTO member_radish (member_radish_id, member_id, radish_id, radish_number, created_date, modified_date)
+VALUES
+(4, (SELECT member_id FROM member WHERE email = 'test@gmail.com'),
+7, -- 1번 무를 의미
+1, -- 기본 무의 개수
+'2024-07-01 00:00:00', -- 7월에 추가
+'2024-07-01 00:00:00');
+
+       -- 11. test@gmail.com 회원에게 1번 무를 추가
+INSERT IGNORE INTO member_radish (member_radish_id, member_id, radish_id, radish_number, created_date, modified_date)
+VALUES
+(5, (SELECT member_id FROM member WHERE email = 'test@gmail.com'),
+8, -- 1번 무를 의미
+1, -- 기본 무의 개수
+'2024-08-01 00:00:00', -- 8월에 추가
+'2024-08-01 00:00:00');
+
+-- 11. test@gmail.com 회원에게 1번 무를 추가
+INSERT IGNORE INTO member_radish (member_radish_id, member_id, radish_id, radish_number, created_date, modified_date)
+VALUES
+(6, (SELECT member_id FROM member WHERE email = 'test@gmail.com'),
+10, -- 1번 무를 의미
+1, -- 기본 무의 개수
+'2024-03-01 00:00:00', -- 5월에 추가
+'2024-03-01 00:00:00');

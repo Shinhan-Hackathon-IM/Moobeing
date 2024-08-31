@@ -14,12 +14,16 @@ public class GetMemberLoanDto {
 	private Long remainingBalance;
 	private Double interestRate;
 
-	public static GetMemberLoanDto of(MemberLoan memberLoan, LoanProduct loanProduct) {
+	public static GetMemberLoanDto of(MemberLoan memberLoan, LoanProduct loanProduct, Boolean goodMember) {
+		Double sail = (double) 0;
+		if (goodMember){
+			sail = 0.1;
+		}
 		return GetMemberLoanDto.builder()
 			.loanProductName(memberLoan.getLoanProductName())
 			.bankImageUrl(loanProduct.getBankImageUrl())
 			.remainingBalance(memberLoan.getRemainingBalance())
-			.interestRate(loanProduct.getInterestRate())
+			.interestRate(loanProduct.getInterestRate() - sail)
 			.build();
 	}
 }

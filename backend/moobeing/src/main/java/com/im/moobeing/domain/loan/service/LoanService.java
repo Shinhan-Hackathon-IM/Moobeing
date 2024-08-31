@@ -58,7 +58,7 @@ public class LoanService {
 				.orElseThrow(() -> new BusinessException(ErrorCode.LP_NOT_FOUND));
 
 			getMemberLoanDtoList.add(
-				GetMemberLoanDto.of(loan, product)
+				GetMemberLoanDto.of(loan, product, member.isGoodMember())
 			);
 
 			totalLoanAmount += loan.getRemainingBalance();
@@ -70,7 +70,7 @@ public class LoanService {
 			getMemberLoanDtoList.sort(Comparator.comparing(GetMemberLoanDto::getRemainingBalance).reversed());
 		}
 
-		return GetMemberLoanResponse.of(totalLoanAmount, getMemberLoanDtoList);
+		return GetMemberLoanResponse.of(totalLoanAmount, getMemberLoanDtoList, member.isGoodMember());
 	}
 
 	public GetLoanMapResponse getLoanMap(Member member, String reqProductName) {
@@ -508,5 +508,11 @@ public class LoanService {
 		Long monthBalance = memberLoan.getInitialBalance() / loanProduct.getLoanPeriod();
 
 		return GetDetailLoanResponse.of(remainingBalance, monthBalance);
+	}
+
+	@Transactional
+	public void setGoodMember(Member member) {
+		member.setGoodMember(true);
+		memberRepository.save(member);
 	}
 }

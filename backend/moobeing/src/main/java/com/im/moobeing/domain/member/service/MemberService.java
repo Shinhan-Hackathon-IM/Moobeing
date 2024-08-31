@@ -7,7 +7,9 @@ import com.im.moobeing.domain.member.entity.MemberRadish;
 import com.im.moobeing.domain.member.repository.MemberRadishRepository;
 import com.im.moobeing.domain.member.repository.MemberRepository;
 import com.im.moobeing.domain.radish.entity.Radish;
+import com.im.moobeing.domain.radish.entity.RadishTime;
 import com.im.moobeing.domain.radish.repository.RadishRepository;
+import com.im.moobeing.domain.radish.repository.RadishTimeRepository;
 import com.im.moobeing.global.client.ShinhanClient;
 import com.im.moobeing.global.config.ApiKeyConfig;
 import com.im.moobeing.global.error.ErrorCode;
@@ -16,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
@@ -29,6 +32,7 @@ public class MemberService {
     private final ShinhanClient shinhanClient;
     private final ApiKeyConfig apiKeyConfig;
     private final MemberRadishRepository memberRadishRepository;
+    private final RadishTimeRepository radishTimeRepository;
 
     @Transactional
     public MemberCreateResponse createMember(MemberCreateRequest memberCreateRequest) {
@@ -151,7 +155,9 @@ public class MemberService {
             memberRadishRepository.save(newMemberRadish); // 이 줄만 저장하도록 변경
         }
 
-        // memberRepository.save(member); // 이 줄은 제거
+        radishTimeRepository.save(RadishTime.builder()
+                .memberId(member.getId())
+                .build());
 
         return AddMemberRadishResponse.of(member, radish.getRadishName(), radish.getRadishRank(),
             radish.getRadishImageUrl(), radish.getRadishMessage());
@@ -214,8 +220,6 @@ public class MemberService {
             memberRadishRepository.save(newMemberRadish); // 이 줄만 저장하도록 변경
         }
 
-        // memberRepository.save(member); // 이 줄은 제거
-
         return AddMemberRadishResponse.of(member, radish.getRadishName(), radish.getRadishRank(),
             radish.getRadishImageUrl(), radish.getRadishMessage());
     }
@@ -249,6 +253,58 @@ public class MemberService {
             memberRadishRepository.delete(memberRadish);
         }
 
+        radishTimeRepository.save(RadishTime.builder()
+                .memberId(member.getId())
+                .build());
+
         return addMemberRadish(member);
+    }
+
+    public StreamCntMemberResponse streamCntMember(Member member) {
+        int streamCnt = 0;
+        boolean stop = true;
+
+        List<RadishTime> radishTimes = radishTimeRepository.findAllByMemberId(member.getId());
+
+        LocalDate currentDate = LocalDate.now();
+
+        int currentYear = currentDate.getYear();
+        int currentMonth = currentDate.getMonthValue();
+
+        int year = currentYear;
+        int month = currentMonth;
+
+        for (int i = 0; i < 6; i++){
+            month--;
+            if (month == 0){
+                year--;
+                month = 12;
+            }
+            for (RadishTime radishTime : radishTimes){
+                int radishYear = radishTime.getCreatedDate().getYear();
+                int radishMonth = radishTime.getCreatedDate().getMonthValue();
+
+                if (year == radishYear && month == radishMonth) {
+                    streamCnt++;
+                    stop = false;
+                }
+            }
+            if (stop == true){
+                break;
+            } else {
+                stop = true;
+            }
+        }
+
+        for (RadishTime radishTime : radishTimes) {
+            int radishYear = radishTime.getCreatedDate().getYear();
+            int radishMonth = radishTime.getCreatedDate().getMonthValue();
+            if(radishYear == currentYear && radishMonth == currentMonth){
+                streamCnt++;
+                break;
+            }
+        }
+
+        return StreamCntMemberResponse.of(streamCnt);
     }
 }

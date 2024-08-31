@@ -1,20 +1,14 @@
 package com.im.moobeing.domain.radish.entity;
 
-import java.util.List;
-
 import com.im.moobeing.domain.member.entity.MemberRadish;
 import com.im.moobeing.global.entity.BaseTimeEntity;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity(name = "radish")
 @Getter
@@ -41,7 +35,6 @@ public class Radish extends BaseTimeEntity {
     private List<MemberRadish> memberRadishes;
 
     @Builder
-
     public Radish(Long id, String radishName, String radishImageUrl, String radishRank, String radishMessage) {
         this.id = id;
         this.radishName = radishName;

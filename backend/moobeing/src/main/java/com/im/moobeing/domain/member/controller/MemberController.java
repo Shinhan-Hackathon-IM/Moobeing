@@ -100,4 +100,10 @@ public class MemberController {
     public ResponseEntity<?> mergeMemberBaby(@AuthenticationPrincipal Member member) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.mergeMemberBaby(member));
     }
+
+    @Operation(summary = "연속으로 무를 받았는 지 개수 체크하기", description = "연속으로 무를 받았는 지 개수 체크하기")
+    @GetMapping("/streamCnt")
+    public ResponseEntity<?> streamCntMember(@AuthenticationPrincipal Member member) {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.streamCntMember(member));
+    }
 }
