@@ -214,6 +214,30 @@ const SignUpButton = styled.button`
   border: none;
   cursor: pointer;
 `;
+const AlertContainer = styled.div`
+  position: fixed;
+  top: 23vh;
+  left: 50%;
+  width: 75%;
+  transform: translateX(-50%);
+  background-color: rgba(192, 221, 165, 0.8);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 16px;
+  z-index: 1000;
+  opacity: ${(props) => (props.visible ? 1 : 0)};
+  transition: opacity 0.3s ease-in-out;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center; /* 추가 */
+`;
+
+const CustomAlert = ({ message, visible }) => {
+  return <AlertContainer visible={visible}>{message}</AlertContainer>;
+};
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -225,34 +249,29 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMismatch, setPasswordMismatch] = useState(false);
-  const [emailChecked, setEmailChecked] = useState(false); // 이메일 중복 체크 여부 상태 추가
+  const [emailChecked, setEmailChecked] = useState(false);
+  const [alertMessage, setAlertMessage] = useState(""); // 경고 메시지 상태 추가
+  const [isAlertVisible, setIsAlertVisible] = useState(false); // 경고창 가시성 상태 추가
 
   const regEmail =
     /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
 
-  const handleEnterKeyPress = (e, nextStep) => {
-    if (e.key === "Enter") {
-      handleNextStep(nextStep);
-    }
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setIsAlertVisible(true);
+    setTimeout(() => setIsAlertVisible(false), 3000); // 3초 후 경고창 숨기기
   };
 
   const handleNextStep = (nextStep) => {
-    // 주민번호가 다 채워지지 않으면 경고
     if (
       step === 2 &&
       (humanNumber.part1.length !== 6 || humanNumber.part2.length !== 1)
     ) {
-      alert("주민번호를 모두 입력해 주세요.");
+      showAlert("주민번호를 모두 입력해 주세요.");
       return;
     }
 
     setStep(nextStep);
-  };
-
-  const handlePreviousStep = () => {
-    if (step > 1) {
-      setStep(step - 1);
-    }
   };
 
   const handlePasswordConfirm = (e) => {
@@ -265,7 +284,7 @@ const SignUp = () => {
     if (/^\d*$/.test(value)) {
       setHumanNumber({ ...humanNumber, part1: value });
     } else {
-      alert("주민번호는 숫자만 입력할 수 있습니다.");
+      showAlert("주민번호는 숫자만 입력할 수 있습니다.");
     }
   };
 
@@ -274,7 +293,7 @@ const SignUp = () => {
     if (/^\d*$/.test(value)) {
       setHumanNumber({ ...humanNumber, part2: value });
     } else {
-      alert("주민번호는 숫자만 입력할 수 있습니다.");
+      showAlert("주민번호는 숫자만 입력할 수 있습니다.");
     }
   };
 
@@ -282,34 +301,32 @@ const SignUp = () => {
     try {
       const response = await postEmailCheck(email);
       setIsEmailAvailable(response.possibility);
-      setEmailChecked(true); // 이메일 중복 체크 완료로 설정
+      setEmailChecked(true);
       if (!regEmail.test(email)) {
-        alert("이메일 형식에 따라 정확히 입력해주세요");
+        showAlert("이메일 형식에 따라 정확히 입력해주세요");
         return;
       } else {
         if (response.possibility) {
-          alert("이메일을 사용할 수 있습니다.");
+          showAlert("이메일을 사용할 수 있습니다.");
           handleNextStep(4);
         } else {
-          alert("이미 사용 중인 이메일입니다.");
+          showAlert("이미 사용 중인 이메일입니다.");
         }
       }
     } catch (error) {
       console.error("이메일 중복 체크 실패:", error);
-      alert("이메일 중복 체크 중 오류가 발생했습니다.");
+      showAlert("이메일 중복 체크 중 오류가 발생했습니다.");
     }
   };
 
   const handleSignUp = async () => {
-    // 비밀번호가 일치하지 않으면 회원가입을 막고 경고
     if (passwordMismatch) {
-      alert("비밀번호가 일치하지 않습니다.");
+      showAlert("비밀번호가 일치하지 않습니다.");
       return;
     }
 
-    // 이메일 중복 확인이 되지 않았거나, 중복된 이메일일 경우 회원가입을 막고 경고
     if (!emailChecked || !isEmailAvailable) {
-      alert("이메일 중복 확인을 완료해 주세요.");
+      showAlert("이메일 중복 확인을 완료해 주세요.");
       return;
     }
 
@@ -322,8 +339,6 @@ const SignUp = () => {
       humanNumber: formattedHumanNumber,
     };
 
-    console.log(signUpData);
-
     try {
       const response = await postSignUp(
         email,
@@ -335,6 +350,13 @@ const SignUp = () => {
       navigate("/");
     } catch (error) {
       console.error("회원가입 실패:", error);
+      showAlert("회원가입 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handlePreviousStep = () => {
+    if (step > 1) {
+      setStep(step - 1);
     }
   };
 
@@ -346,6 +368,8 @@ const SignUp = () => {
     <PageWrapper>
       <FixedTitle>회원가입</FixedTitle>
       <Container>
+        <CustomAlert message={alertMessage} visible={isAlertVisible} />{" "}
+        {/* 경고창 추가 */}
         <Form>
           {step === 1 && (
             <InputGroup>
@@ -355,7 +379,6 @@ const SignUp = () => {
                 placeholder="사용자 이름"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                onKeyDown={(e) => handleEnterKeyPress(e, 2)}
               />
               <ButtonGroup>
                 <PrevButton onClick={goToLogin}>이전</PrevButton>
@@ -373,7 +396,6 @@ const SignUp = () => {
                   maxLength={6}
                   value={humanNumber.part1}
                   onChange={handleHumanNumberPart1Change}
-                  onKeyDown={(e) => handleEnterKeyPress(e, 3)}
                 />
                 -
                 <HumanInputField
@@ -381,7 +403,6 @@ const SignUp = () => {
                   maxLength={1}
                   value={humanNumber.part2}
                   onChange={handleHumanNumberPart2Change}
-                  onKeyDown={(e) => handleEnterKeyPress(e, 3)}
                 />
                 <MaskedDisplay>●●●●●●</MaskedDisplay>
               </InputGroupHumanNumber>
@@ -400,7 +421,6 @@ const SignUp = () => {
                   placeholder="이메일"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  onKeyDown={(e) => handleEnterKeyPress(e, 4)}
                 />
                 <ConfirmButton onClick={handleEmailCheck}>
                   <ConfirmButtonText>중복확인</ConfirmButtonText>
@@ -417,7 +437,6 @@ const SignUp = () => {
                   placeholder="비밀번호"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  onKeyDown={(e) => handleEnterKeyPress(e, 5)}
                 />
                 <PasswordNote>
                   8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요
@@ -430,7 +449,6 @@ const SignUp = () => {
                   placeholder="비밀번호 확인"
                   value={confirmPassword}
                   onChange={handlePasswordConfirm}
-                  onKeyDown={(e) => handleEnterKeyPress(e, 6)}
                 />
                 {passwordMismatch && (
                   <PasswordMismatchMessage>

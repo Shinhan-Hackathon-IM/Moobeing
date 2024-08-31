@@ -138,11 +138,31 @@ const LastLine = styled.div`
   margin: 10px 0px;
 `;
 
+const AlertContainer = styled.div`
+  position: fixed;
+  top: 20vh;
+  left: 50%;
+  width: 70%;
+  transform: translateX(-50%);
+  background-color: rgba(144, 144, 144, 0.8);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  z-index: 1000;
+  opacity: ${(props) => (props.visible ? 1 : 0)};
+  transition: opacity 0.3s ease-in-out;
+`;
+
 function LeftMoney() {
   const [accountBenefit, setAccountBenefit] = useState({});
   const [selectedLoan, setSelectedLoan] = useState(""); // 선택된 대출 상품 상태
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // 드롭다운 열림 상태
   const [interestBalance, setInterestBalance] = useState(0);
+  const [showAlert, setShowAlert] = useState(false); // 커스텀 경고창 표시 상태
   const navigate = useNavigate(); // useNavigate 훅 사용
 
   // 컴포넌트가 마운트될 때 계좌 혜택 데이터를 가져오기
@@ -182,7 +202,8 @@ function LeftMoney() {
         state: { loanList, remainingBalance }, // 상태로 데이터 전달
       }); // 선택된 대출과 함께 이동
     } else {
-      alert("대출 상품을 선택해주세요."); // 대출이 선택되지 않았을 때 경고 표시
+      setShowAlert(true); // 커스텀 경고창 표시
+      setTimeout(() => setShowAlert(false), 2000); // 2초 후 경고창 숨기기
     }
   };
 
@@ -228,6 +249,9 @@ function LeftMoney() {
       </TextTag>
 
       <PayButton onClick={handlePayment}>상환하러 가기</PayButton>
+      <AlertContainer visible={showAlert}>
+        대출 상품을 선택해주세요.
+      </AlertContainer>
     </Container>
   );
 }
