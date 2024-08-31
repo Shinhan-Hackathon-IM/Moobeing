@@ -206,7 +206,7 @@ const fadeInOut = keyframes`
 
 const AlertContainer = styled.div`
   position: fixed;
-  top: 80px; // Adjust this value based on your Header height
+  top: 80px; // Adjust this value based on your Header heights
   left: 50%;
   transform: translateX(-50%);
   z-index: 100000;

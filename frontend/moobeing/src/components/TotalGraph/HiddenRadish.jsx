@@ -60,7 +60,7 @@ const PullRadishButton = styled.button`
   transform: translate(-50%, -50%);
   padding: 10px 20px;
   background-color: ${(props) =>
-    props.isPullAvailable ? "#4caf50" : "#cccccc"};
+    props.isPullAvailable ? "#348833" : "#cccccc"};
   color: white;
   border: none;
   border-radius: 5px;

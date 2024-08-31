@@ -6,6 +6,7 @@ import Header from "../components/Fixed/Header";
 import { getLoanMapByProductName, getProductLoanBuddy } from "../apis/LoanApi";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import Loading from "./LoadingPage";
 
 const PageWrapper = styled.div`
   display: flex;
@@ -64,7 +65,7 @@ const LoanJourney = () => {
     fetchData(); // 데이터 가져오기 함수 호출
   }, [loanName]); // loanName이 변경될 때마다 useEffect 실행
 
-  if (loading) return <div>Loading...</div>; // 로딩 중일 때 표시할 내용
+  if (loading) return <Loading />; // 로딩 중일 때 표시할 내용
   if (error) return <div>데이터를 불러오는 중 오류가 발생했습니다.</div>; // 에러 발생 시 표시할 내용
 
   return (

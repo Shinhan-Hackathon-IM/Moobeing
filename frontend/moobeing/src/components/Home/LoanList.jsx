@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import goToJourney from "../../assets/button/goToJourney.svg";
@@ -6,6 +6,7 @@ import leftButton from "../../assets/button/leftButton.svg";
 import rightButton from "../../assets/button/rightButton.svg";
 import leftButtonBlack from "../../assets/button/leftButtonBlack.svg";
 import rightButtonBlack from "../../assets/button/rightButtonBlack.svg";
+import { getLoanSort } from "../../apis/LoanApi";
 
 const BankLogo = styled.img`
   width: 40px;
@@ -67,10 +68,11 @@ const InterestRate = styled.div`
   margin-left: auto;
   font-size: 10px;
   font-weight: bold;
-  background-color: #e0eed2;
+  background-color: ${(props) => (props.isGoodMember ? "#FFD600" : "#e0eed2")};
   padding: 5px 8px;
   border-radius: 10px;
-  color: white;
+  color: ${(props) => (props.isGoodMember ? "#24272D" : "white")};
+  border: 2px solid transparent;
 
   @media (min-width: 600px) {
     font-size: 12px;
@@ -117,11 +119,28 @@ const PageInfo = styled.div`
   color: #858585;
 `;
 
-function LoanList({ loans }) {
+function LoanList() {
+  const [loans, setLoans] = useState([]);
+  const [goodMember, setGoodMember] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const loansPerPage = 3;
   const totalPages = Math.ceil(loans.length / loansPerPage);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchLoans = async () => {
+      try {
+        const response = await getLoanSort("amount");
+        console.log(response);
+        setLoans(response.getMemberLoanDtoList);
+        setGoodMember(response.goodMember);
+      } catch (error) {
+        console.error("대출 정보를 가져오는 중 오류 발생:", error);
+      }
+    };
+
+    fetchLoans();
+  }, []);
 
   const handleScrollNext = () => {
     setCurrentIndex((prevIndex) => {
@@ -163,7 +182,9 @@ function LoanList({ loans }) {
                 </LoanName>
                 <div>{loan.remainingBalance.toLocaleString()} 원</div>
               </LoanInfo>
-              <InterestRate>{loan.interestRate.toFixed(2)}%</InterestRate>
+              <InterestRate isGoodMember={goodMember}>
+                {loan.interestRate.toFixed(2)}%
+              </InterestRate>
             </LoanItem>
           ))}
         </LoanListWrapper>

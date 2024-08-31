@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
-import radish from "../assets/radishes/basicRad.svg";
+import basicRad from "../../assets/radishes/basicRad.svg";
 
+// 페이드 인 애니메이션
 const fadeIn = keyframes`
-  from { opacity: 0.5; }
+  from { opacity: 0; }
   to { opacity: 1; }
 `;
 
+// 페이드 아웃 애니메이션
 const fadeOut = keyframes`
-  from { opacity: 0.5; }
+  from { opacity: 1; }
   to { opacity: 0; }
 `;
 
+// 스타일드 로딩 컨테이너
 const StyledLoading = styled.div`
   position: fixed;
   top: 0;
@@ -24,18 +27,17 @@ const StyledLoading = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  animation: ${(props) => (props.isLoading ? fadeIn : fadeOut)} 1s ease-in-out;
+  animation: ${(props) => (props.isLoading ? fadeIn : fadeOut)} 0.5s ease-in-out;
   opacity: ${(props) => (props.isLoading ? 1 : 0)};
   pointer-events: ${(props) => (props.isLoading ? "all" : "none")};
 
   & .text-wrapper {
     color: #348833;
-    font-size: 12px;
-    font-weight: 400;
-    letter-spacing: 0;
-    line-height: normal;
+    font-size: 16px;
+    font-weight: 700;
     text-align: center;
     font-family: "S-CoreDream";
+    margin-bottom: 20px;
   }
 
   & .element {
@@ -44,14 +46,14 @@ const StyledLoading = styled.div`
   }
 `;
 
-const Loading = ({ isLoading }) => {
+const CollectionLoading = ({ isLoading }) => {
   const [visible, setVisible] = useState(isLoading);
 
   useEffect(() => {
     if (isLoading) {
       setVisible(true);
     } else {
-      const timer = setTimeout(() => setVisible(false), 6000); // 로딩 시간 3초로 설정
+      const timer = setTimeout(() => setVisible(false), 500); // 페이드 아웃 시간
       return () => clearTimeout(timer);
     }
   }, [isLoading]);
@@ -60,13 +62,10 @@ const Loading = ({ isLoading }) => {
 
   return (
     <StyledLoading isLoading={isLoading}>
-      <img className="element" alt="Element" src={radish} />
-      <p className="text-wrapper">
-        당신의 대출이 <br />
-        '무' 가 되는 그날까지
-      </p>
+      <p className="text-wrapper">무들이 아직 깨어나는 중입니다!</p>
+      <img className="element" alt="Basic Radish" src={basicRad} />
     </StyledLoading>
   );
 };
 
-export default Loading;
+export default CollectionLoading;

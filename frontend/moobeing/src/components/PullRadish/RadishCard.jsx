@@ -35,7 +35,7 @@ const Card = styled.div`
 const NameTagContainer = styled.div`
   position: absolute;
   top: -22px;
-  left: 10px;
+  left: 9px;
   display: flex;
   align-items: center;
   /* justify-content: center; */

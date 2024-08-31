@@ -6,6 +6,7 @@ import HiddenRadish from "../components/TotalGraph/HiddenRadish";
 import LeftMoney from "../components/TotalGraph/LeftMoney";
 import Footer from "../components/Fixed/Footer";
 import Header from "../components/Fixed/Header";
+import Loading from "./LoadingPage";
 import {
   getAllLoanMapByMonth,
   getAllLoanBuddy,
@@ -95,7 +96,7 @@ const TotalJourney = () => {
     fetchData();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
   if (error) return <div>데이터를 불러오는 중 오류가 발생했습니다.</div>;
 
   return (
