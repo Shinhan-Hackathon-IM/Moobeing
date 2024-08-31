@@ -2,6 +2,13 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 // Zustand 스토어 생성
+<<<<<<< HEAD
+const useUserStore = create((set) => ({
+  userInfo: true, // 사용자 정보를 저장할 상태
+  isLoading: true, // 로딩 상태를 저장할 상태
+  creditRate: null, // 신용등급 정보를 저장할 상태
+  canAccessQuiz: false,
+=======
 const useUserStore = create(
   persist(
     (set) => ({
@@ -9,6 +16,7 @@ const useUserStore = create(
       isLoading: true, // 로딩 상태를 저장할 상태
       creditRate: null, // 신용등급 정보를 저장할 상태
       canAccessQuiz: false,
+>>>>>>> d905ec356d32e2f4b90d57f0a22dfe3973b372a7
 
       // 퀴즈로 바로 갈 수 있는건지
       setCanAccessQuiz: (value) => set({ canAccessQuiz: value }),

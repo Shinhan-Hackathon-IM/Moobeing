@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import styled, { keyframes } from "styled-components";
 import Footer from "../components/Fixed/Footer";
 import Header from "../components/Fixed/Header";
+import MonthlyRecord from "../components/Radish/MonthlyRecord";
+
 import Line from "../assets/button/Line.svg";
 import {
   getUserRadishCollection,
@@ -61,6 +63,7 @@ const SortButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
+  color: #24272d;
   font-size: 13px;
   font-weight: ${(props) => (props.isselected ? "bold" : "normal")};
 `;
@@ -130,6 +133,7 @@ const CharacterName = styled.span`
   position: absolute;
   top: 10px;
   right: 10px;
+  border: 1px solid rgba(128, 128, 128, 0.5);
   padding: 2px 5px;
   border-radius: 20px;
   background-color: ${(props) => {
@@ -236,8 +240,17 @@ const NewCharacterEffect = styled.div`
   justify-content: center;
   animation: ${newCharacterAnimation} 0.5s ease-out 1.5s both;
 `;
+const fadeOut = keyframes`
+  from { opacity: 1; }
+  to { opacity: 0; }
+`;
 
-const GrowButton = styled.button`
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
+const ButtonBase = styled.button`
   position: absolute;
   bottom: 10px;
   left: 50%;
@@ -251,13 +264,28 @@ const GrowButton = styled.button`
   z-index: 10;
 `;
 
+const GrowButton = styled(ButtonBase)`
+  animation: ${(props) =>
+    props.fadeOut
+      ? css`
+          ${fadeOut} 0.5s ease-out forwards
+        `
+      : "none"};
+`;
+
+const AcquireButton = styled(ButtonBase)`
+  animation: ${fadeIn} 0.5s ease-in;
+`;
+
 const RadishCollection = () => {
-  const [sortBy, setSortBy] = useState("radishCreateTime");
+  const [sortBy, setSortBy] = useState(null);
   const [isChooseActive, setIsChooseActive] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [characters, setCharacters] = useState([]);
   const { userInfo, setUserInfo } = useUserStore();
   const [growingCharacter, setGrowingCharacter] = useState(null);
+  const [isGrowthComplete, setIsGrowthComplete] = useState(false);
+  const [isFadingOut, setIsFadingOut] = useState(false);
 
   useEffect(() => {
     const fetchRadishCollection = async () => {
@@ -315,26 +343,58 @@ const RadishCollection = () => {
   };
 
   const handleGrow = async (char) => {
-    setGrowingCharacter(char);
-    try {
-      const newRadish = await growBabyRadish();
-      setTimeout(() => {
-        setCharacters((prevCharacters) =>
-          prevCharacters.map((c) => {
-            if (c.radishId === char.radishId) {
-              return {
-                ...newRadish,
-                radishNumber: c.radishNumber - 5,
-              };
-            }
-            return c;
-          })
-        );
+    setIsFadingOut(true);
+    setTimeout(() => {
+      setGrowingCharacter(char);
+      try {
+        const newRadish = async () => {
+          const result = await growBabyRadish();
+          setTimeout(() => {
+            setCharacters((prevCharacters) =>
+              prevCharacters.map((c) => {
+                if (c.radishId === char.radishId) {
+                  return {
+                    ...result,
+                    radishNumber: c.radishNumber - 5,
+                  };
+                }
+                return c;
+              })
+            );
+            setGrowingCharacter(null);
+            setIsGrowthComplete(true);
+          }, 2000); // 애니메이션 지속 시간
+        };
+        newRadish();
+      } catch (error) {
+        console.error("Failed to grow radish:", error);
         setGrowingCharacter(null);
-      }, 2000);
-    } catch (error) {
-      console.error("Failed to grow radish:", error);
-      setGrowingCharacter(null);
+      }
+    }, 500); // fadeOut 애니메이션 지속 시간
+  };
+
+  const handleAcquire = () => {
+    window.location.reload();
+  };
+
+  const renderCharacterContent = (char) => {
+    if (char.growthStage === "growing") {
+      return (
+        <AnimationContainer>
+          <ExplosionEffect />
+          <SmokeEffect />
+        </AnimationContainer>
+      );
+    } else if (char.growthStage === "complete") {
+      return (
+        <AnimationContainer>
+          <NewCharacterEffect>
+            <CharacterImage src={char.radishImageUrl} />
+          </NewCharacterEffect>
+        </AnimationContainer>
+      );
+    } else {
+      return <CharacterImage src={char.radishImageUrl} />;
     }
   };
 
@@ -370,6 +430,9 @@ const RadishCollection = () => {
                 선택
               </ChooseButton>
             </ChooseButtonContainer>
+
+            <MonthlyRecord />
+
             <CardContainer>
               {sortedCharacters.map((char) => (
                 <CharacterCard
@@ -399,17 +462,32 @@ const RadishCollection = () => {
                       selectedCharacter?.radishId === char.radishId)) && (
                     <CheckBoxOverlay src={checkBox} alt="Selected" />
                   )}
-                  {char.radishName === "응애무" && char.radishNumber >= 5 && (
-                    <GrowButton
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleGrow(char);
-                      }}
-                      disabled={growingCharacter !== null}
-                    >
-                      성장하기
-                    </GrowButton>
-                  )}
+                  {char.radishName === "응애무" &&
+                    char.radishNumber >= 5 &&
+                    !isGrowthComplete &&
+                    !isFadingOut && (
+                      <GrowButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleGrow(char);
+                        }}
+                        disabled={growingCharacter !== null}
+                        fadeOut={isFadingOut}
+                      >
+                        성장하기
+                      </GrowButton>
+                    )}
+                  {isGrowthComplete &&
+                    growingCharacter?.radishId === char.radishId && (
+                      <AcquireButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAcquire();
+                        }}
+                      >
+                        획득하기
+                      </AcquireButton>
+                    )}
                 </CharacterCard>
               ))}
             </CardContainer>

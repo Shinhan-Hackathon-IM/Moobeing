@@ -173,6 +173,14 @@ export const getLoanNumber = async () => {
   }
 };
 
+<<<<<<< HEAD
+export const changeInterestRate = async () => {
+  try {
+    const response = await api.post("/loan/good");
+    console.log("금리혜택을 받는 axios 함수가 호출 되었습니다");
+  } catch (error) {
+    console.error("금리혜택을 받는 함수 호출 실패", error);
+=======
 // 대출 상세 정보
 export const getLoanDetail = async (loanName) => {
   try {
@@ -180,6 +188,7 @@ export const getLoanDetail = async (loanName) => {
     return response.data;
   } catch (error) {
     console.error("대출 상세 정보 불러오기 실패:", error);
+>>>>>>> d905ec356d32e2f4b90d57f0a22dfe3973b372a7
     throw error;
   }
 };

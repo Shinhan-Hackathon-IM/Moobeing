@@ -90,3 +90,14 @@ export const getCreditRate = async () => {
     throw error;
   }
 };
+
+// 연속으로 무를 받았는지 체크하기
+export const getStreamCnt = async () => {
+  try {
+    const response = await api.get("/user/streamCnt");
+    return response.data;
+  } catch (error) {
+    console.error("연속 무 개수 받기 실패:", error);
+    throw error;
+  }
+};

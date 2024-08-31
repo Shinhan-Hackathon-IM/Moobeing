@@ -71,9 +71,8 @@ const ChatBubbleText = styled.div`
 const Button = styled.button`
   background-color: #4caf50;
   border: none;
-  width: 70%;
   color: white;
-  padding: 15px 32px;
+  padding: 12px 20px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -82,7 +81,11 @@ const Button = styled.button`
   cursor: pointer;
   border-radius: 12px;
   transition: background-color 0.3s ease;
+<<<<<<< HEAD
+  width: 170px;
+=======
   width: 180px;
+>>>>>>> d905ec356d32e2f4b90d57f0a22dfe3973b372a7
 
   &:hover {
     background-color: #45a049;

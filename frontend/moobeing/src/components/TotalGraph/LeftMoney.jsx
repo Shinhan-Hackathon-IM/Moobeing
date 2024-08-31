@@ -165,25 +165,30 @@ function LeftMoney() {
   const [showAlert, setShowAlert] = useState(false); // 커스텀 경고창 표시 상태
   const navigate = useNavigate(); // useNavigate 훅 사용
 
+  const [remainingBalance, setRemainingBalance] = useState(0);
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태
+
   // 컴포넌트가 마운트될 때 계좌 혜택 데이터를 가져오기
   useEffect(() => {
     // 계좌 혜택 데이터 가져오기
     getAccountBenefit()
       .then((response) => {
         setAccountBenefit(response); // 계좌 혜택 상태 업데이트
+        setRemainingBalance(response.accountLeftMoney || 0); // 초기 잔액 설정
       })
       .catch((error) => {
         console.error("계좌 혜택 데이터를 가져오는 중 오류 발생:", error);
       });
   }, []);
 
-  const remainingBalance = accountBenefit.accountLeftMoney || 0;
+  // const remainingBalance = accountBenefit.accountLeftMoney || 0;
   const loanList = accountBenefit.LoanList || []; // LoanList를 상태에서 가져오기
 
   // 대출 선택 시 호출되는 함수
   const handleLoanChange = (loanName) => {
     setSelectedLoan(loanName); // 선택된 대출 업데이트
     setIsDropdownOpen(false); // 드롭다운 닫기
+    setIsLoading(true); // 로딩 상태 활성화
 
     // 선택된 대출의 이자 잔액 찾기
     const selectedInterest = loanList.find(

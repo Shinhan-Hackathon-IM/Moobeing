@@ -128,15 +128,15 @@ const NoLoanText = styled.p`
 function LoanHistory() {
   const [loans, setLoans] = useState([]);
   const [totalLoanAmount, setTotalLoanAmount] = useState(0);
-  const [activeSort, setActiveSort] = useState(null);
+  const [activeSort, setActiveSort] = useState("interest");
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getLoanSort("amount"); // API 호출
-        setLoans(response.getMemberLoanDtoList); // 받아온 대출 정보 설정
-        setTotalLoanAmount(response.totalLoanAmount || 0); // 총 대출 금액 설정
+        const response = await getLoanSort("rate");
+        setLoans(response.getMemberLoanDtoList);
+        setTotalLoanAmount(response.totalLoanAmount || 0);
       } catch (error) {
         console.error("대출 정보 불러오기 실패:", error);
       }
