@@ -18,7 +18,7 @@ const PasswordChangeButton = styled.button`
   padding: 8px;
   cursor: pointer;
   border: none;
-  font-weight: bold;
+  font-weight: 500;
   background-color: ${(props) =>
     props.isactive === "true" ? "#348833" : "#e0eed2"};
   color: ${(props) => (props.isactive === "true" ? "#ffffff" : "#24272D")};
@@ -110,10 +110,10 @@ const formatBirthday = (birthday) => {
 };
 
 const MyInfo = ({ onPasswordChangeClick }) => {
-  // Zustand 스토어에서 사용자 정보 가져오기
+  // Zustand 스토어에서 필요한 상태와 함수 가져오기
   const userInfo = useUserStore((state) => state.userInfo);
-  // Zustand 스토어에서 setUserInfo 함수 가져오기
   const setUserInfo = useUserStore((state) => state.setUserInfo);
+  const logout = useUserStore((state) => state.logout); // 로그아웃 액션 가져오기
 
   useEffect(() => {
     const fetchData = async () => {
@@ -160,7 +160,7 @@ const MyInfo = ({ onPasswordChangeClick }) => {
           <Value>{getGenderDisplay(userInfo.gender)}</Value>
         </InfoRow>
       </Contents>
-      <LogoutButton>로그아웃</LogoutButton>
+      <LogoutButton onClick={logout}>로그아웃</LogoutButton>
     </Container>
   );
 };
