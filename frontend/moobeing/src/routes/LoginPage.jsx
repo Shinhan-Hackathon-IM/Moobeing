@@ -101,13 +101,36 @@ const SignupButton = styled.button`
   text-decoration: underline;
 `;
 
+const AlertContainer = styled.div`
+  position: fixed;
+  top: 20vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background-color: rgba(192, 221, 165, 0.8);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  max-width: 500px;
+  text-align: center;
+  animation: fadeInOut 2s ease-in-out;
+`;
+
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState(""); // email을 위한 state
   const [password, setPassword] = useState(""); // password를 위한 state
+  const [alertMessage, setAlertMessage] = useState(""); // 커스텀 경고창 메시지 상태 추가
 
   const handleSignupClick = () => {
     navigate("/signup");
+  };
+
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setTimeout(() => setAlertMessage(""), 3000); // 3초 후 경고창 사라짐
   };
 
   const handleLogin = async (e) => {
@@ -132,7 +155,7 @@ const Login = () => {
             ? response.data.message
             : "로그인 실패";
         console.log("로그인 실패:", response.status);
-        alert("로그인 실패: " + errorMessage); // 오류 메시지 표시
+        showAlert("로그인 실패: " + errorMessage); // 오류 메시지 표시
       }
     } catch (error) {
       console.error("로그인 중 오류 발생:", error);
@@ -141,7 +164,7 @@ const Login = () => {
         error.response && error.response.data && error.response.data.message
           ? error.response.data.message
           : "로그인 중 오류가 발생했습니다.";
-      alert(errorMessage); // 오류 메시지 표시
+      showAlert(errorMessage); // 오류 메시지 표시
     }
   };
 
@@ -149,7 +172,6 @@ const Login = () => {
     <ScreenWrapper>
       <LogoImage alt="Logo" src={Logo} />
       <FormWrapper onSubmit={handleLogin}>
-        {/* Wrapping input fields and button in styled form */}
         <InputText
           type="email"
           placeholder="이메일"
@@ -169,6 +191,8 @@ const Login = () => {
         </PasswordLostContainer>
         <LoginButton type="submit">로그인</LoginButton>
       </FormWrapper>
+      {alertMessage && <AlertContainer>{alertMessage}</AlertContainer>}{" "}
+      {/* 커스텀 경고창 */}
       <SignUpText>
         <Span>계정이 없으신가요?</Span>
         <SignupButton onClick={handleSignupClick}>가입하기</SignupButton>
