@@ -40,9 +40,14 @@ const ChartContainer = styled.div`
   position: relative;
 `;
 
-const TitleOfChart = styled.h1`
+const TitleOfChart = styled.div`
+  font-size: 28px;
   margin-top: 3vh;
   margin-bottom: 1vh;
+
+  @media (min-width: 600px) {
+    font-size: 33px;
+  }
 `;
 
 const ButtonContainer = styled.div`
@@ -245,9 +250,11 @@ const CustomTooltip = ({ active, payload, label, isYearly }) => {
   if (active && payload && payload.length) {
     const formatToKoreanWon = (value) => {
       if (value >= 100000000) {
-        return `${Math.floor(value / 100000000)}억`;
+        return `${(value / 100000000).toFixed(2)}억`;
       } else if (value >= 10000) {
-        return `${Math.floor(value / 10000)}만`;
+        return `${(value / 10000).toFixed(2)}만`;
+      } else if (value >= 1000) {
+        return `${(value / 1000).toFixed(2)}천`;
       } else {
         return `${value}`;
       }
@@ -386,9 +393,11 @@ function TotalGraph({
 
   const formatToKoreanWon = (value) => {
     if (value >= 100000000) {
-      return `${Math.floor(value / 100000000)}억`;
+      return `${(value / 100000000).toFixed(2)}억`;
     } else if (value >= 10000) {
-      return `${Math.floor(value / 10000)}만`;
+      return `${(value / 10000).toFixed(2)}만`;
+    } else if (value >= 1000) {
+      return `${(value / 1000).toFixed(2)}천`;
     } else {
       return `${value}`;
     }
@@ -411,7 +420,7 @@ function TotalGraph({
           </ToggleCircle>
         </ToggleButton>
       </ToggleWrapper>
-      <TitleOfChart>전체여정</TitleOfChart>
+      <TitleOfChart>전체 상환 여정</TitleOfChart>
       <DataCollectContainer>
         <CustomDropdown
           options={availableYears}
