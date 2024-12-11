@@ -72,11 +72,11 @@ intellij
 | <img src="https://github.com/user-attachments/assets/e56fd4d4-f630-4035-a227-e3643a6323c9" width="300"> | <img src="https://github.com/user-attachments/assets/8251578a-c328-4221-afe7-63b596c7feac" width="300"> |
 
 ### 카테고리 파이 화면
-| 카테고리 파이 화면 1 | 카테고리 파이 화면 2 | 카테고리 파이 화면 3 |
-|:---:|:---:|:---:|
-| - | - | - |
+| 카테고리 파이 화면 |
+|:---:|
+| - |
 
 ### 무 화면
-| 무 화면 1 | 무 화면 2 | 무 화면 3 |
-|:---:|:---:|:---:|
-| <img src="https://github.com/user-attachments/assets/c82e42d0-0e8d-444d-a0ca-ef2495fe8c70" width="250"> | - | - |
+| 무 화면 |
+|:---:|
+| <img src="https://github.com/user-attachments/assets/c82e42d0-0e8d-444d-a0ca-ef2495fe8c70" width="250"> |
