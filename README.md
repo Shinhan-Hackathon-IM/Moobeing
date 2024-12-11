@@ -63,7 +63,7 @@ intellij
 
 ### 여정지도 화면
 | 여정지도 화면 1 | 여정지도 화면 2 |
-|:---:|:---:|:---:|
+|:---:|:---:|
 | <img src="https://github.com/user-attachments/assets/0ea7f1c0-4b54-43e4-a248-b4fae7283488" width="300"> | <img src="https://github.com/user-attachments/assets/4b4ebcf7-2e48-498d-a237-306c8bbdc4a0" width="300"> |
 
 ### 소비 화면
