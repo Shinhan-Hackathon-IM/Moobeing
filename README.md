@@ -55,24 +55,28 @@ intellij
 ![전체 아키텍처 (4)](https://github.com/user-attachments/assets/132557ec-4342-4135-823a-4d9571cd1586)
 
 ## 💻Demo
-- 메인 화면
-![image](https://github.com/user-attachments/assets/33de2cb4-e369-41cf-a50f-92d543243f27)
-![image](https://github.com/user-attachments/assets/1b1e4f08-6650-4888-afe5-9b36d72191e5)
 
-- 여정지도 화면
-![image](https://github.com/user-attachments/assets/0ea7f1c0-4b54-43e4-a248-b4fae7283488)
-![image](https://github.com/user-attachments/assets/4b4ebcf7-2e48-498d-a237-306c8bbdc4a0)
+#### 메인 화면
+| 메인 화면 1 | 메인 화면 2 | 메인 화면 3 |
+|:---:|:---:|:---:|
+| ![메인 화면 1](https://github.com/user-attachments/assets/33de2cb4-e369-41cf-a50f-92d543243f27) | ![메인 화면 2](https://github.com/user-attachments/assets/1b1e4f08-6650-4888-afe5-9b36d72191e5) | - |
 
+#### 여정지도 화면
+| 여정지도 화면 1 | 여정지도 화면 2 | 여정지도 화면 3 |
+|:---:|:---:|:---:|
+| ![여정지도 1](https://github.com/user-attachments/assets/0ea7f1c0-4b54-43e4-a248-b4fae7283488) | ![여정지도 2](https://github.com/user-attachments/assets/4b4ebcf7-2e48-498d-a237-306c8bbdc4a0) | - |
 
-- 소비 화면
-![image](https://github.com/user-attachments/assets/e56fd4d4-f630-4035-a227-e3643a6323c9)
-![image](https://github.com/user-attachments/assets/8251578a-c328-4221-afe7-63b596c7feac)
+#### 소비 화면
+| 소비 화면 1 | 소비 화면 2 | 소비 화면 3 |
+|:---:|:---:|:---:|
+| ![소비 화면 1](https://github.com/user-attachments/assets/e56fd4d4-f630-4035-a227-e3643a6323c9) | ![소비 화면 2](https://github.com/user-attachments/assets/8251578a-c328-4221-afe7-63b596c7feac) | - |
 
-- 카테고리 파이 화면
-![Uploading image.png…]()
+#### 카테고리 파이 화면
+| 카테고리 파이 화면 1 | 카테고리 파이 화면 2 | 카테고리 파이 화면 3 |
+|:---:|:---:|:---:|
+| - | - | - |
 
-
-- 무 화면
-![image](https://github.com/user-attachments/assets/c82e42d0-0e8d-444d-a0ca-ef2495fe8c70)
-
-test1
+#### 무 화면
+| 무 화면 1 | 무 화면 2 | 무 화면 3 |
+|:---:|:---:|:---:|
+| ![무 화면](https://github.com/user-attachments/assets/c82e42d0-0e8d-444d-a0ca-ef2495fe8c70) | - | - |
